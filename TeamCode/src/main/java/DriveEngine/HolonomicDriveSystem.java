@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.io.InputStream;
 
-import Autonomous.HeadingVector;
 import Autonomous.Location;
 import MotorControllers.JsonConfigReader;
 import MotorControllers.MotorController;
@@ -26,19 +25,8 @@ public class HolonomicDriveSystem {
     public static final int BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR = 2;
     public static final int BACK_LEFT_HOLONOMIC_DRIVE_MOTOR = 3;
     private PIDController headingController, turnController;
-    private volatile HeadingVector[] wheelVectors = new HeadingVector[4];
-    private volatile HeadingVector robotMovementVector = new HeadingVector();
     public ImuHandler orientation;
-    private double orientationOffset = 0;
-    private volatile boolean shouldRun = true;
-    private final double HEADING_THRESHOLD = 1;
-    private double wheelBase = 0;
-    private final double FL_WHEEL_HEADING_OFFSET = 45;
-    private final double FR_WHEEL_HEADING_OFFSET = 315;
-    private final double BR_WHEEL_HEADING_OFFSET = 45;
-    private final double BL_WHEEL_HEADING_OFFSET = 315;
     private HardwareMap hardwareMap;
-    private Location robotLocation = new Location(0,0);
 
     private double maxMotorVelocity = 0;
 
@@ -52,17 +40,6 @@ public class HolonomicDriveSystem {
         }
         avg /= driveMotors.length;
         maxMotorVelocity = avg;
-    }
-
-    public HolonomicDriveSystem(HardwareMap hw, Location startLocation, String configFile){
-        this(hw, configFile);
-        robotLocation = startLocation;
-    }
-
-    public HolonomicDriveSystem(HardwareMap hw, double robotOrientationOffset, Location startLocation, String configFile){
-        this(hw, configFile);
-        orientation.setOrientationOffset(robotOrientationOffset);
-        robotLocation = startLocation;
     }
 
     public HolonomicDriveSystem(HardwareMap hw, double robotOrientationOffset, String configFile){
@@ -90,7 +67,7 @@ public class HolonomicDriveSystem {
     public void cartesianDriveOnHeadingWithTurning(double heading, double movementPower, double turnPower){
         double distanceToHeading = calculateDistanceFromHeading(orientation.getOrientation(),heading);
         Log.d("Dist To Head","" + distanceToHeading);
-        driveOnHeadingWithTurning(distanceToHeading, movementPower,turnPower);
+        driveOnHeadingWithTurning(distanceToHeading, movementPower, turnPower);
     }
 
     /**
@@ -250,10 +227,10 @@ public class HolonomicDriveSystem {
      * kills all parts of the robot for a safe shutdown
      */
     public void kill(){
-        shouldRun = false;
         for (MotorController driveMotor : driveMotors) {
             driveMotor.killMotorController();
         }
+        orientation.stopIMU();
     }
 
     /**
@@ -316,7 +293,6 @@ public class HolonomicDriveSystem {
             headingController.setIMax(reader.getDouble("HEADING_Ki_MAX"));
             turnController = new PIDController(reader.getDouble("TURN_Kp"), reader.getDouble("TURN_Ki"), reader.getDouble("TURN_Kd"));
             turnController.setIMax(reader.getDouble("TURN_Ki_MAX"));
-
         } catch(Exception e){
             Log.e(" Drive Engine Error", "Config File Read Fail: " + e.toString());
             throw new RuntimeException("Drive Engine Config Read Failed!:" + e.toString());
