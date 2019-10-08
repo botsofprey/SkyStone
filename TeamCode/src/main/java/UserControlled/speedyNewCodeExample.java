@@ -18,7 +18,7 @@ public class speedyNewCodeExample extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        HolonomicDriveSystemTesting driveSystem = new HolonomicDriveSystemTesting(hardwareMap,"RobotConfig/RosannaV3.json");
+        HolonomicDriveSystemTesting driveSystem = new HolonomicDriveSystemTesting(hardwareMap,"RobotConfig/RosannaV4.json");
         JoystickHandler leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
         JoystickHandler rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
         waitForStart();
@@ -28,11 +28,13 @@ public class speedyNewCodeExample extends LinearOpMode {
         while(opModeIsActive()){
             movementPower = movementScale * Math.abs(leftStick.magnitude());
             turningPower = turningScale * Math.abs(rightStick.magnitude()) * Math.signum(rightStick.x());
-            driveSystem.cartesianDriveOnHeadingWithTurning(leftStick.angle()+45, movementPower, turningPower);
+            driveSystem.cartesianDriveOnHeadingWithTurning(leftStick.angle(), movementPower, turningPower);
             telemetry.addData("Gamepad1 left Joystick",leftStick.toString());
             telemetry.addData("Gamepad1 right Joystick", rightStick.toString());
+            telemetry.addData("Robot Heading", driveSystem.orientation.getOrientation());
             telemetry.update();
         }
+        driveSystem.kill();
     }
 
 }

@@ -265,6 +265,9 @@ public class HolonomicDriveSystemTesting {
      * @return the distance from the curAngle to the target angle. Is + if target angle is to the Right, - if to the left
      */
     public double calculateDistanceFromHeading(double curAngle, double targetAngle){
+        curAngle %= 360;
+        if(curAngle < 0) curAngle += 360;
+        else if(curAngle > 360) curAngle -= 360;
         double distanceFromHeading = targetAngle - curAngle;
         return normalizeAngle(distanceFromHeading);
     }
