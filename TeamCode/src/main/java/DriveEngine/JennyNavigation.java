@@ -408,12 +408,14 @@ public class JennyNavigation extends Thread {
             } else {
                 for (int i = 0; i < motorPositionsInches.length; i++) {
                     deltaInches[i] = Math.abs(motorPositionsInches[i] - startPositionsInches[i]);
+                    mode.telemetry.addData("Delta: ", motorPositionsInches[i] - startPositionsInches[i]);
                 }
+                mode.telemetry.update();
                 for (double i : deltaInches) {
                     averagePosition += i;
                 }
                 averagePosition /= (double) deltaInches.length;
-                distanceTraveled = averagePosition / Math.sin(Math.toRadians(45));
+                distanceTraveled = averagePosition / Math.sin(Math.toRadians(45.0));
             }
             Log.d("Distance Travelled", "" + distanceTraveled);
         }
