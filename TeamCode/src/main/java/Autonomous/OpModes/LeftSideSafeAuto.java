@@ -34,11 +34,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Actions.StoneStackingSystem;
 import DriveEngine.JennyNavigation;
-import Autonomous.Location;
+import Autonomous.*;
 
-@Autonomous(name="Drive Path", group="Linear Opmode")
+@Autonomous(name="Backup Safe - Left", group="Linear Opmode")
 //@Disabled
-public class AutonomousDrivePath extends LinearOpMode {
+public class LeftSideSafeAuto extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
     StoneStackingSystem sss;
@@ -58,15 +58,19 @@ public class AutonomousDrivePath extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
+        robot.driveDistance(24,90,25,this);
+        robot.driveDistance(24,180, 25, this);
+
+//        THIS IS FOR GRABBING FOUNDATION
 //        robot.driveDistance(10, 270, 15, this);
-        robot.driveDistance(30, 270, 15, this);
-        if(opModeIsActive())sss.extendRightArm();
+//        robot.driveDistance(30, 270, 15, this);
+//        if(opModeIsActive())sss.extendRightArm();
 //        sleep();
-        sss.pauseRightArm();
-        if(opModeIsActive())sss.extendLeftArm();
-        if(opModeIsActive())sss.setLeftArmPosition(180);
-        if(opModeIsActive())sss.setRightArmPosition(180);
-        robot.driveDistance(38.42, 336, 15, this);
+//        sss.pauseRightArm();
+//        if(opModeIsActive())sss.extendLeftArm();
+//        if(opModeIsActive())sss.setLeftArmPosition(180);
+//        if(opModeIsActive())sss.setRightArmPosition(180);
+//        robot.driveDistance(38.42, 336, 15, this);
 
         // For future implementation: get stones
 //        int reps = 6;

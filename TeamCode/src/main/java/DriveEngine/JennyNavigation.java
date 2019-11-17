@@ -408,7 +408,7 @@ public class JennyNavigation extends Thread {
             } else {
                 for (int i = 0; i < motorPositionsInches.length; i++) {
                     deltaInches[i] = Math.abs(motorPositionsInches[i] - startPositionsInches[i]);
-                    mode.telemetry.addData("Delta: ", motorPositionsInches[i] - startPositionsInches[i]);
+//                    mode.telemetry.addData("Delta: ", motorPositionsInches[i] - startPositionsInches[i]);
                 }
                 mode.telemetry.update();
                 for (double i : deltaInches) {

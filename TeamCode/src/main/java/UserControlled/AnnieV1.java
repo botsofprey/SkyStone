@@ -102,7 +102,7 @@ public class AnnieV1 extends LinearOpMode {
 
     void controlDrive() {
         double drivePower = (slowMode)? leftStick.magnitude()/2.0 : leftStick.magnitude();
-        double turnPower = (slowMode)? rightStick.x()/2.0 : rightStick.x();
+        double turnPower = (slowMode)? rightStick.x()/4.0 : rightStick.x();
         if(!eStop) robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
     }
 
