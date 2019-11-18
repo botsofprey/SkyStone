@@ -32,6 +32,7 @@ import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD
  * Created by robotics on 12/18/18.
  */
 
+// TODO: update for this season
 public class VisionHelper extends Thread {
     public final static int LEFT = 0, CENTER = 1, RIGHT = 2, NOT_DETECTED = -1;
     public final static int SLEEP_TIME_MILLIS = 200;
@@ -106,6 +107,7 @@ public class VisionHelper extends Thread {
     public void run() {
         if(tfod != null) {
             while (running) {
+                //  TODO: update
                 if(detectingGold) updatePositionVotesRightTwoVisible();
                 if(trackingLocation) updateRobotLocation();
                 try {
@@ -120,13 +122,13 @@ public class VisionHelper extends Thread {
 
     public void startDetection() {
         loadNavigationAssets();
-        resetPositionVotes();
+        resetPositionVotes(); // TODO: update
         robotOrientation = new Orientation(EXTRINSIC, XYZ, DEGREES, 0, 0, 0, 0);
         running = true;
         this.start();
     }
 
-    public void stopDetection() {
+    public void stopDetection() { // TODO: update
         detectingGold = false;
         trackingLocation = false;
         running = false;
