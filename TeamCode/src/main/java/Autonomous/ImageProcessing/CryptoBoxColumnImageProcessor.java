@@ -113,7 +113,7 @@ public class CryptoBoxColumnImageProcessor {
         return interestingColumns;
     }
 
-    private ArrayList<Integer> getColumnsWithRequiredBlueCount(int [] blueFrequencyByColumn){
+    private ArrayList<Integer> getColumnsWithRequiredBlueCount(int[] blueFrequencyByColumn){
         ArrayList<Integer> interestingColumns = new ArrayList<Integer>();
         //look for columns that have the minimum required % of a color
         int minimumPixelCount = (int)(percentRequiredInColumnToCheck * imageHeight + .5);
