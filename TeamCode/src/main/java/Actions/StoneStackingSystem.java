@@ -15,8 +15,9 @@ public class StoneStackingSystem implements ActionHandler{
     HardwareMap hardwareMap;
     SpoolMotor lift;
     MotorController leftRake, rightRake;
-    ServoHandler leftRakeArm, rightRakeArm;
+    ServoHandler leftRakeArm, rightRakeArm, centralGripper;
     public static final double LEFT_ARM_STOP = 0.5, RIGHT_ARM_STOP = 0.5, LEFT_ARM_DEPLOY = 1, RIGHT_ARM_DEPLOY = 1, LEFT_ARM_RAISE = 0, RIGHT_ARM_RAISE = 0;
+    public static final double CENTRAL_ARM_GRAB = 41, CENTRAL_ARM_RELEASE = 169;
 
     public StoneStackingSystem(HardwareMap hw) {
         hardwareMap = hw;
@@ -39,10 +40,13 @@ public class StoneStackingSystem implements ActionHandler{
         }
         leftRakeArm = new ServoHandler("leftRakeArm", hardwareMap);
         rightRakeArm = new ServoHandler("rightRakeArm", hardwareMap);
+        centralGripper = new ServoHandler("centralGripper", hardwareMap);
         leftRakeArm.setServoRanges(1, 179);
         rightRakeArm.setServoRanges(1, 179);
+        centralGripper.setServoRanges(1, 179);
         leftRakeArm.setPosition(LEFT_ARM_STOP);
         rightRakeArm.setPosition(RIGHT_ARM_STOP);
+        centralGripper.setDegree(CENTRAL_ARM_RELEASE);
     }
 
     public void stopArms() {
@@ -62,6 +66,16 @@ public class StoneStackingSystem implements ActionHandler{
     }
     public void setRightArmPosition(double pos) {
         rightRakeArm.setPosition(pos);
+    }
+
+    public void setCentralGripperDegree(double deg) {
+        centralGripper.setDegree(deg);
+    }
+    public void grabStoneCenter() {
+        centralGripper.setDegree(CENTRAL_ARM_GRAB);
+    }
+    public void releaseStoneCenter() {
+        centralGripper.setDegree(CENTRAL_ARM_RELEASE);
     }
 
     public void liftStones() {

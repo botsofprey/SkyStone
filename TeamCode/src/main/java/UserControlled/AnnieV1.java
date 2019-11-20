@@ -90,6 +90,7 @@ public class AnnieV1 extends LinearOpMode {
         sss.kill();
         robot.kill();
     }
+
     // misc functions here
     void updateEStop() {
         if(eStopButtonsReleased && ((gamepad1.dpad_down && gamepad1.back) || (gamepad2.dpad_down && gamepad2.back))) {
@@ -205,6 +206,11 @@ public class AnnieV1 extends LinearOpMode {
         if(gamepad2.dpad_right) sss.setLeftArmPosition(StoneStackingSystem.LEFT_ARM_DEPLOY);
         else if(gamepad2.dpad_left) sss.setLeftArmPosition(StoneStackingSystem.LEFT_ARM_RAISE);
         else if(!gamepad1.a && !gamepad1.b) sss.setLeftArmPosition(StoneStackingSystem.LEFT_ARM_STOP);
+
+        if (gamepad2.a)
+            sss.grabStoneCenter();
+        else if (gamepad2.y)
+            sss.releaseStoneCenter();
 
         if(gamepad2.right_trigger > 0.1) sss.liftStones();
         else if(gamepad2.right_bumper) sss.lowerStones();

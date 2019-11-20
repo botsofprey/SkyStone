@@ -40,21 +40,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class BasicOpMode_Linear extends LinearOpMode {
     // create objects and locally global variables here
 
-    DcMotor leftMotor, rightMotor;
-
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-
-        leftMotor = hardwareMap.dcMotor.get("leftMotor");
-        rightMotor = hardwareMap.dcMotor.get("rightMotor");
-        leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -64,22 +53,6 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
-
-            if(gamepad1.left_trigger > 0.1) {
-                leftMotor.setPower(gamepad1.left_trigger);
-            } else if(gamepad1.left_bumper) {
-                leftMotor.setPower(-1);
-            } else {
-                leftMotor.setPower(0);
-            }
-
-            if(gamepad1.right_trigger > 0.1) {
-                rightMotor.setPower(gamepad1.right_trigger);
-            } else if(gamepad1.right_bumper) {
-                rightMotor.setPower(-1);
-            } else {
-                rightMotor.setPower(0);
-            }
 
             // telemetry and logging data goes here
             telemetry.update();

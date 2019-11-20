@@ -27,50 +27,53 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Autonomous.OpModes;
+package UserControlled;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import Actions.StoneStackingSystem;
 
-import Autonomous.VisionHelper;
-
-/**
- *     Created by Ethan Fisher (and I guess Grant Gupton) on 9/19/19
- *     Tests camera recognition of blocks
- */
-
-@Autonomous(name="Camera Test", group="Linear Opmode")
+@TeleOp(name="Central Servo Test", group="Linear Opmode")
 //@Disabled
-public class CameraTest extends LinearOpMode {
+public class CentralServoTest extends LinearOpMode {
     // create objects and locally global variables here
-
-    VisionHelper vision;
+    int degree = 0;
+    StoneStackingSystem sss;
 
     @Override
     public void runOpMode() {
-
         // initialize objects and variables here
         // also create and initialize function local variables here
-        vision = new VisionHelper(VisionHelper.WEBCAM, hardwareMap);
+        sss = new StoneStackingSystem(hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // nothing goes between the above and below lines
         waitForStart();
+        // should only be used for a time keeper or other small things, avoid using this space when possible
+        while (opModeIsActive()) {
+            // main code goes here
+            if(gamepad1.a) {
+                degree++;
+                while (gamepad1.a) ;
+            } else if(gamepad1.b) {
+                degree--;
+                while (gamepad1.b);
+            }
 
-        vision.startDetection();
+            if(degree > 180) degree = 180;
+            else if(degree < 0) degree = 0;
+            sss.setCentralGripperDegree(degree);
 
-        while(opModeIsActive()) {
-
-            Recognition[] recognitions = vision.getStonesInView();
-
-            if (recognitions == null) telemetry.addData("No Blocks","");
-            else for (int i = 0; i < recognitions.length; i++) telemetry.addData("Block " + i, "" + recognitions[i].getLeft());
-
+            // telemetry and logging data goes here
+            telemetry.addData("Degree", degree);
+            telemetry.update();
         }
-
+        // disable/kill/stop objects here
+        sss.kill();
     }
+    // misc functions here
 }

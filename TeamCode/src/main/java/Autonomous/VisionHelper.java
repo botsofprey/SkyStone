@@ -20,11 +20,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import Autonomous.OpModes.CameraTest;
-
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone.LABEL_STONE;
 import static org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone.LABEL_SKY_STONE;
@@ -43,12 +40,21 @@ public class VisionHelper extends Thread {
     public final static int LOCATION = 0/*, MINERAL_DETECTION = 1*/, STONE_DETECTION = 1, BOTH = 2;
     private final int POSITION_VOTE_MINIMUM_COUNT = 15;
     VuforiaLocalizer vuforia;
-//    VuforiaTrackables targetsRoverRuckus;
+    VuforiaTrackables targetsRoverRuckus;
     VuforiaTrackables targetsSkyStone;
-    VuforiaTrackable blueRover;
-    VuforiaTrackable redFootprint;
-    VuforiaTrackable frontCraters;
-    VuforiaTrackable backSpace;
+    VuforiaTrackable stoneTarget;
+    VuforiaTrackable blueRearBridge;
+    VuforiaTrackable redRearBridge;
+    VuforiaTrackable redFrontBridge;
+    VuforiaTrackable blueFrontBridge;
+    VuforiaTrackable red1;
+    VuforiaTrackable red2;
+    VuforiaTrackable front1;
+    VuforiaTrackable front2;
+    VuforiaTrackable blue1;
+    VuforiaTrackable blue2;
+    VuforiaTrackable rear1;
+    VuforiaTrackable rear2;
     private volatile TFObjectDetector tfod;
 //    private volatile double[] positionVotes = {0, 0, 0};
     private volatile boolean running = true/*, detectingGold = false*/, trackingLocation = false;
@@ -117,8 +123,7 @@ public class VisionHelper extends Thread {
             while (running) {
 //                if(detectingGold) updatePositionVotesRightTwoVisible();
 //                if(trackingLocation) updateRobotLocation();
-//               if (findingSkyStone) getStonesInView();
-                getStonesInView();
+               if (findingSkyStone) getStonesInView();
                 try {
                     sleep(SLEEP_TIME_MILLIS);
                 } catch (InterruptedException e) {
@@ -134,6 +139,7 @@ public class VisionHelper extends Thread {
 //        resetPositionVotes(); // TODO: update
         robotOrientation = new Orientation(EXTRINSIC, XYZ, DEGREES, 0, 0, 0, 0);
         running = true;
+        findingSkyStone = true;
         this.start();
     }
 
@@ -164,12 +170,12 @@ public class VisionHelper extends Thread {
 
     public Recognition[] getStonesInView() {
         Recognition[] recognitions = new Recognition[50];
+        List<Recognition> Recognitions = tfod.getRecognitions();
 
-        for (int i = 0; i < tfod.getRecognitions().size(); i++) recognitions[i] = tfod.getRecognitions().get(i);
+        for (int i = 0; i < tfod.getRecognitions().size(); i++) recognitions[i] = Recognitions.get(i);
 
         if (recognitions != null) {
-            Recognition[] stones = filterStonesOnScreen(recognitions);
-            return stones;
+            return filterStonesOnScreen(recognitions);
         }
         return null;
     }
@@ -216,8 +222,9 @@ public class VisionHelper extends Thread {
     }
 
     public double getRobotHeading() {
-        double heading = -robotOrientation.thirdAngle;
-        return heading;
+//        double heading = -robotOrientation.thirdAngle;
+//        return heading;
+        return -robotOrientation.thirdAngle;
     }
 
     public Location getRobotLocation() {
@@ -346,18 +353,36 @@ public class VisionHelper extends Thread {
     }
 
     public void loadNavigationAssets() {
-//        targetsSkyStone = vuforia.loadTrackablesFromAsset("SkyStone");
-//        blueRover = targetsSkyStone.get(0);
-//        blueRover.setName("Blue-Rover");
-//        redFootprint = targetsSkyStone.get(1);
-//        redFootprint.setName("Red-Footprint");
-//        frontCraters = targetsSkyStone.get(2);
-//        frontCraters.setName("Front-Craters");
-//        backSpace = targetsSkyStone.get(3);
-//        backSpace.setName("Back-Space");
+        targetsSkyStone = vuforia.loadTrackablesFromAsset("SkyStone");
+        stoneTarget = targetsSkyStone.get(0);
+        stoneTarget.setName("Stone Target");
+        blueRearBridge = targetsSkyStone.get(1);
+        blueRearBridge.setName("Blue Rear Bridge");
+        redRearBridge = targetsSkyStone.get(2);
+        redRearBridge.setName("Red Rear Bridge");
+        redFrontBridge = targetsSkyStone.get(3);
+        redFrontBridge.setName("Red Front Bridge");
+        blueFrontBridge = targetsSkyStone.get(4);
+        blueFrontBridge.setName("Blue Front Bridge");
+        red1 = targetsSkyStone.get(5);
+        red1.setName("Red Perimeter 1");
+        red2 = targetsSkyStone.get(6);
+        red2.setName("Red Perimeter 2");
+        front1 = targetsSkyStone.get(7);
+        front1.setName("Front Perimeter 1");
+        front2 = targetsSkyStone.get(8);
+        front2.setName("Front Perimeter 2");
+        blue1 = targetsSkyStone.get(9);
+        blue1.setName("Blue Perimeter 1");
+        blue2 = targetsSkyStone.get(10);
+        blue2.setName("Blue Perimeter 2");
+        rear1 = targetsSkyStone.get(11);
+        rear1.setName("Rear Perimeter 1");
+        rear2 = targetsSkyStone.get(12);
+        rear2.setName("Rear Perimeter 2");
 
-//        allTrackables = new ArrayList<VuforiaTrackable>();
-//        allTrackables.addAll(targetsSkyStone);
+        allTrackables = new ArrayList<>();
+        allTrackables.addAll(targetsSkyStone);
 //
 //        OpenGLMatrix blueRoverLocationOnField = OpenGLMatrix
 //                .translation(2*mmFTCFieldWidth, mmFTCFieldWidth, mmTargetHeight)
