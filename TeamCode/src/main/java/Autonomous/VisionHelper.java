@@ -2,6 +2,7 @@ package Autonomous;
 
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone.LABEL_STONE;
 import static org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone.LABEL_SKY_STONE;
@@ -33,14 +35,11 @@ import static org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone.TFOD_MO
 
 // TODO: update for this season
 public class VisionHelper extends Thread {
-//    public final static int LEFT = 0, CENTER = 1, RIGHT = 2, NOT_DETECTED = -1;
     public final static int SLEEP_TIME_MILLIS = 200;
     public final static int PHONE_CAMERA = 0;
     public final static int WEBCAM = 1;
-    public final static int LOCATION = 0/*, MINERAL_DETECTION = 1*/, STONE_DETECTION = 1, BOTH = 2;
-    private final int POSITION_VOTE_MINIMUM_COUNT = 15;
+    public final static int LOCATION = 0, STONE_DETECTION = 1, BOTH = 2;
     VuforiaLocalizer vuforia;
-    VuforiaTrackables targetsRoverRuckus;
     VuforiaTrackables targetsSkyStone;
     VuforiaTrackable stoneTarget;
     VuforiaTrackable blueRearBridge;
@@ -56,8 +55,7 @@ public class VisionHelper extends Thread {
     VuforiaTrackable rear1;
     VuforiaTrackable rear2;
     private volatile TFObjectDetector tfod;
-//    private volatile double[] positionVotes = {0, 0, 0};
-    private volatile boolean running = true/*, detectingGold = false*/, trackingLocation = false;
+    private volatile boolean running = true, trackingLocation = false;
     private volatile boolean findingSkyStone = false;
     private volatile boolean targetVisible = false;
     private volatile OpenGLMatrix lastLocation = null;
@@ -70,6 +68,20 @@ public class VisionHelper extends Thread {
     private static final float mmPerInch        = 25.4f;
     private static final float mmFTCFieldWidth  = (12*6) * mmPerInch;  // the width of the FTC field (from the center point to the outer panels)
     private static final float mmTargetHeight   = (5.75f) * mmPerInch;    // the height of the center of the target image above the floor
+
+    // Constant for Stone Target
+    private static final float stoneZ = 2.00f * mmPerInch;
+
+    // Constants for the center support targets
+    private static final float bridgeZ = 6.42f * mmPerInch;
+    private static final float bridgeY = 23 * mmPerInch;
+    private static final float bridgeX = 5.18f * mmPerInch;
+    private static final float bridgeRotY = 59;                                 // Units are degrees
+    private static final float bridgeRotZ = 180;
+
+    // Constants for perimeter targets
+    private static final float halfField = 72 * mmPerInch;
+    private static final float quadField  = 36 * mmPerInch;
 
     final int CAMERA_FORWARD_DISPLACEMENT_FROM_CENTER = (int)(1.5*mmPerInch);
     final int CAMERA_VERTICAL_DISPLACEMENT_FROM_CENTER = (int)(14*mmPerInch);
@@ -85,10 +97,6 @@ public class VisionHelper extends Thread {
                 mode = LOCATION;
                 vuforia = VuforiaHelper.initVuforia(camera, hardwareMap);
                 break;
-//            case MINERAL_DETECTION:
-//                mode = MINERAL_DETECTION;
-//                initBoth(camera, hardwareMap);
-//                break;
             case STONE_DETECTION:
                 mode = STONE_DETECTION;
                 initBoth(camera, hardwareMap);
@@ -110,7 +118,6 @@ public class VisionHelper extends Thread {
             TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
             tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
             tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_SKY_STONE, LABEL_STONE);
-//            tfod.activate();
         } catch (Exception e) {
             Log.e("VisionHelper Error", e.toString());
             throw new RuntimeException(e);
@@ -121,16 +128,14 @@ public class VisionHelper extends Thread {
     public void run() {
         if(tfod != null) {
             while (running) {
-//                if(detectingGold) updatePositionVotesRightTwoVisible();
-//                if(trackingLocation) updateRobotLocation();
-               if (findingSkyStone) getStonesInView();
+                if(trackingLocation) updateRobotLocation();
+                if (findingSkyStone) getStonesInView();
                 try {
                     sleep(SLEEP_TIME_MILLIS);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-//            resetPositionVotes();
         }
     }
 
@@ -150,72 +155,17 @@ public class VisionHelper extends Thread {
         running = false;
     }
 
-//    public void startGoldDetection() {
-//        detectingGold = true;
-//    }
-
     public void startSkyStoneDetection() { findingSkyStone = true; }
-
-//    public void stopGoldDetection() {
-//        detectingGold = false;
-//    }
 
     public void startTrackingLocation() {
         trackingLocation = true;
     }
 
-    public void stopTrackingLocation() {
-        trackingLocation = false;
-    }
+    public void stopTrackingLocation() { trackingLocation = false; }
 
     public Recognition[] getStonesInView() {
-        Recognition[] recognitions = new Recognition[50];
-        List<Recognition> Recognitions = tfod.getRecognitions();
-
-        for (int i = 0; i < tfod.getRecognitions().size(); i++) recognitions[i] = Recognitions.get(i);
-
-        if (recognitions != null) {
-            return filterStonesOnScreen(recognitions);
-        }
-        return null;
+        return tfod.getRecognitions().toArray(new Recognition[0]);
     }
-
-//    public Recognition getClosestMineral() {
-//        List<Recognition> recognitions = tfod.getRecognitions();
-//        if(recognitions != null) {
-//            Recognition[] minerals = filterMineralsOnScreen(recognitions);
-//            return minerals[0];
-//        }
-//        return null;
-//    }
-
-//    public int getGoldMineralPosition() {
-//        int position = NOT_DETECTED;
-//        if(positionVotes[LEFT] + positionVotes[CENTER] + positionVotes[RIGHT] >= POSITION_VOTE_MINIMUM_COUNT) {
-//            if(positionVotes[LEFT] > positionVotes[CENTER] && positionVotes[LEFT] > positionVotes[RIGHT]) {
-//                position = LEFT;
-//            } else if(positionVotes[RIGHT] > positionVotes[CENTER] && positionVotes[RIGHT] > positionVotes[LEFT]) {
-//                 position = RIGHT;
-//            } else {
-//                position = CENTER;
-//            }
-//        }
-//        return position;
-//    }
-
-//    public int getLargestPositionVote() {
-//        if(positionVotes[LEFT] > 0 || positionVotes[RIGHT] > 0 || positionVotes[CENTER] > 0) {
-//            if (positionVotes[LEFT] > positionVotes[RIGHT]) {
-//                if (positionVotes[LEFT] > positionVotes[CENTER]) return LEFT;
-//                else return CENTER;
-//            } else if (positionVotes[RIGHT] > positionVotes[CENTER]) return RIGHT;
-//            else return CENTER;
-//        } else return NOT_DETECTED;
-//    }
-
-//    public void addPositionVote(int position) {
-//        positionVotes[position]++;
-//    }
 
     public Orientation getRobotOrientation() {
         return robotOrientation;
@@ -231,79 +181,6 @@ public class VisionHelper extends Thread {
         if(trackingLocation) return robotLocation;
         else return null;
     }
-
-//    public void resetPositionVotes() {
-//        for(int i = 0; i < positionVotes.length; i++) {
-//            positionVotes[i] = 0;
-//        }
-//    }
-
-//    public double getPositionVote(int mineralLocation) {
-//        return positionVotes[mineralLocation];
-//    }
-
-//    private void updatePositionVotes() {
-//        List<Recognition> recognitions = tfod.getRecognitions();
-//        if(recognitions != null) {
-//            Recognition[] minerals = filterMineralsOnScreen(recognitions);
-//            if(minerals.length >= 3) {
-//                int goldMineralX = -1;
-//                int silverMineral1X = -1;
-//                int silverMineral2X = -1;
-//                for (Recognition recognition : minerals) {
-//                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-//                        goldMineralX = (int) recognition.getLeft();
-//                    } else if (silverMineral1X == -1) {
-//                        silverMineral1X = (int) recognition.getLeft();
-//                    } else {
-//                        silverMineral2X = (int) recognition.getLeft();
-//                    }
-//                }
-//                if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-//                    if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-//                        positionVotes[LEFT]++;
-//                    } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-//                        positionVotes[RIGHT]++;
-//                    } else {
-//                        positionVotes[CENTER]++;
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-//    private void updatePositionVotesRightTwoVisible() {
-//        List<Recognition> recognitions = tfod.getRecognitions();
-//        if(recognitions != null) {
-//            Recognition[] temp = filterMineralsOnScreen(recognitions);
-//            Recognition[] minerals = null;
-//            if(temp != null && temp.length >= 2) {
-//                minerals = new Recognition[] {temp[0], temp[1]};
-//            }
-//            if(minerals != null && minerals.length >= 2) {
-//                int goldMineralX = -1;
-//                int silverMineralX = -1;
-//                for (Recognition recognition : minerals) {
-//                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-//                        goldMineralX = (int) recognition.getLeft();
-//                    } else {
-//                        silverMineralX = (int) recognition.getLeft();
-//                    }
-//                }
-//                if (silverMineralX != -1) {
-//                    if(goldMineralX != -1) {
-//                        if (goldMineralX < silverMineralX) {
-//                            positionVotes[CENTER]++;
-//                        } else if (goldMineralX > silverMineralX) {
-//                            positionVotes[RIGHT]++;
-//                        }
-//                    } else {
-//                        positionVotes[LEFT]++;
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     private void updateRobotLocation() {
         targetVisible = false;
@@ -331,25 +208,15 @@ public class VisionHelper extends Thread {
         }
     }
 
-//    private Recognition[] filterMineralsOnScreen(List<Recognition> stones) {
-//        Recognition[] stonesArray = stones.toArray(new Recognition[0]);
-//        Arrays.sort(stonesArray, new Comparator<Recognition>() {
-//            @Override
-//            public int compare(Recognition r1, Recognition r2) {
-//                return (int) (r2.getBottom() - r1.getBottom());
-//            }
-//        });
-//        return stonesArray;
-//    }
-
-    private Recognition[] filterStonesOnScreen(Recognition[] stones) {
-        Arrays.sort(stones, new Comparator<Recognition>() {
+    private Recognition[] filterStonesOnScreen(List<Recognition> stones) {
+        Recognition[] stonesArray = stones.toArray(new Recognition[0]);
+        Arrays.sort(stonesArray, new Comparator<Recognition>() {
             @Override
             public int compare(Recognition r1, Recognition r2) {
                 return (int) (r2.getLeft() - r1.getLeft());
             }
         });
-        return stones;
+        return stonesArray;
     }
 
     public void loadNavigationAssets() {
@@ -383,38 +250,72 @@ public class VisionHelper extends Thread {
 
         allTrackables = new ArrayList<>();
         allTrackables.addAll(targetsSkyStone);
-//
-//        OpenGLMatrix blueRoverLocationOnField = OpenGLMatrix
-//                .translation(2*mmFTCFieldWidth, mmFTCFieldWidth, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 270));
-//        blueRover.setLocation(blueRoverLocationOnField);
-//
-//        OpenGLMatrix redFootprintLocationOnField = OpenGLMatrix
-//                .translation(2*mmFTCFieldWidth, mmFTCFieldWidth, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 270));
-//        redFootprint.setLocation(redFootprintLocationOnField);
-//
-//        OpenGLMatrix frontCratersLocationOnField = OpenGLMatrix
-//                .translation(mmFTCFieldWidth, 2*mmFTCFieldWidth, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 180));
-//        frontCraters.setLocation(frontCratersLocationOnField);
-//
-//        OpenGLMatrix backSpaceLocationOnField = OpenGLMatrix
-//                .translation(mmFTCFieldWidth, 2*mmFTCFieldWidth, mmTargetHeight)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0));
-//        backSpace.setLocation(backSpaceLocationOnField);
-//
-//        OpenGLMatrix cameraLocationOnRobot = OpenGLMatrix
-//                .translation(CAMERA_FORWARD_DISPLACEMENT_FROM_CENTER, CAMERA_LEFT_DISPLACEMENT_FROM_CENTER, CAMERA_VERTICAL_DISPLACEMENT_FROM_CENTER)
-//                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,
-//                        90, 0, 90));
-//
-//        for (VuforiaTrackable trackable : allTrackables)
-//        {
-//            ((VuforiaTrackableDefaultListener)trackable.getListener()).setCameraLocationOnRobot(vuforia.getCameraName(), cameraLocationOnRobot);
-//        }
 
-//        targetsSkyStone.activate();
+        stoneTarget.setLocation(OpenGLMatrix
+                .translation(0, 0, stoneZ)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+
+        //Set the position of the bridge support targets with relation to origin (center of field)
+        blueFrontBridge.setLocation(OpenGLMatrix
+                .translation(-bridgeX, bridgeY, bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, bridgeRotZ)));
+
+        blueRearBridge.setLocation(OpenGLMatrix
+                .translation(-bridgeX, bridgeY, bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, bridgeRotZ)));
+
+        redFrontBridge.setLocation(OpenGLMatrix
+                .translation(-bridgeX, -bridgeY, bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, 0)));
+
+        redRearBridge.setLocation(OpenGLMatrix
+                .translation(bridgeX, -bridgeY, bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, 0)));
+
+        //Set the position of the perimeter targets with relation to origin (center of field)
+        red1.setLocation(OpenGLMatrix
+                .translation(quadField, -halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+
+        red2.setLocation(OpenGLMatrix
+                .translation(-quadField, -halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+
+        front1.setLocation(OpenGLMatrix
+                .translation(-halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+
+        front2.setLocation(OpenGLMatrix
+                .translation(-halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
+
+        blue1.setLocation(OpenGLMatrix
+                .translation(-quadField, halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+
+        blue2.setLocation(OpenGLMatrix
+                .translation(quadField, halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+
+        rear1.setLocation(OpenGLMatrix
+                .translation(halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+
+        rear2.setLocation(OpenGLMatrix
+                .translation(halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+
+        OpenGLMatrix cameraLocationOnRobot = OpenGLMatrix
+                .translation(CAMERA_FORWARD_DISPLACEMENT_FROM_CENTER, CAMERA_LEFT_DISPLACEMENT_FROM_CENTER, CAMERA_VERTICAL_DISPLACEMENT_FROM_CENTER)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,
+                        90, 0, 90));
+
+        for (VuforiaTrackable trackable : allTrackables)
+        {
+            ((VuforiaTrackableDefaultListener)trackable.getListener()).setCameraLocationOnRobot(vuforia.getCameraName(), cameraLocationOnRobot);
+        }
+
+        targetsSkyStone.activate();
         tfod.activate();
     }
 
