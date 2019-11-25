@@ -55,7 +55,7 @@ public class VuforiaHelper {
             params.vuforiaLicenseKey = LICENSE_KEY_EXTERNAL_CAMERA;
             params.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
             vuLoc = ClassFactory.getInstance().createVuforia(params);
-//            Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
+            Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
             vuLoc.setFrameQueueCapacity(1); //tells VuforiaLocalizer to only store one frame at a time
 
         } catch (Exception e){
@@ -88,15 +88,9 @@ public class VuforiaHelper {
         }
     }
 
-    public void kill(){
+    public static void kill(){
         Vuforia.deinit();
-        //vuLoc.
     }
-
-    /*
-        loadCipherAssets
-        tells vuforia to begin tracking cryptokeys
-     */
 
     public void loadNavigationAssets(){
         targetsRoverRuckus = vuLoc.loadTrackablesFromAsset("RoverRuckus");

@@ -377,6 +377,9 @@ public class JennyNavigation extends Thread {
     }
 
     public void driveDistance(double distanceInInches, double heading, double desiredVelocity, LinearOpMode mode){
+        for(int i = 0; i < driveMotors.length; i++) {
+            driveMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
         distanceInInches = Math.abs(distanceInInches);
         double distanceTraveled = 0;
         double [] motorPositionsInches = getMotorPositionsInches();
@@ -422,8 +425,12 @@ public class JennyNavigation extends Thread {
         brake();
         Log.d("Location", getRobotLocation().toString());
         for(int i = 0; i < driveMotors.length; i++) {
-            Log.d("Motor" + i, driveMotors[i].getInchesFromStart()+"");
+            driveMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
+    }
+
+    public void driveDistanceWithRotation(double distanceInInches, double heading, double finalHeading, LinearOpMode mode){
+
     }
 
     public void driveDistanceAccelerationBased(double distanceInInches, double heading, double desiredVelocity, LinearOpMode mode) {
@@ -546,7 +553,7 @@ public class JennyNavigation extends Thread {
         return powers;
     }
 
-    private void normalizePowers(double [] toNormalize){
+    private void normalizePowers(double [] toNormalize) {
         //get the min and max powers
         double min = toNormalize[0], max = toNormalize[0];
         for(int i = 0; i < toNormalize.length; i ++){

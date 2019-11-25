@@ -68,9 +68,9 @@ public class CameraTest extends LinearOpMode {
             Recognition[] recognitions = vision.getStonesInView();
 
             if (recognitions == null) telemetry.addData("No Blocks","");
-            else for (int i = 0; i < recognitions.length; i++) telemetry.addData("Block " + i, "" + recognitions[i].getLeft());
-
+            else for (int i = 0; i < recognitions.length; i++) telemetry.addData("Block " + i + " (" + recognitions[i].getLabel() + ")", "" + recognitions[i].getLeft());
+            telemetry.update(); // don't forget to update the telemetry to show the new data
         }
-
+        vision.kill(); // ALWAYS kill everything at the end, leads to crashes of the app otherwise
     }
 }

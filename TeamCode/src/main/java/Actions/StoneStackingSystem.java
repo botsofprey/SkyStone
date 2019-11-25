@@ -12,6 +12,7 @@ import Actions.HardwareWrappers.SpoolMotor;
 import MotorControllers.MotorController;
 
 public class StoneStackingSystem implements ActionHandler{
+
     HardwareMap hardwareMap;
     SpoolMotor lift;
     MotorController leftRake, rightRake;

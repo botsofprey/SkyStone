@@ -47,7 +47,7 @@ public class DriveDistanceTest extends LinearOpMode {
         // initialize objects and variables here
         // also create and initialize function local variables here
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/RosannaV4.json");
+            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,9 +59,13 @@ public class DriveDistanceTest extends LinearOpMode {
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
 
-        robot.driveDistance(20,0,25,this);
-        robot.driveDistance(30, 90, 25, this);
+        telemetry.addData("Starting Orientation", "" + robot.getOrientation());
 
+        robot.driveDistance(20,0,15,this);
+        sleep(1000);
+        robot.driveDistance(30, 90, 15, this);
+
+        telemetry.addData("Final Orientation", "" + robot.getOrientation());
 
         robot.stopNavigation();
 

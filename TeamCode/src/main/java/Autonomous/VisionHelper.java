@@ -33,7 +33,6 @@ import static org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone.TFOD_MO
  * Created by robotics on 12/18/18.
  */
 
-// TODO: update for this season
 public class VisionHelper extends Thread {
     public final static int SLEEP_TIME_MILLIS = 200;
     public final static int PHONE_CAMERA = 0;
@@ -59,10 +58,14 @@ public class VisionHelper extends Thread {
     private volatile boolean findingSkyStone = false;
     private volatile boolean targetVisible = false;
     private volatile OpenGLMatrix lastLocation = null;
+    private volatile OpenGLMatrix lastStoneLocation = null;
     private volatile Location robotLocation = new Location(0, 0);
+    private volatile Location skyStoneLocation = new Location(0, 0);
+    private volatile Orientation skyStoneOrientation;
     List<VuforiaTrackable> allTrackables;
     Orientation robotOrientation;
     VectorF translation;
+    VectorF stoneTranslation;
     private int mode = LOCATION;
 
     private static final float mmPerInch        = 25.4f;
@@ -117,7 +120,7 @@ public class VisionHelper extends Thread {
                     "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
             TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
             tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-            tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_SKY_STONE, LABEL_STONE);
+            tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_STONE, LABEL_SKY_STONE);
         } catch (Exception e) {
             Log.e("VisionHelper Error", e.toString());
             throw new RuntimeException(e);
@@ -126,15 +129,14 @@ public class VisionHelper extends Thread {
 
     @Override
     public void run() {
-        if(tfod != null) {
-            while (running) {
-                if(trackingLocation) updateRobotLocation();
-                if (findingSkyStone) getStonesInView();
-                try {
-                    sleep(SLEEP_TIME_MILLIS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        while (running) {
+            if (trackingLocation) updateRobotLocation();
+//                if (findingSkyStone) getStonesInView();
+            if (findingSkyStone) getSkystonesInView();
+            try {
+                sleep(SLEEP_TIME_MILLIS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -182,13 +184,21 @@ public class VisionHelper extends Thread {
         else return null;
     }
 
+    public Location getSkystoneLocation() {
+        if(findingSkyStone) return skyStoneLocation;
+        else return null;
+    }
+    public Orientation getSkystoneOrientation() { return skyStoneOrientation; }
+
     private void updateRobotLocation() {
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+            if (trackable == stoneTarget)
+                continue;
+            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                 targetVisible = true;
 
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
@@ -201,10 +211,23 @@ public class VisionHelper extends Thread {
             robotLocation = new Location(0, 0);
             robotLocation.updateXY(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch);
             robotOrientation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-        }
-        else {
+        } else {
             robotLocation = null;
             robotOrientation = null;
+        }
+    }
+
+    private void getSkystonesInView(){
+//        Log.d("In", "Called laststonelocation here");
+        if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
+            OpenGLMatrix stoneLocationTransform = ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).getUpdatedRobotLocation();
+            if (stoneLocationTransform != null){
+                lastStoneLocation = stoneLocationTransform;
+                stoneTranslation = lastStoneLocation.getTranslation();
+                skyStoneLocation = new Location(0, 0);
+                skyStoneLocation.updateXY(stoneTranslation.get(0) / mmPerInch, stoneTranslation.get(1) / mmPerInch);
+                skyStoneOrientation = Orientation.getOrientation(lastStoneLocation, EXTRINSIC, XYZ, DEGREES);
+            }
         }
     }
 
@@ -220,7 +243,7 @@ public class VisionHelper extends Thread {
     }
 
     public void loadNavigationAssets() {
-        targetsSkyStone = vuforia.loadTrackablesFromAsset("SkyStone");
+        targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone"); // NOTE: the asset is titled Skystone not SkyStone... this is why I told you to copy and paste...
         stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
         blueRearBridge = targetsSkyStone.get(1);
@@ -316,12 +339,15 @@ public class VisionHelper extends Thread {
         }
 
         targetsSkyStone.activate();
-        tfod.activate();
+        if (tfod != null) {
+            tfod.activate();
+        }
     }
 
     public void kill() {
         stopDetection();
+        targetsSkyStone.deactivate();
         if(mode == BOTH || mode == STONE_DETECTION) tfod.shutdown();
-//        Vuforia.deinit();
+//        VuforiaHelper.kill();
     }
 }

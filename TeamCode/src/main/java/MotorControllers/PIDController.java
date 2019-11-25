@@ -29,13 +29,13 @@ public class PIDController {
         Kd = kd;
     }
 
-    public void setP(double p){Kp = p;}
-    public void setI(double i){Ki = i;}
-    public void setD(double d){Kd = d;}
-    public double getP(){return Kp;}
-    public double getI(){return Ki;}
-    public double getD(){return Kd;}
-    public double getI_Max(){return I_CAP;}
+    public void setP(double p) {Kp = p;}
+    public void setI(double i) {Ki = i;}
+    public void setD(double d) {Kd = d;}
+    public double getP() {return Kp;}
+    public double getI() {return Ki;}
+    public double getD() {return Kd;}
+    public double getI_Max() {return I_CAP;}
     public void setIMax(double cap) {I_CAP = cap;}
 
     public double getSp(){
@@ -45,8 +45,12 @@ public class PIDController {
         setPoint = sp;
         //reset(); //fix this later, as velocities are non constant prevent motors from acting sporadic 
     }
+//  "TURN_Kp":".003",
+//          "TURN_Ki":"0.00",
+//          "TURN_Ki_MAX":".05",
+//          "TURN_Kd":"0.0",
 
-    public double calculatePID(double pointValue){
+    public double calculatePID(double pointValue) {
         double deltaTime = (System.currentTimeMillis() - timeAtLastCalculation)/1000.0;
         error = setPoint - pointValue;
         Log.d("PID Error","" + error);
@@ -55,8 +59,8 @@ public class PIDController {
         tempI = Ki * error * deltaTime;
         I += tempI;
         if(Ki == 0) I = 0;
-        if(I_CAP != 0){
-            if(I > 0 && I >I_CAP) I = I_CAP;
+        if(I_CAP != 0) {
+            if(I > 0 && I > I_CAP) I = I_CAP;
             else if(I < 0 && I < -I_CAP) I = -I_CAP;
         }
         Log.d("I","" + I);
@@ -69,7 +73,7 @@ public class PIDController {
         return P + I + D;
     }
 
-    public void reset(){
+    public void reset() {
         P = 0;
         I = 0;
         D = 0;
