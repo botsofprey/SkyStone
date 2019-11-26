@@ -18,7 +18,7 @@ public class StoneStackingSystem implements ActionHandler{
     MotorController leftRake, rightRake;
     ServoHandler leftRakeArm, rightRakeArm, centralGripper;
     public static final double LEFT_ARM_STOP = 0.5, RIGHT_ARM_STOP = 0.5, LEFT_ARM_DEPLOY = 1, RIGHT_ARM_DEPLOY = 1, LEFT_ARM_RAISE = 0, RIGHT_ARM_RAISE = 0;
-    public static final double CENTRAL_ARM_GRAB = 41, CENTRAL_ARM_RELEASE = 169;
+    public static final double CENTRAL_ARM_GRAB = 39, CENTRAL_ARM_RELEASE = 169;
 
     public StoneStackingSystem(HardwareMap hw) {
         hardwareMap = hw;

@@ -228,6 +228,11 @@ public class VisionHelper extends Thread {
                 skyStoneLocation.updateXY(stoneTranslation.get(0) / mmPerInch, stoneTranslation.get(1) / mmPerInch);
                 skyStoneOrientation = Orientation.getOrientation(lastStoneLocation, EXTRINSIC, XYZ, DEGREES);
             }
+        } else {
+            lastStoneLocation = null;
+            skyStoneLocation = null;
+            skyStoneOrientation = null;
+            stoneTranslation = null;
         }
     }
 

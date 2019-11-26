@@ -35,7 +35,7 @@ public class JennyNavigation extends Thread {
     private volatile long threadDelayMillis = 10;
     public volatile double robotHeading = 0;
     private volatile double [] lastMotorPositionsInInches = {0,0,0,0};
-    public PIDController headingController, turnController, cameraPIDController;
+    public PIDController headingController, turnController, cameraTranslationYController, cameraTranslationXController, cameraOrientationController;
     private volatile Location myLocation;
     private volatile HeadingVector [] wheelVectors = new HeadingVector[4];
     private volatile HeadingVector robotMovementVector = new HeadingVector();
@@ -200,7 +200,12 @@ public class JennyNavigation extends Thread {
             headingController.setIMax(reader.getDouble("HEADING_Ki_MAX"));
             turnController = new PIDController(reader.getDouble("TURN_Kp"), reader.getDouble("TURN_Ki"), reader.getDouble("TURN_Kd"));
             turnController.setIMax(reader.getDouble("TURN_Ki_MAX"));
-
+            cameraTranslationYController = new PIDController(reader.getDouble("CAMERA_TRANSLATION_Y_Kp"), reader.getDouble("CAMERA_TRANSLATION_Y_Ki"), reader.getDouble("CAMERA_TRANSLATION_Y_Kd"));
+            cameraTranslationYController.setIMax(reader.getDouble("CAMERA_TRANSLATION_Y_Ki_MAX"));
+            cameraTranslationXController = new PIDController(reader.getDouble("CAMERA_TRANSLATION_X_Kp"), reader.getDouble("CAMERA_TRANSLATION_X_Ki"), reader.getDouble("CAMERA_TRANSLATION_X_Kd"));
+            cameraTranslationXController.setIMax(reader.getDouble("CAMERA_TRANSLATION_X_Ki_MAX"));
+            cameraOrientationController = new PIDController(reader.getDouble("CAMERA_ORIENTATION_Kp"), reader.getDouble("CAMERA_ORIENTATION_Ki"), reader.getDouble("CAMERA_ORIENTATION_Kd"));
+            cameraOrientationController.setIMax(reader.getDouble("CAMERA_ORIENTATION_Ki_MAX"));
         } catch(Exception e){
             Log.e(" Drive Engine Error", "Config File Read Fail: " + e.toString());
             throw new RuntimeException("Drive Engine Config Read Failed!:" + e.toString());
@@ -377,8 +382,12 @@ public class JennyNavigation extends Thread {
     }
 
     public void driveDistance(double distanceInInches, double heading, double desiredVelocity, LinearOpMode mode){
-        for(int i = 0; i < driveMotors.length; i++) {
-            driveMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        for(MotorController m : driveMotors) {
+            m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+        mode.idle();
+        for(MotorController m : driveMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         distanceInInches = Math.abs(distanceInInches);
         double distanceTraveled = 0;
@@ -424,12 +433,32 @@ public class JennyNavigation extends Thread {
         }
         brake();
         Log.d("Location", getRobotLocation().toString());
-        for(int i = 0; i < driveMotors.length; i++) {
-            driveMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
     }
 
     public void driveDistanceWithRotation(double distanceInInches, double heading, double finalHeading, LinearOpMode mode){
+
+    }
+
+    public void orbitSkystone(Location skystoneLocationFromCamera, double skystoneOrientation, double desiredDistanceToSkystone, LinearOpMode mode) {
+        cameraOrientationController.setSp(0);
+        cameraTranslationYController.setSp(0);
+        cameraTranslationXController.setSp(-desiredDistanceToSkystone);
+        double movementYPower = -cameraTranslationYController.calculatePID(skystoneLocationFromCamera.getY());
+        double movementXPower = cameraTranslationXController.calculatePID(skystoneLocationFromCamera.getX());
+        double turnPower = -cameraOrientationController.calculatePID(skystoneOrientation);
+
+        if(turnPower > .25){
+            turnPower = .25;
+        }
+//        if(mode.opModeIsActive()) driveOnHeadingWithTurning((skystoneLocationFromCamera.getY() > 0)? 90:-90, movementYPower, turnPower);
+        if(mode.opModeIsActive()){
+            double angle = Math.atan2(movementYPower, movementXPower);
+            double XYPower = Math.sqrt(Math.pow(movementXPower, 2) + Math.pow(movementYPower, 2));
+            if(XYPower > .25){
+                XYPower = .25;
+            }
+            driveOnHeadingWithTurning(Math.toDegrees(angle), XYPower, turnPower);
+        }
 
     }
 
@@ -773,6 +802,9 @@ public class JennyNavigation extends Thread {
     }
 
     public void applyMotorVelocities(double [] velocities){
+        for(MotorController m : driveMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
         driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR]);
@@ -780,6 +812,9 @@ public class JennyNavigation extends Thread {
     }
 
     public void applyMotorPowers(double [] powers){
+        for(MotorController m : driveMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
         driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].setMotorPower(powers[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].setMotorPower(powers[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].setMotorPower(powers[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR]);

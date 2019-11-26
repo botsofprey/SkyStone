@@ -29,6 +29,8 @@
 
 package Autonomous.OpModes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -53,10 +55,11 @@ public class AutoV1 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         // initialize objects and variables here
         // also create and initialize function local variables here
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/RosannaV4.json");
+            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,12 +81,32 @@ public class AutoV1 extends LinearOpMode {
 //          Get distance from wall
 //          Move right following wall
 //          Look for skystone
-            while(opModeIsActive()) {
-                telemetry.addData("Location", vision.getRobotLocation());
-                if(vision.getSkystoneOrientation() != null) {
-                    telemetry.addData("Skystone Location", vision.getSkystoneLocation() + ", " + vision.getSkystoneOrientation().thirdAngle);
-                }
+        while (opModeIsActive()) {
+            double DISTANCE_TOLERANCE = .5; //IN INCHES
+            double ANGLE_TOLERANCE = 1;
+            boolean ready = false;
 
+            robot.driveDistance(15, 0, 10, this);
+            while (!ready) {
+                if (vision.getSkystoneOrientation() != null) {
+                    telemetry.addData("Skystone Location", vision.getSkystoneLocation() + ", " + vision.getSkystoneOrientation().thirdAngle);
+                    robot.orbitSkystone(vision.getSkystoneLocation(), vision.getSkystoneOrientation().thirdAngle, 10, this);
+
+                    if (Math.abs(vision.getSkystoneLocation().getY()) < DISTANCE_TOLERANCE && Math.abs(vision.getSkystoneLocation().getX()) < 11 && Math.abs(vision.getSkystoneOrientation().thirdAngle) < ANGLE_TOLERANCE) {
+                        ready = true;
+                        robot.brake();
+                    }
+                } else {
+                    robot.brake();
+                }
+                telemetry.update();
+            }
+            telemetry.addData("Status", "Reached the skystone. Time to pick it up!");
+            robot.driveDistance(7, 0, 10, this);
+            sss.grabStoneCenter();
+            robot.driveDistance(10, 180, 10, this);
+            robot.driveDistance(72, 90,25,this);
+            sss.releaseStoneCenter();
 //                Finding any stones using TensorFlow
 //                Recognition[] recognitions = vision.getStonesInView();
 //                if (recognitions != null) {
@@ -93,8 +116,10 @@ public class AutoV1 extends LinearOpMode {
 ////                        }
 ////                    }
 //                }
+            while (opModeIsActive()) {
                 telemetry.update();
             }
+        }
 //          IF i < 2 skystone found
 //              Move Forward
 //              Grab with central gripper
@@ -133,8 +158,8 @@ public class AutoV1 extends LinearOpMode {
 
 //
         vision.kill();
-        sss.kill();
         robot.stopNavigation();
+        sss.kill();
 
         // finish drive code and test
         // may be a good idea to square self against wall
