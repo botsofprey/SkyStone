@@ -29,28 +29,31 @@
 
 package UserControlled;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import Autonomous.Location;
+import DriveEngine.JennyNavigation;
 
-@TeleOp(name="DistanceTest", group="Linear Opmode")
+@TeleOp(name="Drive On Heading PID test", group="Testers")
 //@Disabled
-public class DistanceSensor extends LinearOpMode {
-
-    private com.qualcomm.robotcore.hardware.DistanceSensor sensorRange;
+public class DriveOnHeadingPID extends LinearOpMode {
     // create objects and locally global variables here
+    JennyNavigation robot;
 
     @Override
     public void runOpMode() {
+        try {
+            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // initialize objects and variables here
         // also create and initialize function local variables here
-        sensorRange = hardwareMap.get(com.qualcomm.robotcore.hardware.DistanceSensor.class, "sensor_range");
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -59,11 +62,10 @@ public class DistanceSensor extends LinearOpMode {
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
+            // main code goes here
+            robot.driveOnHeadingPID(0, 15, 0, this);
+
             // telemetry and logging data goes here
-            telemetry.addData("deviceName",sensorRange.getDeviceName());
-            double dist = sensorRange.getDistance(DistanceUnit.INCH);
-            Log.d("Distance: ", String.format("%.01f in", dist));
-            telemetry.addData("range", String.format("%.01f in", dist));
             telemetry.update();
         }
         // disable/kill/stop objects here

@@ -63,7 +63,7 @@ public class ImuHandler extends Thread {
                     long timeLeft = updateDelay - (System.currentTimeMillis() - lastUpdateStart);
                     if(timeLeft > 0) safetySleep(timeLeft);
                 }
-                //imu.close();
+//                imu.close();
             }
         }).start();
     }

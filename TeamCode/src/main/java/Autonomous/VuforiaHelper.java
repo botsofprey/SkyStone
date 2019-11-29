@@ -54,9 +54,10 @@ public class VuforiaHelper {
             VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
             params.vuforiaLicenseKey = LICENSE_KEY_EXTERNAL_CAMERA;
             params.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+            params.useExtendedTracking = false;
             vuLoc = ClassFactory.getInstance().createVuforia(params);
             Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
-            vuLoc.setFrameQueueCapacity(1); //tells VuforiaLocalizer to only store one frame at a time
+//            vuLoc.setFrameQueueCapacity(1); //tells VuforiaLocalizer to only store one frame at a time
 
         } catch (Exception e){
             throw new RuntimeException(e);
