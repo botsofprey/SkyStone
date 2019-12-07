@@ -93,12 +93,11 @@ public class ImuHandler extends Thread {
         parameters.calibrationData = dat;
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+//        parameters.accelerationIntegrationAlgorithm = new BasicAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, name);
         imu.initialize(parameters);
         safetySleep(10);
-        imu.startAccelerationIntegration(new Position(DistanceUnit.INCH, 0, 0, 0, 0), new Velocity(DistanceUnit.INCH, 0, 0, 0, 0), 200);
-        //imu.startAccelerationIntegration();
+//        imu.startAccelerationIntegration(new Position(), new Velocity(), 100);
         Log.d("IMU Status", imu.getSystemStatus().toString());
         Log.d("IMU Calibration", imu.getCalibrationStatus().toString());
         updateIMU();
@@ -129,6 +128,7 @@ public class ImuHandler extends Thread {
 
     public Location getLocation(){
         Position p = imu.getPosition();
+        p = p.toUnit(DistanceUnit.INCH);
         Location l = new Location(p.x,p.y);
         return l; 
     }
@@ -159,7 +159,7 @@ public class ImuHandler extends Thread {
      */
     public double getHeadingFromVelocity(){
         //cannot use z heading as it represents the orientation, not the heading
-        //couple of options.... use accelerometers to determine the headingvimu.getAngularVelocity(); //we'll see if this works
+        //couple of options.... use accelerometers to determine the heading imu.getAngularVelocity(); //we'll see if this works
         //turn the robot to always face forward
         //use multiple compasses -- one per major axis and use trig to represent actual heading
         double heading = Math.toDegrees(Math.atan2(velocities.yVeloc,velocities.xVeloc));

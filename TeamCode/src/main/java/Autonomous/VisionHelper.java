@@ -221,7 +221,7 @@ public class VisionHelper extends Thread {
 //        Log.d("In", "Called laststonelocation here");
         if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
             OpenGLMatrix stoneLocationTransform = ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).getUpdatedRobotLocation();
-            if (stoneLocationTransform != null){
+            if (stoneLocationTransform != null) {
                 lastStoneLocation = stoneLocationTransform;
                 stoneTranslation = lastStoneLocation.getTranslation();
                 skyStoneLocation = new Location(0, 0);

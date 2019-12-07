@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.io.IOException;
 
@@ -17,15 +18,18 @@ public class StoneStackingSystem implements ActionHandler{
     SpoolMotor lift;
     MotorController leftRake, rightRake;
     ServoHandler leftRakeArm, rightRakeArm, centralGripper;
+    TouchSensor left, right;
     public static final double LEFT_ARM_STOP = 0.5, RIGHT_ARM_STOP = 0.5, LEFT_ARM_DEPLOY = 1, RIGHT_ARM_DEPLOY = 1, LEFT_ARM_RAISE = 0, RIGHT_ARM_RAISE = 0;
     public static final double CENTRAL_ARM_GRAB = 39, CENTRAL_ARM_RELEASE = 169;
 
     public StoneStackingSystem(HardwareMap hw) {
         hardwareMap = hw;
         try {
-            lift = new SpoolMotor(new MotorController("lift", "ActionConfig/LiftMotor.json", hardwareMap), 50, 50, 35, hardwareMap);
+            lift = new SpoolMotor(new MotorController("lift", "ActionConfig/SSSLift.json", hardwareMap), 50, 50, 35, hardwareMap);
             leftRake = new MotorController("leftRake", "ActionConfig/RakeMotor.json", hardwareMap);
             rightRake = new MotorController("rightRake", "ActionConfig/RakeMotor.json", hardwareMap);
+            left = hardwareMap.touchSensor.get("leftTouchSensor");
+            right = hardwareMap.touchSensor.get("rightTouchSensor");
 
             lift.setDirection(DcMotorSimple.Direction.REVERSE);
             lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -88,10 +92,27 @@ public class StoneStackingSystem implements ActionHandler{
     public void pauseStoneLift() {
         lift.pause();
     }
-
-    public void extendLeftArm() {
-        leftRake.setMotorPower(1);
+    public void liftToPosition(int pos) {
+        switch (pos) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            default:
+                break;
+        }
     }
+    public void setLiftPosition(int posInInches) {
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPostitionInches(posInInches);
+        lift.setPower(1);
+    }
+
+    public void extendLeftArm() { leftRake.setMotorPower(1); }
     public void retractLeftArm() {
         leftRake.setMotorPower(-1);
     }
@@ -105,9 +126,7 @@ public class StoneStackingSystem implements ActionHandler{
     public void retractRightArm() {
         rightRake.setMotorPower(-1);
     }
-    public void pauseRightArm() {
-        rightRake.brake();
-    }
+    public void pauseRightArm() { rightRake.brake(); }
 
     @Override
     public boolean doAction(String action, long maxTimeAllowed) {

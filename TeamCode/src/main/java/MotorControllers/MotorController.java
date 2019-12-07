@@ -39,13 +39,13 @@ public class MotorController extends Thread {
 
     HardwareMap hardwareMap;
 
-    public MotorController(DcMotor m, String configFileLoc, HardwareMap hw)throws IOException {
+    public MotorController(DcMotor m, String configFileLoc, HardwareMap hw) throws IOException {
         hardwareMap = hw;
         motor = m;
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //read the config file. If error received, fail entire initialization
-        if(readConfig(configFileLoc) != 1){
+        if (readConfig(configFileLoc) != 1){
             logError("MotorController Error","Config File Read Failed! Killing self!");
             shouldRun = false;
             throw new IOException("Failed to parse Motor Config File: " + configFileLoc);
@@ -80,29 +80,25 @@ public class MotorController extends Thread {
     }
 
 
-    public DcMotor.RunMode getMotorRunMode(){
-        return motor.getMode();
-    }
+    public DcMotor.RunMode getMotorRunMode() { return motor.getMode(); }
 
-    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior b){
-        motor.setZeroPowerBehavior(b);
-    }
+    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior b) { motor.setZeroPowerBehavior(b); }
 
-    public void setDirection(DcMotor.Direction dir){
+    public void setDirection(DcMotor.Direction dir) {
         motor.setDirection(dir);
     }
 
     public void setMode(DcMotor.RunMode mode){
         try {
-            if(getMotorRunMode() == DcMotor.RunMode.RUN_TO_POSITION){
-                if(motor.isBusy()){
+            if (getMotorRunMode() == DcMotor.RunMode.RUN_TO_POSITION) {
+                if (motor.isBusy()) {
                     setMotorPower(0);
                     Log.d("Motor issue" ,"Still busy....");
                     motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 }
             }
             motor.setMode(mode);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.d("Error!", e.toString());
         }
     }
@@ -111,17 +107,17 @@ public class MotorController extends Thread {
         return motor.getTargetPosition();
     }
 
-    private void safetySleep(long time){
+    private void safetySleep(long time) {
         long start = System.currentTimeMillis();
         while(System.currentTimeMillis() - start < time && shouldRun);
     }
 
-    public void killMotorController(){
+    public void killMotorController() {
         brake();
         shouldRun = false;
     }
 
-    private void updateData(){
+    private void updateData() {
         //get new RPS
         double currentRPS = 0;
         try {
@@ -140,15 +136,14 @@ public class MotorController extends Thread {
         InputStream stream = null;
         try {
             stream = hardwareMap.appContext.getAssets().open(fileLoc);
-        }
-        catch(Exception e){
-            logError("Error: ",e.toString());
+        } catch(Exception e) {
+            logError("Error: ", e.toString());
             throw new RuntimeException(e);
         }
         JsonConfigReader reader = new JsonConfigReader(stream);
-        try{
+        try {
             //ticksPerRevolution = reader.getLong("TICKS_PER_REV");
-            ticksPerRevolution = (long)motor.getMotorType().getTicksPerRev();
+            ticksPerRevolution = (long) motor.getMotorType().getTicksPerRev();
             wheelDiameterInInches = reader.getDouble("WHEEL_DIAMETER");
             ticksPerDegree = reader.getDouble("TICKS_PER_DEGREE");
             initialDegree = reader.getDouble("INITIAL_DEGREE");
@@ -158,7 +153,7 @@ public class MotorController extends Thread {
             maxTicksPerSecond = (long) motor.getMotorType().getAchieveableMaxTicksPerSecondRounded();
             holdController = new PIDController(reader.getDouble("HOLD_KP"), reader.getDouble("HOLD_KI"), reader.getDouble("HOLD_KD"));
             holdController.setIMax(reader.getDouble("HOLD_I_MAX"));
-        } catch(Exception e){
+        } catch(Exception e) {
             logError(logTag + " MotorController Error", "Config File Read Fail: " + e.toString());
             return 0;
         }
@@ -210,7 +205,7 @@ public class MotorController extends Thread {
 
     }
 
-    public void setInchesPerSecondVelocity(double inchesPerSec){
+    public void setInchesPerSecondVelocity(double inchesPerSec) {
         long ticksPerSec = (long)(inchesPerSec/(wheelDiameterInInches* Math.PI)*ticksPerRevolution + .5);
         setTicksPerSecondVelocity(ticksPerSec);
     }

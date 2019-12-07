@@ -121,6 +121,7 @@ public class AutoV1 extends LinearOpMode {
             telemetry.update();
         }
 //          IF i < 2 skystone found
+
 //              Move Forward
 //              Grab with central gripper
 //              Move Backward

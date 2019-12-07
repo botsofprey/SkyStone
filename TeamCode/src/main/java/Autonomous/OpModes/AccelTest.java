@@ -33,21 +33,20 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Actions.StoneStackingSystem;
-import DriveEngine.JennyNavigation;
 import Autonomous.Location;
+import DriveEngine.JennyNavigation;
 
-@Autonomous(name="Backup Simple", group="Linear Opmode")
+@Autonomous(name="AccelTest", group="Linear Opmode")
 //@Disabled
-public class BackupSimpleAuto extends LinearOpMode {
+public class AccelTest extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
-    StoneStackingSystem sss;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/RosannaV4.json");
+            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -58,9 +57,8 @@ public class BackupSimpleAuto extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
-
-        robot.driveDistance(24,180, 35, this);
-
+        if(opModeIsActive()) robot.driveDistanceAccelerationBased(45,0,25,this);
+//        if(opModeIsActive()) robot.driveDistance(15, 90, 25, this);
 //        THIS IS FOR GRABBING FOUNDATION
 //        robot.driveDistance(10, 270, 15, this);
 //        robot.driveDistance(30, 270, 15, this);

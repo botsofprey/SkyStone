@@ -38,7 +38,7 @@ import DriveEngine.JennyNavigation;
 import UserControlled.JoystickHandler;
 
 @Autonomous(name="Accelerometer Tester", group="Testers")
-@Disabled
+//@Disabled
 public class IMUAccelerationTester extends LinearOpMode {
     JennyNavigation navigation;
     JoystickHandler leftStick, rightStick;
@@ -47,7 +47,7 @@ public class IMUAccelerationTester extends LinearOpMode {
     @Override
     public void runOpMode() {
         try {
-            navigation = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/JennyV2.json");
+            navigation = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -61,19 +61,21 @@ public class IMUAccelerationTester extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) {
-            accelerations = navigation.orientation.getAccelerations();
-            movementPower = 1 * leftStick.magnitude();
-            turningPower = 0.5 * (Math.abs(rightStick.magnitude())) * Math.signum(rightStick.x());
-            navigation.relativeDriveOnHeadingWithTurning(leftStick.angle(), movementPower, turningPower);
+//        while (opModeIsActive()) {
+//            accelerations = navigation.orientation.getAccelerations();
+//            movementPower = 1 * leftStick.magnitude();
+//            turningPower = 0.5 * (Math.abs(rightStick.magnitude())) * Math.signum(rightStick.x());
+//            navigation.relativeDriveOnHeadingWithTurning(leftStick.angle(), movementPower, turningPower);
+        navigation.driveDistance(10, 0, 15, this);
 
-            telemetry.addData("X Accel", accelerations[0]);
-            telemetry.addData("Y Accel", accelerations[1]);
-            telemetry.addData("Z Accel", accelerations[2]);
+//            telemetry.addData("X Accel", accelerations[0]);
+//            telemetry.addData("Y Accel", accelerations[1]);
+//            telemetry.addData("Z Accel", accelerations[2]);
             telemetry.addData("IMU Location", navigation.orientation.getLocation());
             telemetry.addData("Robot Location", navigation.getRobotLocation());
             telemetry.update();
-        }
+//        }
+        while (opModeIsActive());
         navigation.stopNavigation();
     }
 }

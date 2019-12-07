@@ -55,12 +55,12 @@ public class AutoV2 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        // initialize objects and variables here
+        // also create and initialize function local variables here
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         back = hardwareMap.get(DistanceSensor.class, "back");
         right = hardwareMap.get(DistanceSensor.class, "right");
         left = hardwareMap.get(DistanceSensor.class, "left");
-        // initialize objects and variables here
-        // also create and initialize function local variables here
         try {
             robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
@@ -79,9 +79,12 @@ public class AutoV2 extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
-        Location skystoneLocation = vision.getSkystoneLocation();
-        Orientation skystoneOrientation = vision.getSkystoneOrientation();
+//        Location skystoneLocation = vision.getSkystoneLocation();
+//        Orientation skystoneOrientation = vision.getSkystoneOrientation();
+        Location skystoneLocation;
+        Orientation skystoneOrientation;
 
+//        Drive forward until 15 inches from wall
         double distToWall = back.getDistance(INCH);
         while (opModeIsActive() && distToWall < 15) {
             robot.driveOnHeadingPID(0, 15, 0, this);
@@ -89,19 +92,20 @@ public class AutoV2 extends LinearOpMode {
         }
         robot.brake();
 
-
+//        Search for skystone and break if found
         distToWall = left.getDistance(INCH);
         while (opModeIsActive() && distToWall > 7) {
             robot.driveOnHeadingPID(-90, 5, 0, this);
             skystoneLocation = vision.getSkystoneLocation();
             skystoneOrientation = vision.getSkystoneOrientation();
-            if(skystoneLocation != null && skystoneOrientation != null) {
+            if (skystoneLocation != null && skystoneOrientation != null) {
                 break;
             }
             distToWall = left.getDistance(INCH);
         }
         robot.brake();
 
+//        If we are at wall we didn't find skystone. Otherwise, move to the skystone
         if(distToWall <= 7) {
             telemetry.addData("Did not find skystone", "");
             telemetry.update();
@@ -114,6 +118,7 @@ public class AutoV2 extends LinearOpMode {
             robot.brake();
         }
 
+//        Grab skystone
         robot.driveDistance(13, 0, 15, this);
         sss.grabStoneCenter();
         sleep(750); // wait to grab the stone
@@ -124,11 +129,26 @@ public class AutoV2 extends LinearOpMode {
         }
         robot.brake();
 
+//        Drive to foundation
         distToWall = right.getDistance(INCH);
-        while(opModeIsActive() && distToWall > 30) {
+        while (opModeIsActive() && distToWall > 30) {
             robot.driveOnHeadingPID(90, 15, 0, this);
             distToWall = right.getDistance(INCH);
+//            telemetry.addData("right:", distToWall);
+//            telemetry.update();
         }
+        robot.brake();
+
+        // lift stone and stack
+        sss.setLiftPosition(5);
+
+        // drive distance
+        distToWall = back.getDistance(INCH);
+        while(opModeIsActive() && distToWall < 16.625) {
+            robot.driveOnHeadingPID(0, 15, 0, this);
+            distToWall = back.getDistance(INCH);
+        }
+        sss.releaseStoneCenter();
 
         while (opModeIsActive());
 
