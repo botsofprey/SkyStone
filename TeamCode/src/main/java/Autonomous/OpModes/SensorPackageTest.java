@@ -56,7 +56,7 @@ public class SensorPackageTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-//        sensors = new SensorPackage(new Sensor(hardwareMap.get(DistanceSensor.class, "left"), 0), new Sensor(hardwareMap.get(DistanceSensor.class, "back"), 1));
+//        sensors = new SensorPackage(new Sensor(hardwareMap.get(LIDARSensor.class, "left"), 0), new Sensor(hardwareMap.get(LIDARSensor.class, "back"), 1));
         // initialize objects and variables here
         // also create and initialize function local variables here
         try {

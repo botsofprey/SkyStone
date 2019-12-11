@@ -103,9 +103,7 @@ public class MotorController extends Thread {
         }
     }
 
-    public int getTargetPosition(){
-        return motor.getTargetPosition();
-    }
+    public int getTargetPosition() { return motor.getTargetPosition(); }
 
     private void safetySleep(long time) {
         long start = System.currentTimeMillis();
@@ -168,17 +166,15 @@ public class MotorController extends Thread {
         return currentTicksPerSec;
     }
 
-    public double getCurrentInchesPerSecond(){
-        return (double)getCurrentTicksPerSecond() / (double)(ticksPerRevolution) * wheelDiameterInInches * Math.PI;
+    public double getCurrentInchesPerSecond() {
+        return (double) getCurrentTicksPerSecond() / (double) (ticksPerRevolution) * wheelDiameterInInches * Math.PI;
     }
 
-    public double getCurrentRPS(){
+    public double getCurrentRPS() {
         return (double)getCurrentTicksPerSecond() / (double)ticksPerRevolution;
     }
 
-    public long getCurrentTick(){
-        return motor.getCurrentPosition();
-    }
+    public long getCurrentTick() { return motor.getCurrentPosition(); }
 
     public double getInchesFromStart(){
         return (double) getCurrentTick() / (double)(ticksPerRevolution) * wheelDiameterInInches * Math.PI;
