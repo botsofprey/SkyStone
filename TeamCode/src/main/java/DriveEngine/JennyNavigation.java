@@ -32,6 +32,10 @@ public class JennyNavigation extends Thread {
     public static final int BACK_LEFT_HOLONOMIC_DRIVE_MOTOR = 3;
     public static final double LOCATION_DISTANCE_TOLERANCE = .5;
     public static final long DEFAULT_DELAY_MILLIS = 10;
+    public static final double FORWARD = 0;
+    public static final double BACK = 180;
+    public static final double RIGHT = 90;
+    public static final double LEFT = -90;
     private volatile long threadDelayMillis = 10;
     public volatile double robotHeading = 0;
     private volatile double [] lastMotorPositionsInInches = {0,0,0,0};

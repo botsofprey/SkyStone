@@ -3,7 +3,6 @@ package Actions;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.io.IOException;
@@ -12,17 +11,17 @@ import Actions.HardwareWrappers.ServoHandler;
 import Actions.HardwareWrappers.SpoolMotor;
 import MotorControllers.MotorController;
 
-public class StoneStackingSystem implements ActionHandler{
+public class StoneStackingSystemV1 implements ActionHandler{
 
     HardwareMap hardwareMap;
     SpoolMotor lift;
     MotorController leftRake, rightRake;
-    ServoHandler leftRakeArm, rightRakeArm, centralGripper, levatronArm;
+    ServoHandler leftBlenderFoot, rightBlenderFoot, centralGripper, levatronArm;
     TouchSensor left, right;
-    public static final double LEFT_ARM_STOP = 0.5, RIGHT_ARM_STOP = 0.5, LEFT_ARM_DEPLOY = 1, RIGHT_ARM_DEPLOY = 1, LEFT_ARM_RAISE = 0, RIGHT_ARM_RAISE = 0;
+    public static final double LEFT_FOOT_RELEASE = 0, RIGHT_FOOT_RELEASE = 0, LEFT_FOOT_GRAB = 90, RIGHT_FOOT_GRAB = 90;
     public static final double CENTRAL_ARM_GRAB = 39, CENTRAL_ARM_RELEASE = 169, LEVATRON_SET = 0, LEVATRON_RELEASE = 180;
 
-    public StoneStackingSystem(HardwareMap hw) {
+    public StoneStackingSystemV1(HardwareMap hw) {
         hardwareMap = hw;
         try {
             lift = new SpoolMotor(new MotorController("lift", "ActionConfig/SSSLift.json", hardwareMap), 50, 50, 35, hardwareMap);
@@ -43,37 +42,38 @@ public class StoneStackingSystem implements ActionHandler{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        leftRakeArm = new ServoHandler("leftRakeArm", hardwareMap);
-        rightRakeArm = new ServoHandler("rightRakeArm", hardwareMap);
+        leftBlenderFoot = new ServoHandler("leftBlenderFoot", hardwareMap);
+        rightBlenderFoot = new ServoHandler("rightBlenderFoot", hardwareMap);
         centralGripper = new ServoHandler("centralGripper", hardwareMap);
-        levatronArm = new ServoHandler("levatron", hardwareMap);
-        leftRakeArm.setServoRanges(1, 179);
-        rightRakeArm.setServoRanges(1, 179);
+        levatronArm = new ServoHandler("levatronArm", hardwareMap);
+        leftBlenderFoot.setServoRanges(1, 179);
+        rightBlenderFoot.setServoRanges(1, 179);
         centralGripper.setServoRanges(1, 179);
         levatronArm.setServoRanges(1, 179);
-        leftRakeArm.setPosition(LEFT_ARM_STOP);
-        rightRakeArm.setPosition(RIGHT_ARM_STOP);
+        leftBlenderFoot.setPosition(LEFT_FOOT_RELEASE);
+        rightBlenderFoot.setPosition(RIGHT_FOOT_RELEASE);
         centralGripper.setDegree(CENTRAL_ARM_RELEASE);
         levatronArm.setDegree(LEVATRON_SET);
     }
 
-    public void stopArms() {
-        leftRakeArm.setPosition(LEFT_ARM_STOP);
-        rightRakeArm.setPosition(RIGHT_ARM_STOP);
+    public void grabStoneWithBlenderFeet() {
+        leftBlenderFoot.setDegree(LEFT_FOOT_GRAB);
+        rightBlenderFoot.setDegree(RIGHT_FOOT_GRAB);
     }
-    public void deployArms() {
-        leftRakeArm.setPosition(LEFT_ARM_DEPLOY);
-        rightRakeArm.setPosition(RIGHT_ARM_DEPLOY);
+    public void releaseStoneWithBlenderFeet() {
+        leftBlenderFoot.setDegree(LEFT_FOOT_RELEASE);
+        rightBlenderFoot.setDegree(RIGHT_FOOT_RELEASE);
     }
-    public void liftArms() {
-        leftRakeArm.setPosition(LEFT_ARM_RAISE);
-        rightRakeArm.setPosition(RIGHT_ARM_RAISE);
+    public void setBlenderFeetDegrees(double leftDeg, double rightDeg) {
+        leftBlenderFoot.setDegree(leftDeg);
+        rightBlenderFoot.setDegree(rightDeg);
     }
-    public void setLeftArmPosition(double pos) {
-        leftRakeArm.setPosition(pos);
+
+    public void dropCapStone() {
+        levatronArm.setDegree(LEVATRON_RELEASE);
     }
-    public void setRightArmPosition(double pos) {
-        rightRakeArm.setPosition(pos);
+    public void resetCapStone() {
+        levatronArm.setDegree(LEVATRON_SET);
     }
 
     public void setCentralGripperDegree(double deg) {
@@ -81,12 +81,6 @@ public class StoneStackingSystem implements ActionHandler{
     }
     public void grabStoneCenter() {
         centralGripper.setDegree(CENTRAL_ARM_GRAB);
-    }
-    public void dropCapStone() {
-        levatronArm.setDegree(LEVATRON_RELEASE);
-    }
-    public void resetCapStone() {
-        levatronArm.setDegree(LEVATRON_SET);
     }
     public void releaseStoneCenter() {
         centralGripper.setDegree(CENTRAL_ARM_RELEASE);

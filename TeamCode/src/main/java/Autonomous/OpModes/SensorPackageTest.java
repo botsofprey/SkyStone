@@ -119,11 +119,11 @@ public class SensorPackageTest extends LinearOpMode {
 ////                    }
 //                }
         while (opModeIsActive()) {
-            telemetry.addData("Left Sensor", sensors.getSensor(DistanceSensor.class,0));
-            telemetry.addData("Left Dist", sensors.getSensor(DistanceSensor.class, 0).getDistance(DistanceUnit.INCH));
-            telemetry.addData("Back Sensor", sensors.getSensor(DistanceSensor.class,1));
-            telemetry.addData("Back Dist", sensors.getSensor(DistanceSensor.class, 1).getDistance(DistanceUnit.INCH));
-            telemetry.update();
+//            telemetry.addData("Left Sensor", sensors.getSensor(DistanceSensor.class,0));
+//            telemetry.addData("Left Dist", sensors.getSensor(DistanceSensor.class, 0).getDistance(DistanceUnit.INCH));
+//            telemetry.addData("Back Sensor", sensors.getSensor(DistanceSensor.class,1));
+//            telemetry.addData("Back Dist", sensors.getSensor(DistanceSensor.class, 1).getDistance(DistanceUnit.INCH));
+//            telemetry.update();
         }
 //          IF i < 2 skystone found
 //              Move Forward

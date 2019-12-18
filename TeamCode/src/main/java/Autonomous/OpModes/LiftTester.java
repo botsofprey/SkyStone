@@ -33,19 +33,18 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
+import Actions.StoneStackingSystem;
 import Autonomous.Location;
 import DriveEngine.JennyNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
-@Autonomous(name="Drive Distance", group="Linear Opmode")
+@Autonomous(name="LiftTester", group="Linear Opmode")
 //@Disabled
-public class DriveDistanceTest extends LinearOpMode {
+public class LiftTester extends LinearOpMode {
     // create objects and locally global variables here
-
     JennyNavigation robot;
-    DistanceSensor back;
-
+    StoneStackingSystem sss;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
@@ -55,28 +54,23 @@ public class DriveDistanceTest extends LinearOpMode {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        back = hardwareMap.get(DistanceSensor.class, "back");
+        sss = new StoneStackingSystem(hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // nothing goes between the above and below lines
         waitForStart();
-        // should only be used for a time keeper or other small things, avoid using this space when possible
 
-        telemetry.addData("Starting Orientation", "" + robot.getOrientation());
+        sss.setLiftPosition(5);
 
-//        robot.driveDistance(20,0,15,this);
-//        sleep(1000);
-//        robot.driveDistance(30, 90, 15, this);
-        while(back.getDistance(INCH) < 10) {
-            robot.driveOnHeadingPID(0, 25, 0, this);
+        while (opModeIsActive()) {
+            telemetry.addData("Lift Height", "" + sss.getLiftPositionInches());
+            telemetry.update();
         }
-        robot.brake();
-
-        telemetry.addData("Final Orientation", "" + robot.getOrientation());
 
         robot.stopNavigation();
+        sss.kill();
 
         // finish drive code and test
         // may be a good idea to square self against wall

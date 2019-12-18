@@ -33,53 +33,32 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import Actions.StoneStackingSystem;
 import Autonomous.Location;
 import DriveEngine.JennyNavigation;
+import SensorHandlers.LIDARSensor;
+import SensorHandlers.SensorPackage;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
-
-@Autonomous(name="Drive Distance", group="Linear Opmode")
+@Autonomous(name="LIDAR Sensor Test", group="Linear Opmode")
 //@Disabled
-public class DriveDistanceTest extends LinearOpMode {
+public class LIDARSensorTest extends LinearOpMode {
     // create objects and locally global variables here
-
-    JennyNavigation robot;
-    DistanceSensor back;
+    SensorPackage sensors;
 
     @Override
     public void runOpMode() {
-        // initialize objects and variables here
-        // also create and initialize function local variables here
-        try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        back = hardwareMap.get(DistanceSensor.class, "back");
-
+        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), 0));
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // nothing goes between the above and below lines
         waitForStart();
-        // should only be used for a time keeper or other small things, avoid using this space when possible
-
-        telemetry.addData("Starting Orientation", "" + robot.getOrientation());
-
-//        robot.driveDistance(20,0,15,this);
-//        sleep(1000);
-//        robot.driveDistance(30, 90, 15, this);
-        while(back.getDistance(INCH) < 10) {
-            robot.driveOnHeadingPID(0, 25, 0, this);
+        while(opModeIsActive()){
+            telemetry.addData("Left", sensors.getSensor(LIDARSensor.class,0));
+            telemetry.update();
         }
-        robot.brake();
-
-        telemetry.addData("Final Orientation", "" + robot.getOrientation());
-
-        robot.stopNavigation();
-
-        // finish drive code and test
-        // may be a good idea to square self against wall
 
     }
     // misc functions here

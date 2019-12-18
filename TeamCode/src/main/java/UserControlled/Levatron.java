@@ -27,35 +27,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Autonomous.OpModes;
+package UserControlled;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import Autonomous.Location;
-import DriveEngine.JennyNavigation;
+import Actions.StoneStackingSystem;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
-
-@Autonomous(name="Drive Distance", group="Linear Opmode")
+@TeleOp(name="Levatron", group="Linear Opmode")
 //@Disabled
-public class DriveDistanceTest extends LinearOpMode {
+public class Levatron extends LinearOpMode {
     // create objects and locally global variables here
-
-    JennyNavigation robot;
-    DistanceSensor back;
+    int degree = 0;
+    StoneStackingSystem sss;
 
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        back = hardwareMap.get(DistanceSensor.class, "back");
+        sss = new StoneStackingSystem(hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -63,24 +53,16 @@ public class DriveDistanceTest extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
-
-        telemetry.addData("Starting Orientation", "" + robot.getOrientation());
-
-//        robot.driveDistance(20,0,15,this);
-//        sleep(1000);
-//        robot.driveDistance(30, 90, 15, this);
-        while(back.getDistance(INCH) < 10) {
-            robot.driveOnHeadingPID(0, 25, 0, this);
+        while (opModeIsActive()) {
+            // main code goes here
+            if(gamepad1.a) {
+                sss.resetCapStone();
+            } else if(gamepad1.b) {
+                sss.dropCapStone();
+            }
         }
-        robot.brake();
-
-        telemetry.addData("Final Orientation", "" + robot.getOrientation());
-
-        robot.stopNavigation();
-
-        // finish drive code and test
-        // may be a good idea to square self against wall
-
+        // disable/kill/stop objects here
+        sss.kill();
     }
     // misc functions here
 }

@@ -79,22 +79,30 @@ public class AutoV2 extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
-//        Location skystoneLocation = vision.getSkystoneLocation();
-//        Orientation skystoneOrientation = vision.getSkystoneOrientation();
-        Location skystoneLocation;
-        Orientation skystoneOrientation;
+        Location skystoneLocation = vision.getSkystoneLocation();
+        Orientation skystoneOrientation = vision.getSkystoneOrientation();
+
+        telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
+        telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
+        telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
+        telemetry.update();
 
 //        Drive forward until 15 inches from wall
         double distToWall = back.getDistance(INCH);
         while (opModeIsActive() && distToWall < 15) {
-            robot.driveOnHeadingPID(0, 15, 0, this);
+            robot.driveOnHeadingPID(0, 10, 0, this);
             distToWall = back.getDistance(INCH);
+
+            telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
+            telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
+            telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
+            telemetry.update();
         }
         robot.brake();
 
 //        Search for skystone and break if found
         distToWall = left.getDistance(INCH);
-        while (opModeIsActive() && distToWall > 7) {
+        while (opModeIsActive() && distToWall > 7.5) {
             robot.driveOnHeadingPID(-90, 5, 0, this);
             skystoneLocation = vision.getSkystoneLocation();
             skystoneOrientation = vision.getSkystoneOrientation();
@@ -102,26 +110,43 @@ public class AutoV2 extends LinearOpMode {
                 break;
             }
             distToWall = left.getDistance(INCH);
+
+            telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
+            telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
+            telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
+            telemetry.update();
         }
         robot.brake();
 
 //        If we are at wall we didn't find skystone. Otherwise, move to the skystone
-        if(distToWall <= 7) {
+        if(distToWall <= 7.5) {
             telemetry.addData("Did not find skystone", "");
             telemetry.update();
         } else {
             double distToZero = Math.abs(vision.getSkystoneLocation().getY());
             while (opModeIsActive() && distToZero > 0.2) {
-                robot.driveOnHeadingPID((vision.getSkystoneLocation().getY() > 0)? 90:-90, 5, 0, this);
+                robot.driveOnHeadingPID((vision.getSkystoneLocation().getY() > 0)? 90:-90, 15, 0, this);
                 distToZero = Math.abs(vision.getSkystoneLocation().getY());
+
+                telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
+                telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
+                telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
+                telemetry.update();
             }
             robot.brake();
         }
 
 //        Grab skystone
-        robot.driveDistance(13, 0, 15, this);
+//        robot.driveDistance(13, 0, 15, this);
+        distToWall = back.getDistance(INCH);
+        while(distToWall < 27.5){
+            robot.driveOnHeadingPID(JennyNavigation.FORWARD,5,0,this);
+            distToWall = back.getDistance(INCH);
+        }
+        robot.brake();
+
         sss.grabStoneCenter();
-        sleep(750); // wait to grab the stone
+        sleep(750); // wait to grab the stone TODO: grabStoneCenterAndWait() to wait until correct angle reached?
         distToWall = back.getDistance(INCH);
         while(opModeIsActive() && distToWall > 10) {
             robot.driveOnHeadingPID(180, 20, 0, this);
@@ -131,23 +156,34 @@ public class AutoV2 extends LinearOpMode {
 
 //        Drive to foundation
         distToWall = right.getDistance(INCH);
-        while (opModeIsActive() && distToWall > 30) {
+        while (opModeIsActive() && distToWall > 32) {
             robot.driveOnHeadingPID(90, 15, 0, this);
             distToWall = right.getDistance(INCH);
-//            telemetry.addData("right:", distToWall);
-//            telemetry.update();
+
+            telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
+            telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
+            telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
+            telemetry.update();
         }
         robot.brake();
 
         // lift stone and stack
-        sss.setLiftPosition(5);
+        sss.setLiftPosition(3);
 
         // drive distance
         distToWall = back.getDistance(INCH);
-        while(opModeIsActive() && distToWall < 16.625) {
-            robot.driveOnHeadingPID(0, 15, 0, this);
+        for(int i = 0; i < 2; i++) {
+            while (opModeIsActive() && distToWall < 28.5) {
+                robot.driveOnHeadingPID(0, 15, 0, this);
+                distToWall = back.getDistance(INCH);
+            }
+            robot.brake();
             distToWall = back.getDistance(INCH);
         }
+        while(sss.getLiftPositionInches() < 2.9);
+        sss.setLiftPosition(2.5);
+        while(sss.getLiftPositionInches() > 2.55);
+
         sss.releaseStoneCenter();
 
         while (opModeIsActive());
