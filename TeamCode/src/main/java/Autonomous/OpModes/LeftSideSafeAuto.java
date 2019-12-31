@@ -32,16 +32,16 @@ package Autonomous.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import Actions.StoneStackingSystem;
+import Actions.StoneStackingSystemV2;
 import DriveEngine.JennyNavigation;
 import Autonomous.*;
 
-@Autonomous(name="Backup Safe - Left", group="Linear Opmode")
+@Autonomous(name="Park from left", group="Competition")
 //@Disabled
 public class LeftSideSafeAuto extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
-    StoneStackingSystem sss;
+    StoneStackingSystemV2 sss;
     @Override
     public void runOpMode() {
         // initialize objects and variables here

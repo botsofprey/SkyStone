@@ -38,7 +38,7 @@ import DriveEngine.JennyNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
-@Autonomous(name="DriveToStartingSpot", group="Linear Opmode")
+@Autonomous(name="DriveToStartingSpot", group="Testers")
 //@Disabled
 public class DriveToStartingSpot extends LinearOpMode {
     // create objects and locally global variables here

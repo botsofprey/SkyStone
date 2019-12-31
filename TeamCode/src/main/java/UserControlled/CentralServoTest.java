@@ -33,20 +33,20 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import Actions.StoneStackingSystem;
+import Actions.StoneStackingSystemV2;
 
-@TeleOp(name="Central Servo Test", group="Linear Opmode")
-//@Disabled
+@TeleOp(name="Central Servo Test", group="Testers")
+@Disabled
 public class CentralServoTest extends LinearOpMode {
     // create objects and locally global variables here
     int degree = 0;
-    StoneStackingSystem sss;
+    StoneStackingSystemV2 sss;
 
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        sss = new StoneStackingSystem(hardwareMap);
+        sss = new StoneStackingSystemV2(hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");

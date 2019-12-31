@@ -33,23 +33,19 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import Actions.StoneStackingSystem;
+import Actions.StoneStackingSystemV1;
 import Autonomous.Location;
 import Autonomous.VisionHelper;
 import DriveEngine.JennyNavigation;
-import SensorHandlers.Sensor;
 import SensorHandlers.SensorPackage;
 
-@Autonomous(name="Sensor Package Test", group="Linear Opmode")
+@Autonomous(name="Sensor Package Test", group="Testers")
 //@Disabled
 public class SensorPackageTest extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
-    StoneStackingSystem sss;
+    StoneStackingSystemV1 sss;
     VisionHelper vision;
     SensorPackage sensors;
 
@@ -64,7 +60,7 @@ public class SensorPackageTest extends LinearOpMode {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sss = new StoneStackingSystem(hardwareMap);
+        sss = new StoneStackingSystemV1(hardwareMap);
 
         // Stone detection
         vision = new VisionHelper(VisionHelper.WEBCAM, VisionHelper.LOCATION, hardwareMap);

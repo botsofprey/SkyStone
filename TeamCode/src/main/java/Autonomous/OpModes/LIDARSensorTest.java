@@ -33,15 +33,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import Actions.StoneStackingSystem;
-import Autonomous.Location;
-import DriveEngine.JennyNavigation;
 import SensorHandlers.LIDARSensor;
 import SensorHandlers.SensorPackage;
 
-@Autonomous(name="LIDAR Sensor Test", group="Linear Opmode")
+@Autonomous(name="LIDAR Sensor Test", group="Testers")
 //@Disabled
 public class LIDARSensorTest extends LinearOpMode {
     // create objects and locally global variables here

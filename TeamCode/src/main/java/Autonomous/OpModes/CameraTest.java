@@ -41,7 +41,7 @@ import Autonomous.VisionHelper;
  *     Tests camera recognition of blocks
  */
 
-@Autonomous(name="Camera Test", group="Linear Opmode")
+@Autonomous(name="Camera Test", group="Testers")
 //@Disabled
 public class CameraTest extends LinearOpMode {
     // create objects and locally global variables here

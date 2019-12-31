@@ -29,24 +29,30 @@
 
 package UserControlled;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import Actions.StoneStackingSystemV1;
+import Actions.StoneIntakeSystemV1;
+import DriveEngine.HolonomicDriveSystemTesting;
 
-@TeleOp(name="Levatron", group="Testers")
-@Disabled
-public class Levatron extends LinearOpMode {
+@TeleOp(name="Annie V2", group="Competition")
+//@Disabled
+public class AnnieV2 extends LinearOpMode {
     // create objects and locally global variables here
-    int degree = 0;
-    StoneStackingSystemV1 sss;
+//    HolonomicDriveSystemTesting robot;
+    StoneIntakeSystemV1 sis;
+    JoystickHandler leftStick, rightStick;
+    boolean eStop = false, slowMode = false;
+    boolean startReleased = true, eStopButtonsReleased = true;
 
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        sss = new StoneStackingSystemV1(hardwareMap);
+//        robot = new HolonomicDriveSystemTesting(hardwareMap, "RobotConfig/AnnieV1Scrimmage.json");
+        sis = new StoneIntakeSystemV1(hardwareMap);
+        leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
+        rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -56,14 +62,60 @@ public class Levatron extends LinearOpMode {
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
-            if(gamepad1.a) {
-                sss.resetCapStone();
-            } else if(gamepad1.b) {
-                sss.dropCapStone();
+            updateEStop();
+            if(!eStop) {
+                if (startReleased && gamepad1.start) {
+                    startReleased = false;
+                    slowMode = !slowMode;
+                } else if (!gamepad1.start) {
+                    startReleased = true;
+                }
+
+                updateEStop();
+//                controlDrive();
+
+                updateEStop();
+                controlStoneIntakeSystem();
             }
+            if(eStop) {
+                stopActions();
+            }
+            // telemetry and logging data goes here
+            telemetry.update();
         }
         // disable/kill/stop objects here
-        sss.kill();
+        sis.kill();
+//        robot.kill();
     }
+
     // misc functions here
+    void updateEStop() {
+        if(eStopButtonsReleased && ((gamepad1.dpad_down && gamepad1.back) || (gamepad2.dpad_down && gamepad2.back))) {
+            eStopButtonsReleased = false;
+            eStop = !eStop;
+        } else if(!((gamepad1.dpad_down && gamepad1.back) || (gamepad2.dpad_down && gamepad2.back))) {
+            eStopButtonsReleased = true;
+        }
+    }
+
+//    void controlDrive() {
+//        double drivePower = (slowMode)? leftStick.magnitude()/2.0 : leftStick.magnitude();
+//        double turnPower = (slowMode)? rightStick.x()/4.0 : rightStick.x();
+//        if(!eStop) robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
+//    }
+
+    void controlStoneIntakeSystem() {
+        if(!eStop) {
+            if(gamepad1.a) sis.intake();
+            else if(gamepad1.b) sis.expel();
+            else if(gamepad2.a) sis.intake();
+            else if(gamepad2.b) sis.expel();
+            else sis.pauseIntake();
+        }
+    }
+
+    void stopActions() {
+        sis.pauseIntake();
+//        robot.brake();
+    }
 }

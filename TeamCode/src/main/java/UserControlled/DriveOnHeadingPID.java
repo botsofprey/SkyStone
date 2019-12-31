@@ -40,7 +40,7 @@ import Autonomous.Location;
 import DriveEngine.JennyNavigation;
 
 @TeleOp(name="Drive On Heading PID test", group="Testers")
-//@Disabled
+@Disabled
 public class DriveOnHeadingPID extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;

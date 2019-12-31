@@ -29,21 +29,18 @@
 
 package UserControlled;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import Actions.StoneStackingSystem;
+import Actions.StoneStackingSystemV2;
 import DriveEngine.HolonomicDriveSystemTesting;
 
-@TeleOp(name="Annie V1", group="Linear Opmode")
+@TeleOp(name="Annie V1", group="Competition")
 //@Disabled
 public class AnnieV1 extends LinearOpMode {
     // create objects and locally global variables here
     HolonomicDriveSystemTesting robot;
-    StoneStackingSystem sss;
+    StoneStackingSystemV2 sss;
     JoystickHandler leftStick, rightStick;
     boolean eStop = false, leftArmMode = false, rightArmMode = false, bothArmMode = true, slowMode = false;
     boolean startReleased = true, eStopButtonsReleased = true;
@@ -53,7 +50,7 @@ public class AnnieV1 extends LinearOpMode {
         // initialize objects and variables here
         // also create and initialize function local variables here
         robot = new HolonomicDriveSystemTesting(hardwareMap, "RobotConfig/AnnieV1.json");
-        sss = new StoneStackingSystem(hardwareMap);
+        sss = new StoneStackingSystemV2(hardwareMap);
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
         rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
 
@@ -120,13 +117,6 @@ public class AnnieV1 extends LinearOpMode {
                     rightArmMode = true;
                 }
 
-                if (gamepad1.a)
-                    sss.setLeftArmPosition(StoneStackingSystem.LEFT_ARM_DEPLOY);
-                else if (gamepad1.b)
-                    sss.setLeftArmPosition(StoneStackingSystem.LEFT_ARM_RAISE);
-                else if (!gamepad2.dpad_left && !gamepad2.dpad_right) // stop if player 2 not controlling
-                    sss.setLeftArmPosition(StoneStackingSystem.LEFT_ARM_STOP);
-
                 if (gamepad1.left_trigger > 0.1)
                     sss.extendLeftArm();
                 else if (gamepad1.left_bumper)
@@ -143,13 +133,6 @@ public class AnnieV1 extends LinearOpMode {
                     leftArmMode = true;
                     rightArmMode = false;
                 }
-
-                if (gamepad1.a)
-                    sss.setRightArmPosition(StoneStackingSystem.RIGHT_ARM_DEPLOY);
-                else if (gamepad1.b)
-                    sss.setRightArmPosition(StoneStackingSystem.RIGHT_ARM_RAISE);
-                else if (!gamepad2.x && !gamepad2.b)  // stop if player 2 not controlling
-                    sss.setRightArmPosition(StoneStackingSystem.RIGHT_ARM_STOP);
 
                 if (gamepad1.left_trigger > 0.1)
                     sss.extendRightArm();
@@ -168,13 +151,6 @@ public class AnnieV1 extends LinearOpMode {
                     rightArmMode = true;
                 }
 
-                if (gamepad1.a)
-                    sss.deployArms();
-                else if (gamepad1.b)
-                    sss.liftArms();
-                else if (!gamepad2.dpad_left && !gamepad2.dpad_right && !gamepad2.x && !gamepad2.b) // stop if player 2 not controlling
-                    sss.stopArms();
-
                 if (gamepad1.left_trigger > 0.1) {
                     sss.extendRightArm();
                     sss.extendLeftArm();
@@ -187,39 +163,43 @@ public class AnnieV1 extends LinearOpMode {
                 }
             }
 
+            if(gamepad1.a) sss.grabStoneWithBlenderFeet();
+            else if(gamepad1.b) sss.releaseStoneWithBlenderFeet();
+            else if(gamepad1.x) sss.setBlenderFeetDegrees(StoneStackingSystemV2.LEFT_FOOT_STORED, StoneStackingSystemV2.RIGHT_FOOT_STORED);
+
             if (gamepad1.right_trigger > 0.1) sss.liftStones();
             else if (gamepad1.right_bumper) sss.lowerStones();
             else if (!gamepad2.right_bumper && gamepad2.right_trigger <= 0.1) sss.pauseStoneLift(); // pause if player 2 not controlling
+
+
+            if(-gamepad2.left_stick_y > 0.1) sss.extendLeftArm();
+            else if(-gamepad2.left_stick_y < -0.1) sss.retractLeftArm();
+            else if (!gamepad1.left_bumper && gamepad1.left_trigger <= 0.1) sss.pauseLeftArm(); // pause if player 1 not controlling
+
+            if(-gamepad2.right_stick_y > 0.1) sss.extendRightArm();
+            else if(-gamepad2.right_stick_y < -0.1) sss.retractRightArm();
+            else if (!gamepad1.left_bumper && gamepad1.left_trigger <= 0.1) sss.pauseRightArm();
+
+            if(gamepad2.dpad_right) sss.grabStoneWithBlenderFeet();
+            else if(gamepad2.dpad_up) sss.releaseStoneWithBlenderFeet();
+            else if(gamepad2.dpad_left) sss.setBlenderFeetDegrees(StoneStackingSystemV2.LEFT_FOOT_STORED, StoneStackingSystemV2.RIGHT_FOOT_STORED);
+
+
+            if (gamepad2.a)
+                sss.grabStoneCenter();
+            else if (gamepad2.y)
+                sss.releaseStoneCenter();
+
+            if(gamepad2.right_trigger > 0.1) sss.liftStones();
+            else if(gamepad2.right_bumper) sss.lowerStones();
+            else if (!gamepad1.right_bumper && gamepad1.right_trigger <= 0.1) sss.pauseStoneLift(); // pause if player 1 not controlling
         }
-        if(-gamepad2.left_stick_y > 0.1) sss.extendLeftArm();
-        else if(-gamepad2.left_stick_y < -0.1) sss.retractLeftArm();
-        else if (!gamepad1.left_bumper && gamepad1.left_trigger <= 0.1) sss.pauseLeftArm(); // pause if player 1 not controlling
-
-        if(-gamepad2.right_stick_y > 0.1) sss.extendRightArm();
-        else if(-gamepad2.right_stick_y < -0.1) sss.retractRightArm();
-        else if (!gamepad1.left_bumper && gamepad1.left_trigger <= 0.1) sss.pauseRightArm();
-
-        if(gamepad2.x) sss.setRightArmPosition(StoneStackingSystem.RIGHT_ARM_DEPLOY);
-        else if(gamepad2.b) sss.setRightArmPosition(StoneStackingSystem.RIGHT_ARM_RAISE);
-        else if(!gamepad1.a && !gamepad1.b) sss.setRightArmPosition(StoneStackingSystem.RIGHT_ARM_STOP); // stop if player 1 not controlling
-
-        if(gamepad2.dpad_right) sss.setLeftArmPosition(StoneStackingSystem.LEFT_ARM_DEPLOY);
-        else if(gamepad2.dpad_left) sss.setLeftArmPosition(StoneStackingSystem.LEFT_ARM_RAISE);
-        else if(!gamepad1.a && !gamepad1.b) sss.setLeftArmPosition(StoneStackingSystem.LEFT_ARM_STOP);
-
-        if (gamepad2.a)
-            sss.grabStoneCenter();
-        else if (gamepad2.y)
-            sss.releaseStoneCenter();
-
-        if(gamepad2.right_trigger > 0.1) sss.liftStones();
-        else if(gamepad2.right_bumper) sss.lowerStones();
-        else if (!gamepad1.right_bumper && gamepad1.right_trigger <= 0.1) sss.pauseStoneLift(); // pause if player 1 not controlling
     }
 
     void stopActions() {
         sss.pauseStoneLift();
-        sss.stopArms();
+        sss.pauseLeftArm();
+        sss.pauseRightArm();
         robot.brake();
     }
 }

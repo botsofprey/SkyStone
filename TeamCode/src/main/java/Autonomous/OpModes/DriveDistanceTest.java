@@ -38,7 +38,7 @@ import DriveEngine.JennyNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
-@Autonomous(name="Drive Distance", group="Linear Opmode")
+@Autonomous(name="Drive Distance", group="Testers")
 //@Disabled
 public class DriveDistanceTest extends LinearOpMode {
     // create objects and locally global variables here

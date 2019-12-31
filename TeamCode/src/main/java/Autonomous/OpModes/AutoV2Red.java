@@ -37,19 +37,19 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-import Actions.StoneStackingSystem;
+import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
 import Autonomous.VisionHelper;
 import DriveEngine.JennyNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
-@Autonomous(name="AutoV2", group="Linear Opmode")
+@Autonomous(name="AutoV2Red", group="Competition")
 //@Disabled
-public class AutoV2 extends LinearOpMode {
+public class AutoV2Red extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
-    StoneStackingSystem sss;
+    StoneStackingSystemV2 sss;
     VisionHelper vision;
     DistanceSensor back, right, left;
 
@@ -66,7 +66,7 @@ public class AutoV2 extends LinearOpMode {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sss = new StoneStackingSystem(hardwareMap);
+        sss = new StoneStackingSystemV2(hardwareMap);
 
         // Stone detection
         vision = new VisionHelper(VisionHelper.WEBCAM, VisionHelper.LOCATION, hardwareMap);
@@ -89,7 +89,7 @@ public class AutoV2 extends LinearOpMode {
 
 //        Drive forward until 15 inches from wall
         double distToWall = back.getDistance(INCH);
-        while (opModeIsActive() && distToWall < 15) {
+        while (opModeIsActive() && distToWall < 10) {
             robot.driveOnHeadingPID(0, 10, 0, this);
             distToWall = back.getDistance(INCH);
 
@@ -102,7 +102,7 @@ public class AutoV2 extends LinearOpMode {
 
 //        Search for skystone and break if found
         distToWall = left.getDistance(INCH);
-        while (opModeIsActive() && distToWall > 7.5) {
+        while (opModeIsActive() && distToWall > 6.25) {
             robot.driveOnHeadingPID(-90, 5, 0, this);
             skystoneLocation = vision.getSkystoneLocation();
             skystoneOrientation = vision.getSkystoneOrientation();
@@ -119,7 +119,7 @@ public class AutoV2 extends LinearOpMode {
         robot.brake();
 
 //        If we are at wall we didn't find skystone. Otherwise, move to the skystone
-        if(distToWall <= 7.5) {
+        if(distToWall <= 6.25) {
             telemetry.addData("Did not find skystone", "");
             telemetry.update();
         } else {
@@ -139,7 +139,7 @@ public class AutoV2 extends LinearOpMode {
 //        Grab skystone
 //        robot.driveDistance(13, 0, 15, this);
         distToWall = back.getDistance(INCH);
-        while(distToWall < 27.5){
+        while(opModeIsActive() && distToWall < 27.5){
             robot.driveOnHeadingPID(JennyNavigation.FORWARD,5,0,this);
             distToWall = back.getDistance(INCH);
         }
@@ -168,7 +168,7 @@ public class AutoV2 extends LinearOpMode {
         robot.brake();
 
         // lift stone and stack
-        sss.setLiftPosition(3);
+        if(opModeIsActive()) sss.setLiftPosition(3);
 
         // drive distance
         distToWall = back.getDistance(INCH);
@@ -180,11 +180,11 @@ public class AutoV2 extends LinearOpMode {
             robot.brake();
             distToWall = back.getDistance(INCH);
         }
-        while(sss.getLiftPositionInches() < 2.9);
-        sss.setLiftPosition(2.5);
-        while(sss.getLiftPositionInches() > 2.55);
+        while(opModeIsActive() && sss.getLiftPositionInches() < 2.9);
+        if(opModeIsActive()) sss.setLiftPosition(2.5);
+        while(opModeIsActive() && sss.getLiftPositionInches() > 2.55);
 
-        sss.releaseStoneCenter();
+        if(opModeIsActive()) sss.releaseStoneCenter();
 
         while (opModeIsActive());
 

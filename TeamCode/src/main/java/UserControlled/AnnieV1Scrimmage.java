@@ -35,9 +35,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import Actions.StoneStackingSystemV1;
 import DriveEngine.HolonomicDriveSystemTesting;
 
-@TeleOp(name="Annie V1 Test", group="Linear Opmode")
+@TeleOp(name="Annie Scrimmage", group="Competition")
 //@Disabled
-public class AnnieV1Test extends LinearOpMode {
+public class AnnieV1Scrimmage extends LinearOpMode {
     // create objects and locally global variables here
     HolonomicDriveSystemTesting robot;
     StoneStackingSystemV1 sss;
@@ -117,6 +117,13 @@ public class AnnieV1Test extends LinearOpMode {
                     rightArmMode = true;
                 }
 
+                if (gamepad1.a)
+                    sss.setLeftArmPosition(StoneStackingSystemV1.LEFT_ARM_DEPLOY);
+                else if (gamepad1.b)
+                    sss.setLeftArmPosition(StoneStackingSystemV1.LEFT_ARM_RAISE);
+                else if (!gamepad2.dpad_left && !gamepad2.dpad_right) // stop if player 2 not controlling
+                    sss.setLeftArmPosition(StoneStackingSystemV1.LEFT_ARM_STOP);
+
                 if (gamepad1.left_trigger > 0.1)
                     sss.extendLeftArm();
                 else if (gamepad1.left_bumper)
@@ -133,6 +140,13 @@ public class AnnieV1Test extends LinearOpMode {
                     leftArmMode = true;
                     rightArmMode = false;
                 }
+
+                if (gamepad1.a)
+                    sss.setRightArmPosition(StoneStackingSystemV1.RIGHT_ARM_DEPLOY);
+                else if (gamepad1.b)
+                    sss.setRightArmPosition(StoneStackingSystemV1.RIGHT_ARM_RAISE);
+                else if (!gamepad2.x && !gamepad2.b)  // stop if player 2 not controlling
+                    sss.setRightArmPosition(StoneStackingSystemV1.RIGHT_ARM_STOP);
 
                 if (gamepad1.left_trigger > 0.1)
                     sss.extendRightArm();
@@ -151,6 +165,13 @@ public class AnnieV1Test extends LinearOpMode {
                     rightArmMode = true;
                 }
 
+                if (gamepad1.a)
+                    sss.deployArms();
+                else if (gamepad1.b)
+                    sss.liftArms();
+                else if (!gamepad2.dpad_left && !gamepad2.dpad_right && !gamepad2.x && !gamepad2.b) // stop if player 2 not controlling
+                    sss.stopArms();
+
                 if (gamepad1.left_trigger > 0.1) {
                     sss.extendRightArm();
                     sss.extendLeftArm();
@@ -162,9 +183,6 @@ public class AnnieV1Test extends LinearOpMode {
                     sss.pauseLeftArm();
                 }
             }
-
-            if(gamepad1.a) sss.grabStoneWithBlenderFeet();
-            else if(gamepad1.b) sss.releaseStoneWithBlenderFeet();
 
             if (gamepad1.right_trigger > 0.1) sss.liftStones();
             else if (gamepad1.right_bumper) sss.lowerStones();
@@ -178,8 +196,13 @@ public class AnnieV1Test extends LinearOpMode {
         else if(-gamepad2.right_stick_y < -0.1) sss.retractRightArm();
         else if (!gamepad1.left_bumper && gamepad1.left_trigger <= 0.1) sss.pauseRightArm();
 
-        if(gamepad2.dpad_right) sss.grabStoneWithBlenderFeet();
-        else if(gamepad2.dpad_left) sss.releaseStoneWithBlenderFeet();
+        if(gamepad2.x) sss.setRightArmPosition(StoneStackingSystemV1.RIGHT_ARM_DEPLOY);
+        else if(gamepad2.b) sss.setRightArmPosition(StoneStackingSystemV1.RIGHT_ARM_RAISE);
+        else if(!gamepad1.a && !gamepad1.b) sss.setRightArmPosition(StoneStackingSystemV1.RIGHT_ARM_STOP); // stop if player 1 not controlling
+
+        if(gamepad2.dpad_right) sss.setLeftArmPosition(StoneStackingSystemV1.LEFT_ARM_DEPLOY);
+        else if(gamepad2.dpad_left) sss.setLeftArmPosition(StoneStackingSystemV1.LEFT_ARM_RAISE);
+        else if(!gamepad1.a && !gamepad1.b) sss.setLeftArmPosition(StoneStackingSystemV1.LEFT_ARM_STOP);
 
         if (gamepad2.a)
             sss.grabStoneCenter();
@@ -193,8 +216,7 @@ public class AnnieV1Test extends LinearOpMode {
 
     void stopActions() {
         sss.pauseStoneLift();
-        sss.pauseLeftArm();
-        sss.pauseRightArm();
+        sss.stopArms();
         robot.brake();
     }
 }

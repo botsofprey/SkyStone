@@ -27,43 +27,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package UserControlled;
+package Autonomous.OpModes;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import android.graphics.Bitmap;
+import android.util.Log;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import Actions.StoneStackingSystemV1;
+import Autonomous.ImageProcessing.SkystoneImageProcessor;
+import Autonomous.VuforiaHelper;
 
-@TeleOp(name="Levatron", group="Testers")
-@Disabled
-public class Levatron extends LinearOpMode {
+@Autonomous(name="Save Image Test", group="Linear Opmode")
+//@Disabled
+public class SaveImageTest extends LinearOpMode {
     // create objects and locally global variables here
-    int degree = 0;
-    StoneStackingSystemV1 sss;
-
+    SkystoneImageProcessor stoneFinder;
+    VuforiaHelper vuforia;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        sss = new StoneStackingSystemV1(hardwareMap);
+        vuforia = new VuforiaHelper(hardwareMap);
+        stoneFinder = new SkystoneImageProcessor(SkystoneImageProcessor.DESIRED_HEIGHT, SkystoneImageProcessor.DESIRED_WIDTH,.1,1, SkystoneImageProcessor.STONE_COLOR.BLACK);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // nothing goes between the above and below lines
         waitForStart();
-        // should only be used for a time keeper or other small things, avoid using this space when possible
-        while (opModeIsActive()) {
-            // main code goes here
-            if(gamepad1.a) {
-                sss.resetCapStone();
-            } else if(gamepad1.b) {
-                sss.dropCapStone();
-            }
+
+        Bitmap bmp = null;
+        while (bmp == null && opModeIsActive()) {
+            bmp = vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT);
         }
-        // disable/kill/stop objects here
-        sss.kill();
+        Log.d("SaveImageTest", "Attempting to save image");
+        vuforia.saveBMP(bmp);
+        while (opModeIsActive()) {
+            telemetry.addData("saved image", "");
+            telemetry.update();
+        }
     }
     // misc functions here
 }

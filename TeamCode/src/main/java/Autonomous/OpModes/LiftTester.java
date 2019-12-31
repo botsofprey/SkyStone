@@ -31,20 +31,17 @@ package Autonomous.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import Actions.StoneStackingSystem;
+import Actions.StoneStackingSystemV1;
 import Autonomous.Location;
 import DriveEngine.JennyNavigation;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
-
-@Autonomous(name="LiftTester", group="Linear Opmode")
+@Autonomous(name="LiftTester", group="Testers")
 //@Disabled
 public class LiftTester extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
-    StoneStackingSystem sss;
+    StoneStackingSystemV1 sss;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
@@ -54,7 +51,7 @@ public class LiftTester extends LinearOpMode {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sss = new StoneStackingSystem(hardwareMap);
+        sss = new StoneStackingSystemV1(hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");

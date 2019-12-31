@@ -32,7 +32,6 @@ package Autonomous.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import Actions.StoneStackingSystem;
 import Autonomous.Location;
 import DriveEngine.JennyNavigation;
 

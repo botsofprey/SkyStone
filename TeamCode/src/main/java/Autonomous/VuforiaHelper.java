@@ -3,6 +3,7 @@ package Autonomous;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Environment;
+import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.vuforia.Image;
@@ -43,6 +44,7 @@ public class VuforiaHelper {
     VuforiaTrackable backSpace;
     private final float UPRIGHT_POST_ROTATE_IN_DEG = 270;
     private final float HORIZONTAL_WITH_CAMERA_TO_LEFT_POST_ROTATE_IN_DEG = 180;
+    private final float WEBCAM_POST_ROTATE_IN_DEG = 0;
 
     public VuforiaHelper(HardwareMap hw){
         initVuforia(hw);
@@ -57,7 +59,7 @@ public class VuforiaHelper {
             params.useExtendedTracking = false;
             vuLoc = ClassFactory.getInstance().createVuforia(params);
             Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
-//            vuLoc.setFrameQueueCapacity(1); //tells VuforiaLocalizer to only store one frame at a time
+            vuLoc.setFrameQueueCapacity(1); //tells VuforiaLocalizer to only store one frame at a time
 
         } catch (Exception e){
             throw new RuntimeException(e);
@@ -117,30 +119,30 @@ public class VuforiaHelper {
         Image i = null;
         long timeStart = System.currentTimeMillis();
         try{
+            Log.d("Get Image", "taking image");
             i = takeImage();
-
         }catch (Exception e){
             throw new RuntimeException(e);
         }
-        //Log.d("VH IMG TAKE TIME", "" + (System.currentTimeMillis() - timeStart));
+        Log.d("VH IMG TAKE TIME", "" + (System.currentTimeMillis() - timeStart));
 
         if(i != null) {
             long conversionStart = System.currentTimeMillis();
             Bitmap bmp = convertImageToBmp(i);
-            //Log.d("VH IMG Convert", "" + (System.currentTimeMillis() - conversionStart));
+            Log.d("VH IMG Convert", "" + (System.currentTimeMillis() - conversionStart));
             long copyStart = System.currentTimeMillis();
             Bitmap orig = bmp.copy(Bitmap.Config.ARGB_8888,true);
-            //Log.d("VH IMG ORIG","Height: " + orig.getHeight() + " Width: " + orig.getWidth());
-            //Log.d("VH IMG CPY", "" + (System.currentTimeMillis() - copyStart));
+            Log.d("VH IMG ORIG","Height: " + orig.getHeight() + " Width: " + orig.getWidth());
+            Log.d("VH IMG CPY", "" + (System.currentTimeMillis() - copyStart));
             long scaleStart = System.currentTimeMillis();
             Matrix matrix = new Matrix();
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(orig,wantedWidth,wantedHeight,true);
-            matrix.postRotate(UPRIGHT_POST_ROTATE_IN_DEG);
-            //Log.d("VH IMG Scale", "" + (System.currentTimeMillis() - scaleStart));
+            matrix.postRotate(WEBCAM_POST_ROTATE_IN_DEG);
+            Log.d("VH IMG Scale", "" + (System.currentTimeMillis() - scaleStart));
             long rotationStart = System.currentTimeMillis();
             Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
             rotatedBitmap = Bitmap.createScaledBitmap(rotatedBitmap,wantedWidth,wantedHeight,true);
-           //Log.d("VH IMG Rotation", "" + (System.currentTimeMillis() - rotationStart));
+           Log.d("VH IMG Rotation", "" + (System.currentTimeMillis() - rotationStart));
             return rotatedBitmap;
         }
         return null;
@@ -166,8 +168,9 @@ public class VuforiaHelper {
         Image img = null;
         VuforiaLocalizer.CloseableFrame frame = vuLoc.getFrameQueue().take(); //takes the frame at the head of the queue
         long numImages = frame.getNumImages();
+        Log.d("Take Image", "getting frames");
         for (int i = 0; i < numImages; i++) {
-            //Log.d("Format","" + frame.getImage(i).getFormat());
+            Log.d("Format","" + frame.getImage(i).getFormat());
             if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
                 img = frame.getImage(i);
                 break;
@@ -190,8 +193,9 @@ public class VuforiaHelper {
 
             File yourFile = new File(Environment.getExternalStorageDirectory().toString() + "/robot" + System.currentTimeMillis() + ".png");
             yourFile.createNewFile(); // if file already exists will do nothing
+            Log.d("Save BMP", "created file");
             out = new FileOutputStream(Environment.getExternalStorageDirectory().toString() + "/robot" + System.currentTimeMillis() + ".png",false);
-            //Log.d("Saving",out.toString());
+            Log.d("Saving",out.toString());
             bmp.compress(Bitmap.CompressFormat.PNG, 10, out); // bmp is your Bitmap instance
             // PNG is a lossless format, the compression factor (100) is ignored
         } catch (Exception e) {
