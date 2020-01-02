@@ -44,9 +44,9 @@ import DriveEngine.JennyNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
-@Autonomous(name="AutoV2Blue", group="Competition")
+@Autonomous(name="Red", group="Competition")
 //@Disabled
-public class AutoV2Blue extends LinearOpMode {
+public class AnnieV1AutoRed extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
     StoneStackingSystemV2 sss;
@@ -89,7 +89,7 @@ public class AutoV2Blue extends LinearOpMode {
 
 //        Drive forward until 15 inches from wall
         double distToWall = back.getDistance(INCH);
-        while (opModeIsActive() && distToWall < 15) {
+        while (opModeIsActive() && distToWall < 10) {
             robot.driveOnHeadingPID(0, 10, 0, this);
             distToWall = back.getDistance(INCH);
 
@@ -101,15 +101,15 @@ public class AutoV2Blue extends LinearOpMode {
         robot.brake();
 
 //        Search for skystone and break if found
-        distToWall = right.getDistance(INCH);
+        distToWall = left.getDistance(INCH);
         while (opModeIsActive() && distToWall > 6.25) {
-            robot.driveOnHeadingPID(90, 5, 0, this);
+            robot.driveOnHeadingPID(-90, 5, 0, this);
             skystoneLocation = vision.getSkystoneLocation();
             skystoneOrientation = vision.getSkystoneOrientation();
             if (skystoneLocation != null && skystoneOrientation != null) {
                 break;
             }
-            distToWall = right.getDistance(INCH);
+            distToWall = left.getDistance(INCH);
 
             telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
             telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
@@ -139,7 +139,7 @@ public class AutoV2Blue extends LinearOpMode {
 //        Grab skystone
 //        robot.driveDistance(13, 0, 15, this);
         distToWall = back.getDistance(INCH);
-        while(distToWall < 27.5){
+        while(opModeIsActive() && distToWall < 27.5){
             robot.driveOnHeadingPID(JennyNavigation.FORWARD,5,0,this);
             distToWall = back.getDistance(INCH);
         }
@@ -155,10 +155,10 @@ public class AutoV2Blue extends LinearOpMode {
         robot.brake();
 
 //        Drive to foundation
-        distToWall = left.getDistance(INCH);
+        distToWall = right.getDistance(INCH);
         while (opModeIsActive() && distToWall > 32) {
-            robot.driveOnHeadingPID(-90, 15, 0, this);
-            distToWall = left.getDistance(INCH);
+            robot.driveOnHeadingPID(90, 15, 0, this);
+            distToWall = right.getDistance(INCH);
 
             telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
             telemetry.addData("Right", Double.toString(right.getDistance(INCH)));

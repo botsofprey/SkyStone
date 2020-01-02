@@ -126,9 +126,9 @@ public class SkystoneImageProcessor {
     }
 
     /**
-     * this function determines the bounds of the cryptobox in a image
+     * this function determines the bounds of the skystone in a image
      * @param columnsWithRequiredBlackPercent the indexes of columns determined to meet the minimum percentage of the team's color
-     * @return an ArrayList of the start and end of the columns of the image that correspond to the start and end of the cryptobox colored columns
+     * @return an ArrayList of the start and end of the columns of the image that correspond to the start and end of the skystone
      */
 
     private ArrayList<Integer> getColumnBounds(ArrayList<Integer> columnsWithRequiredBlackPercent){
@@ -316,9 +316,9 @@ public class SkystoneImageProcessor {
     }
 
     public boolean checkIfBlack(float [] hsl){
-        if (hsl[0] > 70 && hsl[0] < 360) {
-            if (hsl[1] < 0.39) {
-                if (hsl[2] < .55) {
+        if (hsl[0] > 0 && hsl[0] < 360) {
+            if (hsl[1] < 0.35) {
+                if (hsl[2] < .3) {
                     return true;
                 }
             }
@@ -327,8 +327,8 @@ public class SkystoneImageProcessor {
     }
     public boolean checkIfYellow(float [] hsl){
         if (hsl[0] > 0 || hsl[0] < 360) {
-            if (hsl[1] > .51) {
-                if (hsl[2] > .5) {
+            if (hsl[1] > .66) {
+                if (hsl[2] > .63) {
                     return true;
                 }
             }

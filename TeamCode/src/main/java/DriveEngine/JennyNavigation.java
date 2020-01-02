@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.io.InputStream;
 
 import Autonomous.HeadingVector;
+import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
 import MotorControllers.JsonConfigReader;
 import MotorControllers.MotorController;
@@ -444,6 +445,17 @@ public class JennyNavigation extends Thread {
         }
         brake();
         Log.d("Location", getRobotLocation().toString());
+    }
+
+    public boolean centerOnSkystone(double centerOfSkystoneOnScreen, double centeringToleranceInPixels, double desiredVelocity, LinearOpMode mode) {
+        cameraTranslationXController.setSp(0);
+        double distToCenterOfScreen = (SkystoneImageProcessor.DESIRED_WIDTH / 2.0) - centerOfSkystoneOnScreen;
+
+        if (mode.opModeIsActive() && Math.abs(distToCenterOfScreen) > centeringToleranceInPixels) {
+            double velocity = desiredVelocity * cameraTranslationXController.calculatePID(distToCenterOfScreen);
+            driveOnHeadingPID((velocity < 0)? LEFT:RIGHT, velocity, 0, mode);
+            return false;
+        } else return true;
     }
 
     public void orbitSkystone(Location skystoneLocationFromCamera, double skystoneOrientation, double desiredDistanceToSkystone, LinearOpMode mode) {

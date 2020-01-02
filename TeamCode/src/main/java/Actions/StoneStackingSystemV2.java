@@ -96,7 +96,7 @@ public class StoneStackingSystemV2 implements ActionHandler{
         lift.retract();
     }
     public void pauseStoneLift() {
-        lift.pause();
+        lift.holdPosition();
     }
     public void liftToPosition(int pos) {
         switch (pos) {
