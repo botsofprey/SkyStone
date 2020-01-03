@@ -186,6 +186,7 @@ public class MotorController extends Thread {
     }
 
     public void setTicksPerSecondVelocity(long ticksPerSec){
+        if(getMotorRunMode() != DcMotor.RunMode.RUN_USING_ENCODER) setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         takenStartValue = false;
         //check for flip in sign, if so, reset our pid controller
         //power is a function of ticksPerSec/maxAcheivable ticks per second

@@ -43,8 +43,8 @@ public class AnnieV1 extends LinearOpMode {
     StoneStackingSystemV2 sss;
     JoystickHandler leftStick, rightStick;
     boolean eStop = false, leftArmMode = false, rightArmMode = false, bothArmMode = true, slowMode = false;
-    boolean startReleased = true, eStopButtonsReleased = true;
-
+    boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false;
+    int stonePosition = 0;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
@@ -140,6 +140,15 @@ public class AnnieV1 extends LinearOpMode {
                     sss.retractRightArm();
                 else if (Math.abs(gamepad2.right_stick_y) <= 0.1) // pause if player 2 not controlling
                     sss.pauseRightArm();
+
+                if(gamepad2.b){
+                    stonePosition++;
+                    sss.liftToPosition(stonePosition);
+                }
+                else if(gamepad2.x){
+                    stonePosition--;
+                    sss.liftToPosition(stonePosition);
+                }
             } else if (bothArmMode) {
                 if (gamepad1.dpad_left) {
                     bothArmMode = false;
@@ -190,9 +199,18 @@ public class AnnieV1 extends LinearOpMode {
             else if (gamepad2.y)
                 sss.releaseStoneCenter();
 
+
             if(gamepad2.right_trigger > 0.1) sss.liftStones();
             else if(gamepad2.right_bumper) sss.lowerStones();
             else if (!gamepad1.right_bumper && gamepad1.right_trigger <= 0.1) sss.pauseStoneLift(); // pause if player 1 not controlling
+
+            // check if limit switch is pressed and reset the lift encoder
+//            if(blank.isPressed() && limitSwitchReleased) {
+//                limitSwitchReleased = false;
+//                sss.resetLiftEncoder();
+//            } else if(!blank.isPressed() && !limitSwitchReleased) {
+//                limitSwitchReleased = true;
+//            }
         }
     }
 

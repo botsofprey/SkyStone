@@ -27,34 +27,56 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Autonomous.OpModes;
+package UserControlled;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import SensorHandlers.LIDARSensor;
-import SensorHandlers.SensorPackage;
+import Actions.StoneStackingSystemV2;
 
-@Autonomous(name="LIDAR Sensor Test", group="Testers")
+@TeleOp(name="Lift Height Test", group="Testers")
 //@Disabled
-public class LIDARSensorTest extends LinearOpMode {
+public class LiftHeightTest extends LinearOpMode {
     // create objects and locally global variables here
-    SensorPackage sensors;
+    int heightInInches = 0;
+    StoneStackingSystemV2 sss;
 
     @Override
     public void runOpMode() {
-        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), 0, "left"));
+        // initialize objects and variables here
+        // also create and initialize function local variables here
+        sss = new StoneStackingSystemV2(hardwareMap);
+
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // nothing goes between the above and below lines
         waitForStart();
-        while(opModeIsActive()){
-            telemetry.addData("Left", sensors.getSensor(LIDARSensor.class,0));
+        // should only be used for a time keeper or other small things, avoid using this space when possible
+        while (opModeIsActive()) {
+            // main code goes here
+            if(gamepad1.a) {
+                sss.liftStones();
+            } else if(gamepad1.b) {
+                sss.lowerStones();
+            } else sss.pauseStoneLift();
+
+            if(gamepad1.x) {
+                sss.grabStoneCenter();
+            } else if(gamepad1.y) {
+                sss.releaseStoneCenter();
+            }
+
+//            if(heightInInches > 180) heightInInches = 180;
+//            else if(heightInInches < 0) heightInInches = 0;
+
+            // telemetry and logging data goes here
+            telemetry.addData("Actual Height", sss.getLiftPositionInches() + " in");
             telemetry.update();
         }
-
+        // disable/kill/stop objects here
+        sss.kill();
     }
     // misc functions here
 }

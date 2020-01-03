@@ -1,24 +1,36 @@
 package SensorHandlers;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Map;
 
 public class SensorPackage {
+//    private List<T> sensors = new ArrayList<>();
     private List<Sensor> sensors = new ArrayList<>();
 
-    public SensorPackage(Sensor... sensors) { this.sensors.addAll(Arrays.asList(sensors)); }
+    public SensorPackage(Sensor... sensors) {
+        this.sensors.addAll(Arrays.asList(sensors));
+    }
 
-    public <T> T getSensor(Class<? extends T> sensorType, int id) {
+    public <T> T getSensor(Class<? extends T> classOrInterface, int id) {
         for(Sensor s : sensors) {
-            if(s.getType() == sensorType.getClass() && s.getId() == id) return (T)s.getType();
+            if(classOrInterface.isInstance(s) && s.getId() == id) return classOrInterface.cast(s);
         }
         return null;
+    }
+
+    public <T> T getSensor(Class<? extends T> classOrInterface, String name) {
+        for(Sensor s : sensors) {
+            if(classOrInterface.isInstance(s) && s.getName().equals(name)) return classOrInterface.cast(s);
+        }
+        return null;
+    }
+
+    public void kill() {
+        for(Sensor s : sensors) {
+            s.kill();
+        }
     }
 }

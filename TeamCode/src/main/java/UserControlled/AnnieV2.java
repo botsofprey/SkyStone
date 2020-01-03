@@ -70,7 +70,6 @@ public class AnnieV2 extends LinearOpMode {
                 } else if (!gamepad1.start) {
                     startReleased = true;
                 }
-
                 updateEStop();
 //                controlDrive();
 

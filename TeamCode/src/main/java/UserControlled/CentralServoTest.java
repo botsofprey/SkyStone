@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import Actions.StoneStackingSystemV2;
 
 @TeleOp(name="Central Servo Test", group="Testers")
-@Disabled
+//@Disabled
 public class CentralServoTest extends LinearOpMode {
     // create objects and locally global variables here
     int degree = 0;
