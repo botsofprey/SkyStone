@@ -141,14 +141,6 @@ public class AnnieV1 extends LinearOpMode {
                 else if (Math.abs(gamepad2.right_stick_y) <= 0.1) // pause if player 2 not controlling
                     sss.pauseRightArm();
 
-                if(gamepad2.b){
-                    stonePosition++;
-                    sss.liftToPosition(stonePosition);
-                }
-                else if(gamepad2.x){
-                    stonePosition--;
-                    sss.liftToPosition(stonePosition);
-                }
             } else if (bothArmMode) {
                 if (gamepad1.dpad_left) {
                     bothArmMode = false;
@@ -176,9 +168,9 @@ public class AnnieV1 extends LinearOpMode {
             else if(gamepad1.b) sss.releaseStoneWithBlenderFeet();
             else if(gamepad1.x) sss.setBlenderFeetDegrees(StoneStackingSystemV2.LEFT_FOOT_STORED, StoneStackingSystemV2.RIGHT_FOOT_STORED);
 
-            if (gamepad1.right_trigger > 0.1) sss.liftStones();
-            else if (gamepad1.right_bumper) sss.lowerStones();
-            else if (!gamepad2.right_bumper && gamepad2.right_trigger <= 0.1) sss.pauseStoneLift(); // pause if player 2 not controlling
+//            if (gamepad1.right_trigger > 0.1) sss.liftStones();
+//            else if (gamepad1.right_bumper) sss.lowerStones();
+//            else if (!gamepad2.right_bumper && gamepad2.right_trigger <= 0.1) sss.pauseStoneLift(); // pause if player 2 not controlling
 
 
             if(-gamepad2.left_stick_y > 0.1) sss.extendLeftArm();
@@ -204,6 +196,17 @@ public class AnnieV1 extends LinearOpMode {
             else if(gamepad2.right_bumper) sss.lowerStones();
             else if (!gamepad1.right_bumper && gamepad1.right_trigger <= 0.1) sss.pauseStoneLift(); // pause if player 1 not controlling
 
+
+            if(gamepad2.b){
+                stonePosition++;
+                if(stonePosition > 4) stonePosition = 4;
+                sss.liftToPosition(stonePosition);
+            }
+            else if(gamepad2.x){
+                stonePosition--;
+                if(stonePosition < 0) stonePosition = 0;
+                sss.liftToPosition(stonePosition);
+            }
             // check if limit switch is pressed and reset the lift encoder
 //            if(blank.isPressed() && limitSwitchReleased) {
 //                limitSwitchReleased = false;
