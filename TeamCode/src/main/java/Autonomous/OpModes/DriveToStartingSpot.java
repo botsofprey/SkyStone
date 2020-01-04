@@ -30,6 +30,7 @@
 package Autonomous.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
@@ -39,7 +40,7 @@ import DriveEngine.JennyNavigation;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
 @Autonomous(name="DriveToStartingSpot", group="Testers")
-//@Disabled
+@Disabled
 public class DriveToStartingSpot extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;

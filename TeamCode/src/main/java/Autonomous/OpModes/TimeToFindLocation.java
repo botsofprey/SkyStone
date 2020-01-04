@@ -93,7 +93,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-@Autonomous(name="Time to find location", group ="Concept")
+@Autonomous(name="Time to find location", group ="Testers")
 @Disabled
 public class TimeToFindLocation extends LinearOpMode {
 

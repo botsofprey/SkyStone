@@ -33,13 +33,14 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.VuforiaHelper;
 
-@Autonomous(name="Save Image Test", group="Linear Opmode")
-//@Disabled
+@Autonomous(name="Save Image Test", group="Testers")
+@Disabled
 public class SaveImageTest extends LinearOpMode {
     // create objects and locally global variables here
     SkystoneImageProcessor stoneFinder;

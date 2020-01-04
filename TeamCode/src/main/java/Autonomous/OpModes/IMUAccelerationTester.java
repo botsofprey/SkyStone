@@ -38,7 +38,7 @@ import DriveEngine.JennyNavigation;
 import UserControlled.JoystickHandler;
 
 @Autonomous(name="Accelerometer Tester", group="Testers")
-//@Disabled
+@Disabled
 public class IMUAccelerationTester extends LinearOpMode {
     JennyNavigation navigation;
     JoystickHandler leftStick, rightStick;

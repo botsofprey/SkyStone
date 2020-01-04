@@ -31,9 +31,17 @@ package UserControlled;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+
+import java.util.List;
 
 import Actions.StoneStackingSystemV2;
 import DriveEngine.HolonomicDriveSystemTesting;
+import SensorHandlers.LIDARSensor;
+import SensorHandlers.LimitSwitch;
+import SensorHandlers.Sensor;
+import SensorHandlers.SensorPackage;
 
 @TeleOp(name="Annie V1", group="Competition")
 //@Disabled
@@ -41,6 +49,7 @@ public class AnnieV1 extends LinearOpMode {
     // create objects and locally global variables here
     HolonomicDriveSystemTesting robot;
     StoneStackingSystemV2 sss;
+    SensorPackage sensors;
     JoystickHandler leftStick, rightStick;
     boolean eStop = false, leftArmMode = false, rightArmMode = false, bothArmMode = true, slowMode = false;
     boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false;
@@ -51,6 +60,12 @@ public class AnnieV1 extends LinearOpMode {
         // also create and initialize function local variables here
         robot = new HolonomicDriveSystemTesting(hardwareMap, "RobotConfig/AnnieV1.json");
         sss = new StoneStackingSystemV2(hardwareMap);
+
+        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
+                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
+                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"),
+                new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"));
+
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
         rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
 
@@ -99,7 +114,7 @@ public class AnnieV1 extends LinearOpMode {
     }
 
     void controlDrive() {
-        double drivePower = (slowMode)? leftStick.magnitude()/2.0 : leftStick.magnitude();
+        double drivePower = (slowMode)? leftStick.magnitude()/3.0 : leftStick.magnitude();
         double turnPower = (slowMode)? rightStick.x()/4.0 : rightStick.x();
         if(!eStop) robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
     }
@@ -208,12 +223,12 @@ public class AnnieV1 extends LinearOpMode {
                 sss.liftToPosition(stonePosition);
             }
             // check if limit switch is pressed and reset the lift encoder
-//            if(blank.isPressed() && limitSwitchReleased) {
-//                limitSwitchReleased = false;
-//                sss.resetLiftEncoder();
-//            } else if(!blank.isPressed() && !limitSwitchReleased) {
-//                limitSwitchReleased = true;
-//            }
+            if(sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && limitSwitchReleased) {
+                limitSwitchReleased = false;
+                sss.resetLiftEncoder();
+            } else if(!sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && !limitSwitchReleased) {
+                limitSwitchReleased = true;
+            }
         }
     }
 

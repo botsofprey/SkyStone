@@ -33,19 +33,23 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
 import Autonomous.VisionHelper;
 import DriveEngine.JennyNavigation;
+import SensorHandlers.SensorPackage;
 
 import static DriveEngine.JennyNavigation.BACK_LEFT_HOLONOMIC_DRIVE_MOTOR;
 import static DriveEngine.JennyNavigation.BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR;
 import static DriveEngine.JennyNavigation.FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR;
 import static DriveEngine.JennyNavigation.FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR;
 
-@Autonomous(name = "Self Wiring Test", group = "Concept")
+@Autonomous(name = "Self Wiring Test", group = "Testers")
 @Disabled
 public class SelfWiringTest extends LinearOpMode {
     private JennyNavigation navigation;
+    private StoneStackingSystemV2 sss;
+    private SensorPackage sensors;
 
     private VisionHelper robotVision;
     private int driveMotorCount[] = {0, 0, 0, 0};
@@ -71,11 +75,14 @@ public class SelfWiringTest extends LinearOpMode {
 
         checkDriveMotors();
         checkCamera();
+        checkOtherSystems();
 
         reportRobotStatus();
         while (opModeIsActive());
         navigation.stopNavigation();
         robotVision.kill();
+        sensors.kill();
+        sss.kill();
     }
 
     private void checkDriveMotors() {
@@ -140,6 +147,10 @@ public class SelfWiringTest extends LinearOpMode {
 //        sleep(1000);
 //        if(robotVision.getRobotLocation() != null) vuforiaNavigationGood = true;
 //        robotVision.stopDetection();
+    }
+
+    private void checkOtherSystems() {
+
     }
 
     private void reportRobotStatus() { // TODO: update

@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import Autonomous.Location;
 import DriveEngine.JennyNavigation;
 
-@Autonomous(name="AccelTest", group="Linear Opmode")
+@Autonomous(name="AccelTest", group="Testers")
 //@Disabled
 public class AccelTest extends LinearOpMode {
     // create objects and locally global variables here

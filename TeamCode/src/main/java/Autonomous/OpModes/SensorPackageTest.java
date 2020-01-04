@@ -32,8 +32,10 @@ package Autonomous.OpModes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -42,10 +44,13 @@ import Autonomous.Location;
 import Autonomous.VisionHelper;
 import DriveEngine.JennyNavigation;
 import SensorHandlers.LIDARSensor;
+import SensorHandlers.LimitSwitch;
 import SensorHandlers.SensorPackage;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
+
 @Autonomous(name="Sensor Package Test", group="Testers")
-//@Disabled
+@Disabled
 public class SensorPackageTest extends LinearOpMode {
     // create objects and locally global variables here
     SensorPackage sensors;
@@ -53,7 +58,10 @@ public class SensorPackageTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 //        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), 0,"left"), new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"),  1,"back"));
+        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"),"left"),
+                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"),  "back"),
+                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"),
+                new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"));
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -61,10 +69,12 @@ public class SensorPackageTest extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
         while (opModeIsActive()) {
-            telemetry.addData("Left Sensor", sensors.getSensor(LIDARSensor.class, 0));
-            telemetry.addData("Left Dist", sensors.getSensor(LIDARSensor.class, 0).getDistance(DistanceUnit.INCH));
-            telemetry.addData("Back Sensor", sensors.getSensor(LIDARSensor.class, 1));
-            telemetry.addData("Back Dist", sensors.getSensor(LIDARSensor.class, 1).getDistance(DistanceUnit.INCH));
+//            telemetry.addData("Left Sensor", sensors.getSensor(LIDARSensor.class, "left"));
+            telemetry.addData("Left Dist", sensors.getSensor(LIDARSensor.class, "left").getDistance(INCH));
+//            telemetry.addData("Back Sensor", sensors.getSensor(LIDARSensor.class, "back"));
+            telemetry.addData("Back Dist", sensors.getSensor(LIDARSensor.class, "back").getDistance(INCH));
+            telemetry.addData("Right Dist", sensors.getSensor(LIDARSensor.class, "right").getDistance(INCH));
+            telemetry.addData("Lift Reset", sensors.getSensor(LimitSwitch.class, "liftReset").isPressed());
             telemetry.update();
         }
 
