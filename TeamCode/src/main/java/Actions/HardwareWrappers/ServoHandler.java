@@ -80,7 +80,6 @@ public class ServoHandler {
         return wantedDegree;
     }
 
-
     public void setDirection(Servo.Direction dir){
         servo.setDirection(dir);
     }

@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
     A class that helps us keep up with the speed of the robot/wheels
  */
 public class MotorTachometer {
-    //private HWMapBetty robot = new HWMapBetty();
     private double averageRPS = 0;
     private final double A = 0.3;
     private double rotationsPerSecond = 0;
