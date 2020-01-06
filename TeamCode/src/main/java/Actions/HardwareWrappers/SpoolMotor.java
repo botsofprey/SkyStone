@@ -23,13 +23,13 @@ public class SpoolMotor implements ActionHandler {
     private long startTickLocation = 0;
     private double maxExtendLoc;
 
-    public SpoolMotor(MotorController m, double extendInPerSec, double retractInPerSec, double maxEtendInches, HardwareMap h){
+    public SpoolMotor(MotorController m, double extendInPerSec, double retractInPerSec, double maxExtendInches, HardwareMap h){
         hardwareMap = h;
         motor = m;
         m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         retractSpeedInPerSecond = retractInPerSec;
         extendSpeedInPerSecond = extendInPerSec;
-        maxExtendLoc = maxEtendInches;
+        maxExtendLoc = maxExtendInches;
         startTickLocation = m.getCurrentTick();
     }
 

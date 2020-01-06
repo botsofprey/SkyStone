@@ -22,7 +22,7 @@ public class StoneStackingSystemV2 implements ActionHandler{
     public static final double LEFT_FOOT_STORED = 0, LEFT_FOOT_RELEASE = 90, LEFT_FOOT_GRAB = 180;
     public static final double RIGHT_FOOT_STORED = 0, RIGHT_FOOT_RELEASE = 90, RIGHT_FOOT_GRAB = 180;
     public static final double CENTRAL_ARM_GRAB = 0, CENTRAL_ARM_RELEASE = 120, CENTRAL_ARM_DEPLOY_BUMPER = 180, LEVATRON_SET = 0, LEVATRON_RELEASE = 180;
-    public static final double FOUNDATION_GRAB = 90, FOUNDATION_RELEASE = 0;
+    public static final double FOUNDATION_GRAB = 0, FOUNDATION_RELEASE = 180;
     public static final double STONE_HEIGHT_1 = 1.74, STONE_HEIGHT_2 = 3.9, STONE_HEIGHT_3 = 5.9, STONE_HEIGHT_4 = 7.75;
     public StoneStackingSystemV2(HardwareMap hw) {
         hardwareMap = hw;

@@ -51,8 +51,8 @@ public class AnnieV1 extends LinearOpMode {
     StoneStackingSystemV2 sss;
     SensorPackage sensors;
     JoystickHandler leftStick, rightStick;
-    boolean eStop = false, leftArmMode = false, rightArmMode = false, bothArmMode = true, slowMode = false;
-    boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false;
+    boolean eStop = false, leftArmMode = false, rightArmMode = false, bothArmMode = true, slowMode = false, foundationGrabbed = false;
+    boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false, p2StartReleased = true;
     int stonePosition = 0;
     @Override
     public void runOpMode() {
@@ -207,9 +207,9 @@ public class AnnieV1 extends LinearOpMode {
                 sss.releaseStoneCenter();
 
 
-            if(gamepad2.right_trigger > 0.1) sss.liftStones();
-            else if(gamepad2.right_bumper) sss.lowerStones();
-            else if (!gamepad1.right_bumper && gamepad1.right_trigger <= 0.1) sss.pauseStoneLift(); // pause if player 1 not controlling
+//            if(gamepad2.right_trigger > 0.1) sss.liftStones();
+//            else if(gamepad2.right_bumper) sss.lowerStones();
+//            else if (!gamepad1.right_bumper && gamepad1.right_trigger <= 0.1) sss.pauseStoneLift(); // pause if player 1 not controlling
 
 
             if(gamepad2.b){
@@ -222,6 +222,15 @@ public class AnnieV1 extends LinearOpMode {
                 if(stonePosition < 0) stonePosition = 0;
                 sss.liftToPosition(stonePosition);
             }
+
+            if(gamepad2.start && p2StartReleased){
+                p2StartReleased = false;
+            } else if(!gamepad2.start && !p2StartReleased) {
+                foundationGrabbed = !foundationGrabbed;
+                p2StartReleased = true;
+            }
+            if(foundationGrabbed) sss.grabFoundation();
+            else sss.releaseFoundation();
             // check if limit switch is pressed and reset the lift encoder
             if(sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && limitSwitchReleased) {
                 limitSwitchReleased = false;
