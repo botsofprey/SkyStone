@@ -32,11 +32,15 @@ package Autonomous.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
 import Autonomous.VisionHelper;
 import DriveEngine.JennyNavigation;
+import SensorHandlers.LIDARSensor;
+import SensorHandlers.LimitSwitch;
 import SensorHandlers.SensorPackage;
 
 import static DriveEngine.JennyNavigation.BACK_LEFT_HOLONOMIC_DRIVE_MOTOR;
@@ -53,12 +57,19 @@ public class SelfWiringTest extends LinearOpMode {
 
     private VisionHelper robotVision;
     private int driveMotorCount[] = {0, 0, 0, 0};
-    private int liftMotorCount = 0, extensionMotorCount = 0, winchMotorCount = 0;
-    private boolean extendSwitchGood = false, retractSwitchGood = false, tflowDetectionGood = false, vuforiaNavigationGood = false;
+    private int liftMotorCount = 0, leftArmCount = 0, rightArmCount = 0;
+    private boolean liftSwitchGood = false, leftLIDARGood = false, rightLIDARGood = false,
+            tflowDetectionGood = false, vuforiaNavigationGood = false, backLIDARGood = false,
+            stoneDetectionGood = false, capstoneDeployGood = false, foundationGrippersGood = false;
 
     @Override
     public void runOpMode() {
         robotVision = new VisionHelper(VisionHelper.WEBCAM, hardwareMap);
+        sss = new StoneStackingSystemV2(hardwareMap);
+        sensors = new SensorPackage(new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"),
+                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
+                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
+                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"));
 
         try {
             navigation = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/JennyV2.json");
@@ -104,6 +115,7 @@ public class SelfWiringTest extends LinearOpMode {
         sleep(200);
         navigation.brake();
         if(Math.abs(navigation.driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].getCurrentTick()) > 30) driveMotorCount[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR]++;
+        tick = navigation.driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].getCurrentTick();
         navigation.driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(-5);
         sleep(200);
         navigation.brake();
@@ -115,6 +127,7 @@ public class SelfWiringTest extends LinearOpMode {
         sleep(200);
         navigation.brake();
         if(Math.abs(navigation.driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].getCurrentTick()) > 30) driveMotorCount[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR]++;
+        tick = navigation.driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].getCurrentTick();
         navigation.driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(-5);
         sleep(200);
         navigation.brake();
@@ -126,6 +139,7 @@ public class SelfWiringTest extends LinearOpMode {
         sleep(200);
         navigation.brake();
         if(Math.abs(navigation.driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].getCurrentTick()) > 30) driveMotorCount[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR]++;
+        tick = navigation.driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].getCurrentTick();
         navigation.driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(-5);
         sleep(200);
         navigation.brake();
@@ -133,27 +147,34 @@ public class SelfWiringTest extends LinearOpMode {
     }
 
     private void checkCamera() {
-//        telemetry.addData("Robot Vision", "Checking... TensorFlow");
-//        telemetry.addData("TensorFlow", "Put gold and silver minerals into the camera view");
-//        telemetry.update();
-//        sleep(1000);
-//        if(robotVision.getClosestMineral() != null) tflowDetectionGood = true;
-//
-//        telemetry.addData("Robot Vision", "Checking... Vuforia");
-//        telemetry.addData("Vuforia", "Put a navigation target into the camera view");
-//        telemetry.update();
-//        robotVision.startTrackingLocation();
-//        robotVision.startDetection();
-//        sleep(1000);
-//        if(robotVision.getRobotLocation() != null) vuforiaNavigationGood = true;
-//        robotVision.stopDetection();
+        telemetry.addData("Robot Vision", "Checking... TensorFlow");
+        telemetry.addData("TensorFlow", "Put stones and skystones into the camera view");
+        telemetry.update();
+        sleep(1000);
+        if(robotVision.getStonesInView().length > 0) tflowDetectionGood = true;
+
+        telemetry.addData("Robot Vision", "Checking... Vuforia");
+        telemetry.addData("Vuforia", "Put a navigation target into the camera view");
+        telemetry.update();
+        robotVision.startTrackingLocation();
+        robotVision.startDetection();
+        sleep(1000);
+        if(robotVision.getRobotLocation() != null) vuforiaNavigationGood = true;
+
+        telemetry.addData("Robot Vision", "Checking... Stone Detection");
+        telemetry.addData("Stone Detection", "Put a skystone and a stone into the camera view");
+        telemetry.update();
+        robotVision.startSkyStoneDetection();
+        sleep(1000);
+        if(robotVision.getSkystoneLocation() != null) stoneDetectionGood = true;
+        robotVision.stopDetection();
     }
 
     private void checkOtherSystems() {
 
     }
 
-    private void reportRobotStatus() { // TODO: update
+    private void reportRobotStatus() {
         // Drive Motors
         if(driveMotorCount[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] == 2) {
             telemetry.addData("Drive Motor", "FL - Good! 2/2");
@@ -178,24 +199,32 @@ public class SelfWiringTest extends LinearOpMode {
         telemetry.update();
         sleep(3000);
 
-        // Mineral System
-        if(liftMotorCount == 2) telemetry.addData("Mineral System", "Arm - Good! 2/2");
-        else if(liftMotorCount == 1) telemetry.addData("Mineral System", "Arm - Error! 1/2");
-        else telemetry.addData("Mineral System", "Arm - Error! 0/2");
-        if(extensionMotorCount == 2) telemetry.addData("Mineral System", "Extension - Good! 2/2");
-        else if(extensionMotorCount == 1) telemetry.addData("Mineral System", "Extension - Error! 1/2");
-        else telemetry.addData("Mineral System", "Extension - Error! 0/2");
+        // Stone Stacking System
+        if(liftMotorCount == 2) telemetry.addData("SSS Lift", "Good! 2/2");
+        else if(liftMotorCount == 1) telemetry.addData("SSS Lift", "Error! 1/2");
+        else telemetry.addData("SSS Lift", "Error! 0/2");
+        if(leftArmCount == 2) telemetry.addData("SSS L Arm", "Good! 2/2");
+        else if(leftArmCount == 1) telemetry.addData("SSS L Arm", "Error! 1/2");
+        else telemetry.addData("SSS L Arm", "Error! 0/2");
+        if(rightArmCount == 2) telemetry.addData("SSS R Arm", "Good! 2/2");
+        else if(rightArmCount == 1) telemetry.addData("SSS R Arm", "Error! 1/2");
+        else telemetry.addData("SSS R Arm", "Error! 0/2");
+        if(capstoneDeployGood) telemetry.addData("SSS Capstone Deploy", "Good!");
+        else telemetry.addData("SSS Capstone Deploy", "Bad!");
+        if(foundationGrippersGood) telemetry.addData("SSS Foundation Grippers", "Good!");
+        else telemetry.addData("SSS Foundation Grippers", "Bad!");
         telemetry.update();
         sleep(3000);
 
-        // Latch System
-        if(extendSwitchGood) telemetry.addData("Latch System", "Extend Switch - Good!");
-        else telemetry.addData("Latch System", "Extend Switch - Bad!");
-        if(retractSwitchGood) telemetry.addData("Latch System", "Retract Switch - Good!");
-        else telemetry.addData("Latch System", "Retract Switch - Bad!");
-        if(winchMotorCount == 2) telemetry.addData("Latch System", "Winch Motor - Good!");
-        else if(winchMotorCount == 1) telemetry.addData("Latch System", "Winch Motor - Error! 1/2");
-        else telemetry.addData("Latch System", "Winch Motor - Error!");
+        // Sensors
+        if(liftSwitchGood) telemetry.addData("Sensor Package Lift Reset", "Good!");
+        else telemetry.addData("Sensor Package Lift Reset", "Bad!");
+        if(leftLIDARGood) telemetry.addData("Sensor Package Left Distance", "Good!");
+        else telemetry.addData("Sensor Package Left Distance", "Bad!");
+        if(rightLIDARGood) telemetry.addData("Sensor Package Right Distance", "Good!");
+        else telemetry.addData("Sensor Package Right Distance", "Bad!");
+        if(backLIDARGood) telemetry.addData("Sensor Package Back Distance", "Good!");
+        else telemetry.addData("Sensor Package Back Distance", "Bad!");
         telemetry.update();
         sleep(3000);
 
@@ -204,6 +233,9 @@ public class SelfWiringTest extends LinearOpMode {
         else telemetry.addData("Robot Vision", "TesnsorFlow - Bad!");
         if(vuforiaNavigationGood) telemetry.addData("Robot Vision", "Vuforia - Good!");
         else telemetry.addData("Robot Vision", "Vuforia - Bad!");
+        if(stoneDetectionGood) telemetry.addData("Robot Vision", "Stone Processor - Good!");
+        else telemetry.addData("Robot Vision", "Stone Processor - Bad!");
+        telemetry.update();
         sleep(3000);
 
         // Misc
