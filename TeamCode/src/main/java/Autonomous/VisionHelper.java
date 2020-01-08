@@ -217,7 +217,7 @@ public class VisionHelper extends Thread {
         }
     }
 
-    private void getSkystonesInView(){
+    private void getSkystonesInView() {
 //        Log.d("In", "Called laststonelocation here");
         if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
             OpenGLMatrix stoneLocationTransform = ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).getUpdatedRobotLocation();
@@ -339,9 +339,7 @@ public class VisionHelper extends Thread {
                         90, 0, 90));
 
         for (VuforiaTrackable trackable : allTrackables)
-        {
             ((VuforiaTrackableDefaultListener)trackable.getListener()).setCameraLocationOnRobot(vuforia.getCameraName(), cameraLocationOnRobot);
-        }
 
         targetsSkyStone.activate();
         if (tfod != null) {

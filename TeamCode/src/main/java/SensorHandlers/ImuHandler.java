@@ -103,7 +103,7 @@ public class ImuHandler extends Thread {
         updateIMU();
     }
 
-    private void updateIMU(){
+    private void updateIMU() {
         try {
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             velocities = imu.getVelocity();

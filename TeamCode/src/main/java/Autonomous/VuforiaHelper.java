@@ -50,7 +50,7 @@ public class VuforiaHelper {
         initVuforia(hw);
     }
 
-    public static VuforiaLocalizer initVuforia(HardwareMap hardwareMap){
+    public static VuforiaLocalizer initVuforia(HardwareMap hardwareMap) {
         try {
             int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
             VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -61,7 +61,7 @@ public class VuforiaHelper {
             Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
             vuLoc.setFrameQueueCapacity(1); //tells VuforiaLocalizer to only store one frame at a time
 
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return vuLoc;
@@ -142,7 +142,7 @@ public class VuforiaHelper {
             long rotationStart = System.currentTimeMillis();
             Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
             rotatedBitmap = Bitmap.createScaledBitmap(rotatedBitmap,wantedWidth,wantedHeight,true);
-           Log.d("VH IMG Rotation", "" + (System.currentTimeMillis() - rotationStart));
+            Log.d("VH IMG Rotation", "" + (System.currentTimeMillis() - rotationStart));
             return rotatedBitmap;
         }
         return null;

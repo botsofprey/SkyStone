@@ -17,12 +17,11 @@ public class StoneStackingSystemV2 implements ActionHandler{
     HardwareMap hardwareMap;
     SpoolMotor lift;
     MotorController leftRake, rightRake;
-    ServoHandler leftBlenderFoot, rightBlenderFoot, centralGripper, levatronArm, foundationGrabber;
+    ServoHandler leftBlenderFoot, rightBlenderFoot, centralGripper, levatronArm;
     TouchSensor left, right;
     public static final double LEFT_FOOT_STORED = 0, LEFT_FOOT_RELEASE = 90, LEFT_FOOT_GRAB = 180;
     public static final double RIGHT_FOOT_STORED = 0, RIGHT_FOOT_RELEASE = 90, RIGHT_FOOT_GRAB = 180;
     public static final double CENTRAL_ARM_GRAB = 0, CENTRAL_ARM_RELEASE = 120, CENTRAL_ARM_DEPLOY_BUMPER = 180, LEVATRON_SET = 0, LEVATRON_RELEASE = 180;
-    public static final double FOUNDATION_GRAB = 0, FOUNDATION_RELEASE = 180;
     public static final double STONE_HEIGHT_1 = 1.74, STONE_HEIGHT_2 = 3.9, STONE_HEIGHT_3 = 5.9, STONE_HEIGHT_4 = 7.75;
     public StoneStackingSystemV2(HardwareMap hw) {
         hardwareMap = hw;
@@ -49,26 +48,16 @@ public class StoneStackingSystemV2 implements ActionHandler{
         rightBlenderFoot = new ServoHandler("rightBlenderFoot", hardwareMap);
         centralGripper = new ServoHandler("centralGripper", hardwareMap);
         levatronArm = new ServoHandler("levatronArm", hardwareMap);
-        foundationGrabber = new ServoHandler("foundationGrabber", hardwareMap);
         leftBlenderFoot.setServoRanges(1, 179);
         rightBlenderFoot.setServoRanges(1, 179);
         centralGripper.setServoRanges(1, 179);
         levatronArm.setServoRanges(1, 179);
-        foundationGrabber.setServoRanges(1, 179);
         leftBlenderFoot.setDegree(LEFT_FOOT_STORED);
         rightBlenderFoot.setDirection(Servo.Direction.REVERSE);
         rightBlenderFoot.setDegree(RIGHT_FOOT_STORED);
         centralGripper.setDegree(CENTRAL_ARM_RELEASE);
         levatronArm.setDegree(LEVATRON_SET);
-        foundationGrabber.setDegree(FOUNDATION_RELEASE);
-    }
-
-    public void grabFoundation(){
-        foundationGrabber.setDegree(FOUNDATION_GRAB);
-    }
-
-    public void releaseFoundation(){
-        foundationGrabber.setDegree(FOUNDATION_RELEASE);
+//        measureTapeSpitter.
     }
 
     public void grabStoneWithBlenderFeet() {
@@ -132,6 +121,7 @@ public class StoneStackingSystemV2 implements ActionHandler{
         lift.setPower(1);
     }
     public double getLiftPositionInches() { return lift.getPositionInches(); }
+    public long getLiftPositionTicks() { return lift.getPosition(); }
     public void resetLiftEncoder() {
         lift.setPower(0);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -144,6 +134,7 @@ public class StoneStackingSystemV2 implements ActionHandler{
     public void pauseLeftArm() {
         leftRake.brake();
     }
+    public long getLeftArmTick() { return leftRake.getCurrentTick(); }
 
     public void extendRightArm() {
         rightRake.setMotorPower(1);
@@ -152,6 +143,7 @@ public class StoneStackingSystemV2 implements ActionHandler{
         rightRake.setMotorPower(-1);
     }
     public void pauseRightArm() { rightRake.brake(); }
+    public long getRightArmTick() { return rightRake.getCurrentTick(); }
 
     @Override
     public boolean doAction(String action, long maxTimeAllowed) {

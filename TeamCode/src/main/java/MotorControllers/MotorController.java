@@ -88,7 +88,7 @@ public class MotorController extends Thread {
         motor.setDirection(dir);
     }
 
-    public void setMode(DcMotor.RunMode mode){
+    public void setMode(DcMotor.RunMode mode) {
         try {
             if (getMotorRunMode() == DcMotor.RunMode.RUN_TO_POSITION) {
                 if (motor.isBusy()) {
@@ -185,7 +185,7 @@ public class MotorController extends Thread {
         return angleInDeg;
     }
 
-    public void setTicksPerSecondVelocity(long ticksPerSec){
+    public void setTicksPerSecondVelocity(long ticksPerSec) {
         if(getMotorRunMode() != DcMotor.RunMode.RUN_USING_ENCODER) setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         takenStartValue = false;
         //check for flip in sign, if so, reset our pid controller
@@ -227,7 +227,7 @@ public class MotorController extends Thread {
 //        Log.d("Hold Position", "Start");
 
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if(!takenStartValue) {
+        if (!takenStartValue) {
             startPos = motor.getCurrentPosition();
             takenStartValue = true;
 //            Log.d("Hold Position", "Start value taken");
@@ -259,7 +259,7 @@ public class MotorController extends Thread {
         motor.setPower(0);
     }
 
-    public void setPositionInches(double positionInInches){
+    public void setPositionInches(double positionInInches) {
         //go ahead and set mode
         motor.setPower(0);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -268,9 +268,7 @@ public class MotorController extends Thread {
         motor.setTargetPosition(positionInTicks);
     }
 
-    public void setPositionTicks(int tick){
-        motor.setTargetPosition(tick);
-    }
+    public void setPositionTicks(int tick) { motor.setTargetPosition(tick); }
 
     public void setPositionDegrees(double deg) {
         motor.setPower(0);

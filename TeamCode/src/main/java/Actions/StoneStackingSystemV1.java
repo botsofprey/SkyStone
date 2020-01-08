@@ -12,7 +12,7 @@ import Actions.HardwareWrappers.ServoHandler;
 import Actions.HardwareWrappers.SpoolMotor;
 import MotorControllers.MotorController;
 
-public class StoneStackingSystemV1 implements ActionHandler{
+public class StoneStackingSystemV1 implements ActionHandler {
 
     HardwareMap hardwareMap;
     SpoolMotor lift;

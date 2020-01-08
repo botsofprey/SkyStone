@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
 import Autonomous.VisionHelper;
@@ -72,7 +74,7 @@ public class SelfWiringTest extends LinearOpMode {
                 new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"));
 
         try {
-            navigation = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/JennyV2.json");
+            navigation = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -171,7 +173,67 @@ public class SelfWiringTest extends LinearOpMode {
     }
 
     private void checkOtherSystems() {
+        telemetry.addData("Sensors", "Checking... Left Distance");
+        telemetry.update();
+        sleep(300);
+        telemetry.addData("Sensors", "Put your hand within 6 in of the LEFT distance sensor");
+        telemetry.update();
+        sleep(500);
+        if(sensors.getSensor(LIDARSensor.class, "left").getDistance(DistanceUnit.INCH) <= 6) leftLIDARGood = true;
 
+        telemetry.addData("Sensors", "Checking... Right Distance");
+        telemetry.update();
+        sleep(300);
+        telemetry.addData("Sensors", "Put your hand within 6 in of the RIGHT distance sensor");
+        telemetry.update();
+        sleep(500);
+        if(sensors.getSensor(LIDARSensor.class, "right").getDistance(DistanceUnit.INCH) <= 6) rightLIDARGood = true;
+
+        telemetry.addData("Sensors", "Checking... Back Distance");
+        telemetry.update();
+        sleep(300);
+        telemetry.addData("Sensors", "Put your hand within 6 in of the BACK distance sensor");
+        telemetry.update();
+        sleep(500);
+        if(sensors.getSensor(LIDARSensor.class, "back").getDistance(DistanceUnit.INCH) <= 6) backLIDARGood = true;
+
+        telemetry.addData("SSS", "Checking... Lift and Lift Limit Switch");
+        telemetry.update();
+        if(sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()) liftSwitchGood = true;
+        sss.liftStones();
+        sleep(200);
+        sss.pauseStoneLift();
+        if(Math.abs(sss.getLiftPositionTicks()) > 30) liftMotorCount++;
+        long tick = sss.getLiftPositionTicks();
+        if(sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()) liftSwitchGood = false;
+        sss.lowerStones();
+        sleep(200);
+        sss.pauseStoneLift();
+        if(Math.abs(sss.getLiftPositionTicks() - tick) > 30) liftMotorCount++;
+
+        telemetry.addData("SSS", "Checking... Left Arm");
+        telemetry.update();
+        sss.extendLeftArm();
+        sleep(200);
+        sss.pauseLeftArm();
+        if(Math.abs(sss.getLeftArmTick()) > 30) leftArmCount++;
+        tick = sss.getLeftArmTick();
+        sss.retractLeftArm();
+        sleep(200);
+        sss.pauseLeftArm();
+        if(Math.abs(sss.getLeftArmTick() - tick) > 30) leftArmCount++;
+
+        telemetry.addData("SSS", "Checking... Right Arm");
+        telemetry.update();
+        sss.extendRightArm();
+        sleep(200);
+        sss.pauseRightArm();
+        if(Math.abs(sss.getRightArmTick()) > 30) rightArmCount++;
+        tick = sss.getRightArmTick();
+        sss.retractRightArm();
+        sleep(200);
+        sss.pauseRightArm();
+        if(Math.abs(sss.getRightArmTick() - tick) > 30) rightArmCount++;
     }
 
     private void reportRobotStatus() {

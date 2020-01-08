@@ -35,7 +35,7 @@ public class MotorTachometer {
         lastTickLocation = m.getCurrentPosition();
     }
 
-    public MotorTachometer(DcMotor m, long t, RPS_SMOOTHER smoother){
+    public MotorTachometer(DcMotor m, long t, RPS_SMOOTHER smoother) {
         smootherMode = smoother;
         ticksPerRev = t;
         motor = m;
@@ -80,7 +80,7 @@ public class MotorTachometer {
 
     }
 
-    private double calculateRotationsPerSecondNoMode(){
+    private double calculateRotationsPerSecondNoMode() {
         long tempTime = System.currentTimeMillis();
         long tempTick = motor.getCurrentPosition();
         //Log.d("Ticks", Long.toString(tempTick));

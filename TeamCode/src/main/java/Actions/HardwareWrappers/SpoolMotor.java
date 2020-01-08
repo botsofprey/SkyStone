@@ -33,7 +33,6 @@ public class SpoolMotor implements ActionHandler {
         startTickLocation = m.getCurrentTick();
     }
 
-
     public void setDirection(DcMotor.Direction direction){
         motor.setDirection(direction);
     }
@@ -42,27 +41,20 @@ public class SpoolMotor implements ActionHandler {
         motor.setInchesPerSecondVelocity(extendSpeedInPerSecond);
     }
 
+    public void retract() { motor.setInchesPerSecondVelocity(-retractSpeedInPerSecond); }
+
+    public void extendWithPower() { motor.setMotorPower(extendPower); }
+
+    public void retractWithPower() { motor.setMotorPower(-extendPower); }
+
     public DcMotor.RunMode getMotorControllerMode() {
         return motor.getMotorRunMode();
-    }
-
-    public void retract()
-    {
-        motor.setInchesPerSecondVelocity(-retractSpeedInPerSecond);
     }
 
     public void pause()
     {
 //        if(motor.getMotorControllerMode() != MotorController.MotorControllerMode.SPEED_CONTROLLER) motor.setMotorControllerMode(MotorController.MotorControllerMode.SPEED_CONTROLLER);
         motor.setInchesPerSecondVelocity(0);
-    }
-
-    public void extendWithPower(){
-        motor.setMotorPower(extendPower);
-    }
-
-    public void retractWithPower(){
-        motor.setMotorPower(-extendPower);
     }
 
     public void setPower(double power){
@@ -85,13 +77,9 @@ public class SpoolMotor implements ActionHandler {
         //todo implement
     }
 
-    public void setPostitionInches(double positionInInches){
-        motor.setPositionInches(positionInInches);
-    }
+    public void setPostitionInches(double positionInInches) { motor.setPositionInches(positionInInches); }
 
-    public void setPostitionTicks(int ticks){
-        motor.setPositionTicks(ticks);
-    }
+    public void setPostitionTicks(int ticks) { motor.setPositionTicks(ticks); }
 
     public long getPosition(){
         return motor.getCurrentTick();

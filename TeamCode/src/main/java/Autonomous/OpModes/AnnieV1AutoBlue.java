@@ -139,7 +139,7 @@ public class AnnieV1AutoBlue extends LinearOpMode {
 //        Grab skystone
 //        robot.driveDistance(13, 0, 15, this);
         distToWall = back.getDistance(INCH);
-        while(distToWall < 27.5){
+        while(distToWall < 27.5) {
             robot.driveOnHeadingPID(JennyNavigation.FORWARD,5,0,this);
             distToWall = back.getDistance(INCH);
         }
