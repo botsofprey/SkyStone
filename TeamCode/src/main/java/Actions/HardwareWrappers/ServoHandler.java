@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class ServoHandler {
     private Servo servo;
     private double wantedDegree;
-    double degreeRange[] = {0,180};
+    double degreeRange[] = { 0, 180 };
     final static int RANGE_MAX = 1;
     final static int RANGE_MIN = 0;
 
@@ -35,9 +35,7 @@ public class ServoHandler {
             degreeRange[RANGE_MAX] = maxDeg;
             degreeRange[RANGE_MIN] = minDeg;
         }
-        else{
-            throw new RuntimeException("Servo Handler Creation error: min degree greater than max");
-        }
+        else throw new RuntimeException("Servo Handler Creation error: min degree greater than max");
     }
 
     public double setPosition(double pos){

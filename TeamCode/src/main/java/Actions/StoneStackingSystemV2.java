@@ -12,12 +12,12 @@ import Actions.HardwareWrappers.ServoHandler;
 import Actions.HardwareWrappers.SpoolMotor;
 import MotorControllers.MotorController;
 
-public class StoneStackingSystemV2 implements ActionHandler{
+public class StoneStackingSystemV2 implements ActionHandler {
 
     HardwareMap hardwareMap;
     SpoolMotor lift;
     MotorController leftRake, rightRake;
-    ServoHandler leftBlenderFoot, rightBlenderFoot, centralGripper, levatronArm;
+    ServoHandler leftBlenderFoot, rightBlenderFoot, centralGripper, levatronArm, winchServo, capstoneDeployer;
     TouchSensor left, right;
     public static final double LEFT_FOOT_STORED = 0, LEFT_FOOT_RELEASE = 90, LEFT_FOOT_GRAB = 180;
     public static final double RIGHT_FOOT_STORED = 0, RIGHT_FOOT_RELEASE = 90, RIGHT_FOOT_GRAB = 180;
@@ -48,17 +48,28 @@ public class StoneStackingSystemV2 implements ActionHandler{
         rightBlenderFoot = new ServoHandler("rightBlenderFoot", hardwareMap);
         centralGripper = new ServoHandler("centralGripper", hardwareMap);
         levatronArm = new ServoHandler("levatronArm", hardwareMap);
-        leftBlenderFoot.setServoRanges(1, 179);
-        rightBlenderFoot.setServoRanges(1, 179);
-        centralGripper.setServoRanges(1, 179);
-        levatronArm.setServoRanges(1, 179);
+        capstoneDeployer = new ServoHandler("capStoneDeployer", hardwareMap);
+//        winchServo = new ServoHandler("winchServo", hardwareMap);
+        leftBlenderFoot.setServoRanges(0, 180);
+        rightBlenderFoot.setServoRanges(0, 180);
+        centralGripper.setServoRanges(0, 180);
+        levatronArm.setServoRanges(0, 180);
+        capstoneDeployer.setServoRanges(0, 180);
+//        winchServo.setServoRanges(0, 180);
         leftBlenderFoot.setDegree(LEFT_FOOT_STORED);
         rightBlenderFoot.setDirection(Servo.Direction.REVERSE);
         rightBlenderFoot.setDegree(RIGHT_FOOT_STORED);
         centralGripper.setDegree(CENTRAL_ARM_RELEASE);
         levatronArm.setDegree(LEVATRON_SET);
+//        capStoneDeployer.setDegree(0);
+//        winchServo.setDegree(0); // 30 degrees in one turn on this servo
 //        measureTapeSpitter.
     }
+
+//    public void setWinchServoDegree(double degree) {winchServo.setDegree(degree);}
+
+    public void deployCapstone() { capstoneDeployer.setDegree(180); }
+    public void releaseCapstone() { capstoneDeployer.setDegree(0); }
 
     public void grabStoneWithBlenderFeet() {
         leftBlenderFoot.setDegree(LEFT_FOOT_GRAB);
@@ -97,6 +108,11 @@ public class StoneStackingSystemV2 implements ActionHandler{
     public void pauseStoneLift() {
         lift.holdPosition();
     }
+    public void setLiftPosition(double posInInches) {
+        lift.setPostitionInches(posInInches);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(1);
+    }
     public void liftToPosition(int pos) {
         switch (pos) {
             case 1:
@@ -115,11 +131,6 @@ public class StoneStackingSystemV2 implements ActionHandler{
                 break;
         }
     }
-    public void setLiftPosition(double posInInches) {
-        lift.setPostitionInches(posInInches);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift.setPower(1);
-    }
     public double getLiftPositionInches() { return lift.getPositionInches(); }
     public long getLiftPositionTicks() { return lift.getPosition(); }
     public void resetLiftEncoder() {
@@ -136,12 +147,8 @@ public class StoneStackingSystemV2 implements ActionHandler{
     }
     public long getLeftArmTick() { return leftRake.getCurrentTick(); }
 
-    public void extendRightArm() {
-        rightRake.setMotorPower(1);
-    }
-    public void retractRightArm() {
-        rightRake.setMotorPower(-1);
-    }
+    public void extendRightArm() { rightRake.setMotorPower(1); }
+    public void retractRightArm() { rightRake.setMotorPower(-1); }
     public void pauseRightArm() { rightRake.brake(); }
     public long getRightArmTick() { return rightRake.getCurrentTick(); }
 

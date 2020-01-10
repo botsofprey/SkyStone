@@ -34,35 +34,37 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import java.util.List;
-
 import Actions.MiscellaneousActions;
 import Actions.StoneStackingSystemV2;
-import DriveEngine.HolonomicDriveSystemTesting;
+import Autonomous.Location;
+import DriveEngine.JennyNavigation;
 import SensorHandlers.LIDARSensor;
 import SensorHandlers.LimitSwitch;
-import SensorHandlers.Sensor;
 import SensorHandlers.SensorPackage;
 
 @TeleOp(name="Annie V1", group="Competition")
 //@Disabled
 public class AnnieV1 extends LinearOpMode {
     // create objects and locally global variables here
-    HolonomicDriveSystemTesting robot;
+    JennyNavigation robot;
     StoneStackingSystemV2 sss;
     MiscellaneousActions otherActions;
     SensorPackage sensors;
     JoystickHandler leftStick, rightStick;
-    boolean eStop = false, leftArmMode = false, rightArmMode = false, bothArmMode = true, slowMode = false, foundationGrabbed = false;
-    boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false, p2StartReleased = true,
+    boolean eStop = false, slowMode = false, tapeStopped = true, liftLowered = true, liftingToPos = false;
+    boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false,
             rightTrigger1Released = true, rightBumper1Released = true,
-            rightTrigger2Released = true, rightBumper2Released = true;
-    int stonePosition = 0;
+            p2DpadUpReleased = true, p2DpadDownReleased = true, p2DpadRightReleased = true, p2DpadLeftReleased = true;
+    int stonePosition = 0, blenderFeetPos = 0;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        robot = new HolonomicDriveSystemTesting(hardwareMap, "RobotConfig/AnnieV1.json");
+        try {
+            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         sss = new StoneStackingSystemV2(hardwareMap);
         otherActions = new MiscellaneousActions(hardwareMap);
 
@@ -80,8 +82,15 @@ public class AnnieV1 extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
+        long startTime = System.currentTimeMillis();
+        otherActions.retractTape();
         while (opModeIsActive()) {
             // main code goes here
+            if(System.currentTimeMillis() - startTime > 1500 && !tapeStopped) {
+                otherActions.pauseTape();
+                tapeStopped = true;
+            }
+
             updateEStop();
             if(!eStop) {
                 if (startReleased && gamepad1.start) {
@@ -105,7 +114,7 @@ public class AnnieV1 extends LinearOpMode {
         }
         // disable/kill/stop objects here
         sss.kill();
-        robot.kill();
+        robot.stopNavigation();
     }
 
     // misc functions here
@@ -126,65 +135,118 @@ public class AnnieV1 extends LinearOpMode {
 
     void controlStoneStackingSystem() {
         if(!eStop) {
-            if(gamepad1.a) sss.grabStoneWithBlenderFeet();
-            else if(gamepad1.b) sss.releaseStoneWithBlenderFeet();
-            else if(gamepad1.x) sss.setBlenderFeetDegrees(StoneStackingSystemV2.LEFT_FOOT_STORED, StoneStackingSystemV2.RIGHT_FOOT_STORED);
+
+            //PLAYER 1
+
+            if(gamepad1.a) otherActions.grabFoundation();
+            else if(gamepad1.b) otherActions.releaseFoundation();
 
             if(gamepad1.right_trigger > 0.1 && rightTrigger1Released) {
                 rightTrigger1Released = false;
             } else if(!(gamepad1.right_trigger > 0.1) && !rightTrigger1Released) {
                 rightTrigger1Released = true;
                 stonePosition++;
+                if(stonePosition > 3) stonePosition = 0;
+                sss.liftToPosition(stonePosition);
+                liftingToPos = true;
             }
             if(gamepad1.right_bumper && rightBumper1Released) {
                 rightBumper1Released = false;
             } else if(!gamepad1.right_bumper && !rightBumper1Released) {
                 rightBumper1Released = true;
                 stonePosition--;
+                if(stonePosition < 0) stonePosition = 3;
+                sss.liftToPosition(stonePosition);
+                liftingToPos = true;
             }
 
-            if(gamepad2.right_trigger > 0.1 && rightTrigger2Released && !gamepad1.right_bumper && !(gamepad1.right_trigger > 0.1)) {
-                rightTrigger2Released = false;
-            } else if(!(gamepad1.right_trigger > 0.1) && !rightTrigger2Released) {
-                rightTrigger2Released = true;
+            if(gamepad1.left_trigger > 0.1) sss.deployCapstone();
+            else if(gamepad1.left_bumper) sss.releaseCapstone();
+
+
+            // PLAYER 2
+
+            if(gamepad2.b) {
+                sss.releaseStoneCenter();
+                sleep(200);
+                robot.driveDistance(5, 180, 50, this);
+                liftLowered = false;
+                sss.lowerStones();
+            }
+            if(!liftLowered && sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()) {
+                liftLowered = true;
+                sss.pauseStoneLift();
+            }
+
+            if(gamepad2.dpad_up && p2DpadUpReleased && !gamepad1.right_bumper && !(gamepad1.right_trigger > 0.1)) {
+                p2DpadUpReleased = false;
+            } else if(!gamepad2.dpad_up && !p2DpadUpReleased) {
+                p2DpadUpReleased = true;
                 stonePosition++;
+                if(stonePosition > 4) stonePosition = 1;
+                sss.liftToPosition(stonePosition);
+                liftingToPos = true;
             }
-            if(gamepad2.right_bumper && rightBumper2Released && !gamepad1.right_bumper && !(gamepad1.right_trigger > 0.1)) {
-                rightBumper2Released = false;
-            } else if(!gamepad2.right_bumper && !rightBumper2Released) {
-                rightBumper2Released = true;
-                stonePosition--;
+            if(gamepad2.dpad_down && !gamepad1.right_bumper && !(gamepad1.right_trigger > 0.1)) {
+                liftLowered = false;
+                sss.lowerStones();
+                liftingToPos = true;
+                stonePosition = 0;
             }
+            if(gamepad2.right_trigger > 0.1) {
+                sss.liftStones();
+                liftingToPos = false;
+            }
+            else if(gamepad2.right_bumper && !sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()) {
+                sss.lowerStones();
+                liftingToPos = false;
+            }
+            else if(!liftingToPos) sss.pauseStoneLift();
 
-            if(stonePosition > 3) stonePosition = 0;
-            else if(stonePosition < 0) stonePosition = 3;
-            sss.setLiftPosition(stonePosition);
+            if(gamepad2.left_trigger > 0.1) otherActions.spitTape();
+            else if(gamepad2.left_bumper) otherActions.retractTape();
+            else if(tapeStopped) otherActions.pauseTape();
 
             if(-gamepad2.left_stick_y > 0.1) sss.extendLeftArm();
             else if(-gamepad2.left_stick_y < -0.1) sss.retractLeftArm();
-            else if (!gamepad1.left_bumper && gamepad1.left_trigger <= 0.1) sss.pauseLeftArm(); // pause if player 1 not controlling
+            else sss.pauseLeftArm();
 
             if(-gamepad2.right_stick_y > 0.1) sss.extendRightArm();
             else if(-gamepad2.right_stick_y < -0.1) sss.retractRightArm();
-            else if (!gamepad1.left_bumper && gamepad1.left_trigger <= 0.1) sss.pauseRightArm();
+            else sss.pauseRightArm();
 
             if(gamepad2.dpad_right) sss.grabStoneWithBlenderFeet();
             else if(gamepad2.dpad_up) sss.releaseStoneWithBlenderFeet();
             else if(gamepad2.dpad_left) sss.setBlenderFeetDegrees(StoneStackingSystemV2.LEFT_FOOT_STORED, StoneStackingSystemV2.RIGHT_FOOT_STORED);
+            if(gamepad2.dpad_right && p2DpadRightReleased) {
+                p2DpadRightReleased = false;
+            } else if(!gamepad2.dpad_right && !p2DpadRightReleased) {
+                p2DpadRightReleased = true;
+                blenderFeetPos++;
+            }
+            if(gamepad2.dpad_left && p2DpadLeftReleased) {
+                p2DpadLeftReleased = false;
+            } else if(!gamepad2.dpad_left && !p2DpadLeftReleased) {
+                p2DpadLeftReleased = true;
+                blenderFeetPos--;
+            }
+            blenderFeetPos %= 3;
+            switch (blenderFeetPos) {
+                case 0:
+                    sss.setBlenderFeetDegrees(StoneStackingSystemV2.LEFT_FOOT_STORED, StoneStackingSystemV2.RIGHT_FOOT_STORED);
+                    break;
+                case 1:
+                    sss.releaseStoneWithBlenderFeet();
+                    break;
+                case 2:
+                    sss.grabStoneWithBlenderFeet();
+                    break;
+            }
 
             if (gamepad2.a)
                 sss.grabStoneCenter();
             else if (gamepad2.y)
                 sss.releaseStoneCenter();
-
-            if(gamepad2.x && p2StartReleased){
-                p2StartReleased = false;
-            } else if(!gamepad2.x && !p2StartReleased) {
-                foundationGrabbed = !foundationGrabbed;
-                p2StartReleased = true;
-            }
-            if(foundationGrabbed) otherActions.grabFoundation();
-            else otherActions.releaseFoundation();
             // check if limit switch is pressed and reset the lift encoder
             if(sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && limitSwitchReleased) {
                 limitSwitchReleased = false;
