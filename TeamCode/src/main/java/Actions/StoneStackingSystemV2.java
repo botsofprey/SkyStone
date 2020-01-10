@@ -18,7 +18,6 @@ public class StoneStackingSystemV2 implements ActionHandler {
     SpoolMotor lift;
     MotorController leftRake, rightRake;
     ServoHandler leftBlenderFoot, rightBlenderFoot, centralGripper, levatronArm, winchServo, capstoneDeployer;
-    TouchSensor left, right;
     public static final double LEFT_FOOT_STORED = 0, LEFT_FOOT_RELEASE = 90, LEFT_FOOT_GRAB = 180;
     public static final double RIGHT_FOOT_STORED = 0, RIGHT_FOOT_RELEASE = 90, RIGHT_FOOT_GRAB = 180;
     public static final double CENTRAL_ARM_GRAB = 0, CENTRAL_ARM_RELEASE = 120, CENTRAL_ARM_DEPLOY_BUMPER = 180, LEVATRON_SET = 0, LEVATRON_RELEASE = 180;
@@ -29,8 +28,6 @@ public class StoneStackingSystemV2 implements ActionHandler {
             lift = new SpoolMotor(new MotorController("lift", "ActionConfig/SSSLift.json", hardwareMap), 50, 50, 35, hardwareMap);
             leftRake = new MotorController("leftRake", "ActionConfig/RakeMotor.json", hardwareMap);
             rightRake = new MotorController("rightRake", "ActionConfig/RakeMotor.json", hardwareMap);
-            left = hardwareMap.touchSensor.get("leftTouchSensor");
-            right = hardwareMap.touchSensor.get("rightTouchSensor");
 
             lift.setDirection(DcMotorSimple.Direction.REVERSE);
             lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

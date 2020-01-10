@@ -54,7 +54,7 @@ public class AnnieV1 extends LinearOpMode {
     boolean eStop = false, slowMode = false, tapeStopped = true, liftLowered = true, liftingToPos = false;
     boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false,
             rightTrigger1Released = true, rightBumper1Released = true,
-            p2DpadUpReleased = true, p2DpadDownReleased = true, p2DpadRightReleased = true, p2DpadLeftReleased = true;
+            p2DpadUpReleased = true, p2DpadRightReleased = true, p2DpadLeftReleased = true;
     int stonePosition = 0, blenderFeetPos = 0;
     @Override
     public void runOpMode() {
@@ -71,7 +71,9 @@ public class AnnieV1 extends LinearOpMode {
         sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
                 new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
                 new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"),
-                new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"));
+                new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"),
+                new LimitSwitch(hardwareMap.get(TouchSensor.class, "leftArmStop"), "leftArmStop"),
+                new LimitSwitch(hardwareMap.get(TouchSensor.class, "rightArmStop"), "rightArmStop"));
 
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
         rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
@@ -208,16 +210,13 @@ public class AnnieV1 extends LinearOpMode {
             else if(tapeStopped) otherActions.pauseTape();
 
             if(-gamepad2.left_stick_y > 0.1) sss.extendLeftArm();
-            else if(-gamepad2.left_stick_y < -0.1) sss.retractLeftArm();
+            else if(-gamepad2.left_stick_y < -0.1 && !sensors.getSensor(LimitSwitch.class, "leftArmStop").isPressed()) sss.retractLeftArm();
             else sss.pauseLeftArm();
 
             if(-gamepad2.right_stick_y > 0.1) sss.extendRightArm();
-            else if(-gamepad2.right_stick_y < -0.1) sss.retractRightArm();
+            else if(-gamepad2.right_stick_y < -0.1 && !sensors.getSensor(LimitSwitch.class, "rightArmStop").isPressed()) sss.retractRightArm();
             else sss.pauseRightArm();
 
-            if(gamepad2.dpad_right) sss.grabStoneWithBlenderFeet();
-            else if(gamepad2.dpad_up) sss.releaseStoneWithBlenderFeet();
-            else if(gamepad2.dpad_left) sss.setBlenderFeetDegrees(StoneStackingSystemV2.LEFT_FOOT_STORED, StoneStackingSystemV2.RIGHT_FOOT_STORED);
             if(gamepad2.dpad_right && p2DpadRightReleased) {
                 p2DpadRightReleased = false;
             } else if(!gamepad2.dpad_right && !p2DpadRightReleased) {
