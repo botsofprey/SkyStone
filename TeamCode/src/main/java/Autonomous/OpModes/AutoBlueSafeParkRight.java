@@ -65,7 +65,7 @@ public class AutoBlueSafeParkRight extends LinearOpMode {
         robot.driveDistance(24,JennyNavigation.FORWARD,25,this);
         robot.turnToHeading(180, this);
         otherActions.spitTape();
-        sleep(5000);
+        sleep(1000);
         otherActions.pauseTape();
 
 //        THIS IS FOR GRABBING FOUNDATION

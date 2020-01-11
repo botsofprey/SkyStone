@@ -20,7 +20,7 @@ public class StoneStackingSystemV2 implements ActionHandler {
     ServoHandler leftBlenderFoot, rightBlenderFoot, centralGripper, levatronArm, winchServo, capstoneDeployer;
     public static final double LEFT_FOOT_STORED = 0, LEFT_FOOT_RELEASE = 90, LEFT_FOOT_GRAB = 180;
     public static final double RIGHT_FOOT_STORED = 0, RIGHT_FOOT_RELEASE = 90, RIGHT_FOOT_GRAB = 180;
-    public static final double CENTRAL_ARM_GRAB = 0, CENTRAL_ARM_RELEASE = 120, CENTRAL_ARM_DEPLOY_BUMPER = 180, LEVATRON_SET = 0, LEVATRON_RELEASE = 180;
+    public static final double CENTRAL_ARM_GRAB = 3, CENTRAL_ARM_RELEASE = 150, LEVATRON_SET = 0, LEVATRON_RELEASE = 180;
     public static final double STONE_HEIGHT_1 = 1.74, STONE_HEIGHT_2 = 3.9, STONE_HEIGHT_3 = 5.9, STONE_HEIGHT_4 = 7.75;
     public StoneStackingSystemV2(HardwareMap hw) {
         hardwareMap = hw;
@@ -58,7 +58,7 @@ public class StoneStackingSystemV2 implements ActionHandler {
         rightBlenderFoot.setDegree(RIGHT_FOOT_STORED);
         centralGripper.setDegree(CENTRAL_ARM_RELEASE);
         levatronArm.setDegree(LEVATRON_SET);
-//        capStoneDeployer.setDegree(0);
+        capstoneDeployer.setDegree(0);
 //        winchServo.setDegree(0); // 30 degrees in one turn on this servo
 //        measureTapeSpitter.
     }

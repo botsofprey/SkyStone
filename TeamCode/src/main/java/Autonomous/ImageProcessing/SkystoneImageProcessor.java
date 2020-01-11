@@ -317,14 +317,13 @@ public class SkystoneImageProcessor {
 
     public boolean checkIfBlack(float [] hsl){
         if (hsl[0] > 0 && hsl[0] < 360) {
-            if (hsl[1] < 0.35) {
-                if (hsl[2] < .3) {
-                    return true;
-                }
+            if (hsl[2] < .14) {
+                return true;
             }
         }
         return false;
     }
+
     public boolean checkIfYellow(float [] hsl){
         if (hsl[0] > 0 || hsl[0] < 360) {
             if (hsl[1] > .66) {

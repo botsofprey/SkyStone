@@ -36,6 +36,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
 import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
 import Autonomous.VisionHelper;
@@ -74,10 +77,12 @@ public class PseudocodeAutoBlueLeft extends LinearOpMode {
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+        vision.startDetection();
         // nothing goes between the above and below lines
         waitForStart();
 
         //LOOP until skystone found OR second-to-last block distance away
+
         //Move right under bridge near searching start position
         //Move right
         //Take image
@@ -100,7 +105,7 @@ public class PseudocodeAutoBlueLeft extends LinearOpMode {
         //Move right some distance
         //Spit tape
 
-        // finish drive code and test
+        while(opModeIsActive());
         // may be a good idea to square self against wall
 
     }

@@ -64,9 +64,8 @@ public class AutoRedSafeParkLeft extends LinearOpMode {
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
         robot.driveDistance(24, JennyNavigation.FORWARD,25,this);
-        robot.turnToHeading(180, this);
         otherActions.spitTape();
-        sleep(5000);
+        sleep(1000);
         otherActions.pauseTape();
 
 //        THIS IS FOR GRABBING FOUNDATION

@@ -29,6 +29,7 @@
 
 package UserControlled;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -43,7 +44,7 @@ import SensorHandlers.LimitSwitch;
 import SensorHandlers.SensorPackage;
 
 @TeleOp(name="Annie V1", group="Competition")
-//@Disabled
+@Disabled
 public class HolonomicDrive extends LinearOpMode {
     // create objects and locally global variables here
 

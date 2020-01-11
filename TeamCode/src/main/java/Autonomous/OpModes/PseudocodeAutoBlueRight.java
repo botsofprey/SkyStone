@@ -29,6 +29,8 @@
 
 package Autonomous.OpModes;
 
+import android.graphics.Bitmap;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -36,14 +38,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.ArrayList;
 
 import Actions.StoneStackingSystemV2;
+import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
-import Autonomous.VisionHelper;
 import DriveEngine.JennyNavigation;
+import Autonomous.VuforiaHelper;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
 @Autonomous(name="PseudoBlueRight", group="Competition")
 @Disabled
@@ -52,7 +56,8 @@ public class PseudocodeAutoBlueRight extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
     StoneStackingSystemV2 sss;
-    VisionHelper vision;
+    VuforiaHelper vuforia;
+    SkystoneImageProcessor stoneFinder;
     DistanceSensor back, right, left;
 
     @Override
@@ -71,9 +76,8 @@ public class PseudocodeAutoBlueRight extends LinearOpMode {
         sss = new StoneStackingSystemV2(hardwareMap);
 
         // Stone detection
-        vision = new VisionHelper(VisionHelper.WEBCAM, VisionHelper.LOCATION, hardwareMap);
-        vision.startDetection();
-        vision.startTrackingLocation();
+
+        vuforia = new VuforiaHelper(hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -82,7 +86,23 @@ public class PseudocodeAutoBlueRight extends LinearOpMode {
         waitForStart();
 
         //LOOP until skystone found OR second-to-last block distance away
+        boolean skystoneFound = false;
+        while((opModeIsActive() && (!skystoneFound) || left.getDistance(DistanceUnit.INCH) > 6.25)){
+            robot.driveOnHeadingPID(JennyNavigation.RIGHT,15, this);  //NOTE: MOVING RIGHT
+            Bitmap bmp = null;
+            ArrayList<Integer> blockCenters;
+            while (bmp == null && opModeIsActive()) {
+                bmp = vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT);
+            }
+            blockCenters = stoneFinder.findColumns(bmp, false);
+
+            if (blockCenters.size() > 0) {
+                if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 0, 30,this)) break; //Get left-most skystone
+            }
+        }
+
         //Move right
+
         //Take image
         //Check for skystone
         //IF skystone BREAK

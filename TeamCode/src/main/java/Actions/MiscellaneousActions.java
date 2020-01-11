@@ -20,7 +20,7 @@ public class MiscellaneousActions implements ActionHandler {
         try {
             measuringTapeSpitter = new MotorController("tapeSpitter", "ActionConfig/LiftMotor.json", hardwareMap);
             measuringTapeSpitter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            measuringTapeSpitter.setDirection(DcMotorSimple.Direction.FORWARD);
+            measuringTapeSpitter.setDirection(DcMotorSimple.Direction.REVERSE);
             measuringTapeSpitter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         } catch (IOException e) {
             e.printStackTrace();
