@@ -48,7 +48,7 @@ import DriveEngine.JennyNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
-@Autonomous(name="BlueV2", group="Competition")
+@Autonomous(name="RedV2", group="Competition")
 //@Disabled
 public class AnnieV2AutoRed extends LinearOpMode {
     // create objects and locally global variables here
@@ -117,16 +117,32 @@ public class AnnieV2AutoRed extends LinearOpMode {
             if(!skystoneFound) robot.driveOnHeadingPID(JennyNavigation.LEFT,10, this);  //NOTE: MOVING RIGHT
             Bitmap bmp = null;
             ArrayList<Integer> blockCenters;
-            while (bmp == null) {
+
+            //New code: not tested... should avoid camera failure
+            long timeStart = System.currentTimeMillis();
+            while (bmp == null && System.currentTimeMillis() - timeStart < 50) {
                 bmp = vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT);
             }
-            blockCenters = stoneFinder.findColumns(bmp, false);
+            if(bmp != null){
+                blockCenters = stoneFinder.findColumns(bmp, false);
 
-            if (blockCenters.size() > 0) {
+                if (blockCenters.size() > 0) {
 //                telemetry.addData("Skystone", "" + blockCenters.get(0));
-                skystoneFound = true;
-                if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 0, 30,this)) break; //Get left-most skystone
-            }else skystoneFound = false;
+                    skystoneFound = true;
+                    if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 0, 30,this)) break; //Get left-most skystone
+                }else skystoneFound = false;
+            }
+
+//            while (bmp == null) {
+//                bmp = vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT);
+//            }
+//            blockCenters = stoneFinder.findColumns(bmp, false);
+//
+//            if (blockCenters.size() > 0) {
+////                telemetry.addData("Skystone", "" + blockCenters.get(0));
+//                skystoneFound = true;
+//                if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 0, 30,this)) break; //Get left-most skystone
+//            }else skystoneFound = false;
 
 //            telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
 //            telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
@@ -152,10 +168,15 @@ public class AnnieV2AutoRed extends LinearOpMode {
 
 //        Drive to foundation
         robot.driveDistance(42,JennyNavigation.RIGHT,35,this);
-        if(opModeIsActive()) sss.liftToPosition(1);
-        while (opModeIsActive() && right.getDistance(INCH) > 30) {
+
+        boolean released = false;
+        while (opModeIsActive() && right.getDistance(INCH) > 31) {
             robot.driveOnHeadingPID(JennyNavigation.RIGHT, 30, 0, this);
 
+            if(right.getDistance(INCH) < 60 && !released){
+                released = true;
+                sss.releaseStoneCenter();
+            }
 //            telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
 //            telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
 //            telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
@@ -164,64 +185,72 @@ public class AnnieV2AutoRed extends LinearOpMode {
         robot.brake();
 
         // lift stone and stack
+//        if(opModeIsActive()) sss.liftToPosition(1);
+//sleep(500);
+//
+//        // drive distance
+//        for(int i = 0; i < 2; i++) { //Double check
+//            while (opModeIsActive() && back.getDistance(INCH) < 27.5){
+//                robot.driveOnHeadingPID(0, 15, 0, this);
+//
+////                telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
+////                telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
+////                telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
+////                telemetry.update();
+//            }
+//            robot.brake();
+//        }
+//        sleep(200);
 
-
-        // drive distance
-        for(int i = 0; i < 2; i++) { //Double check
-            while (opModeIsActive() && back.getDistance(INCH) < 27.5){
-                robot.driveOnHeadingPID(0, 15, 0, this);
-
-//                telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
-//                telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
-//                telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
-//                telemetry.update();
-            }
-            robot.brake();
-        }
-        sleep(200);
 //        if(opModeIsActive()) sss.liftToPosition(0);
 //        while(opModeIsActive() && sss.getLiftPositionInches() < 2.9);
 //        if(opModeIsActive()) sss.setLiftPosition(2.5);
 //        while(opModeIsActive() && sss.getLiftPositionInches() > 2.55);
 
-        if(opModeIsActive()) sss.releaseStoneCenter();
+//        if(opModeIsActive()) sss.releaseStoneCenter();
 
-        while (opModeIsActive() && back.getDistance(INCH) > 26) {
-            robot.driveOnHeadingPID(JennyNavigation.BACK, 15, 0, this);
-
-//            telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
-//            telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
-//            telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
-//            telemetry.update();
-        }
-        robot.brake();
+//        while (opModeIsActive() && back.getDistance(INCH) > 26) {
+//            robot.driveOnHeadingPID(JennyNavigation.BACK, 15, 0, this);
+//
+////            telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
+////            telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
+////            telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
+////            telemetry.update();
+//        }
+//        robot.brake();
 
         while(opModeIsActive() && right.getDistance(INCH) > 48) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, this);
         robot.brake();
-//
-//        robot.turnToHeading(90, this);
-//
-//        robot.brake();
-//        sleep(500);
-//
-//        while (opModeIsActive() && right.getDistance(INCH) < 31){
-//            robot.driveOnHeadingPID(JennyNavigation.LEFT, 15, 0, this);
+
+//        robot.turnToHeading(180, this);
+        robot.turnToHeading(90, 2,this);
+
+        robot.brake();
+        sleep(500);
+
+        robot.turnController.setSp(robot.getOrientation());
+        while (opModeIsActive() && left.getDistance(INCH) < 31){
+            robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, 0, this);
 //
 ////                telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
 //                telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
 ////                telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
 //                telemetry.update();
-//        }
-//        robot.brake();
-//        otherActions.grabFoundation();
-//        sleep(500);
-//        robot.driveOnHeadingWithTurning(90,.3,-.2);
-//        sleep(1500);
+        }
+        robot.brake();
+        otherActions.grabFoundation();
+        sleep(500);
+        robot.driveOnHeadingWithTurning(100,1,.4);
+        sleep(1300);
 //        while (opModeIsActive());
+        otherActions.releaseFoundation();
+        robot.driveDistance(15,0,25,this);
+        robot.driveDistance(10, 90, 25, this);
         otherActions.spitTape();
-        sleep(1000);
+        sleep(500);
         otherActions.pauseTape();
         robot.brake();
+        robot.driveDistance(10, -90, 25, this);
         robot.stopNavigation();
         sss.kill();
 //        VuforiaHelper.kill(); -- this crashes the app...

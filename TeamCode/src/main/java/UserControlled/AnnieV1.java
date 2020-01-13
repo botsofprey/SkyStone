@@ -85,13 +85,13 @@ public class AnnieV1 extends LinearOpMode {
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
         long startTime = System.currentTimeMillis();
-        otherActions.retractTape();
+//        otherActions.retractTape();
         while (opModeIsActive()) {
             // main code goes here
-            if(System.currentTimeMillis() - startTime > 1500 && !tapeStopped) {
-                otherActions.pauseTape();
-                tapeStopped = true;
-            }
+//            if(System.currentTimeMillis() - startTime > 3500 && !tapeStopped) {
+//                otherActions.pauseTape();
+//                tapeStopped = true;
+//            }
 
             updateEStop();
             if(!eStop) {
@@ -168,13 +168,13 @@ public class AnnieV1 extends LinearOpMode {
 
             // PLAYER 2
 
-            if(gamepad2.b) {
-                sss.releaseStoneCenter();
-                sleep(200);
-                robot.driveDistance(5, 180, 50, this);
-                liftLowered = false;
-                sss.lowerStones();
-            }
+//            if(gamepad2.b) {
+//                sss.releaseStoneCenter();
+//                sleep(200);
+//                robot.driveDistance(5, 180, 50, this);
+//                liftLowered = false;
+//                sss.lowerStones();
+//            }
             if(!liftLowered && sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()) {
                 liftLowered = true;
                 sss.pauseStoneLift();
@@ -189,12 +189,12 @@ public class AnnieV1 extends LinearOpMode {
                 sss.liftToPosition(stonePosition);
                 liftingToPos = true;
             }
-            if(gamepad2.dpad_down && !gamepad1.right_bumper && !(gamepad1.right_trigger > 0.1)) {
-                liftLowered = false;
-                sss.lowerStones();
-                liftingToPos = true;
-                stonePosition = 0;
-            }
+//            if(gamepad2.dpad_down && !gamepad1.right_bumper && !(gamepad1.right_trigger > 0.1)) {
+//                liftLowered = false;
+//                sss.lowerStones();
+//                liftingToPos = true;
+//                stonePosition = 0;
+//            }
             if(gamepad2.right_trigger > 0.1) {
                 sss.liftStones();
                 liftingToPos = false;

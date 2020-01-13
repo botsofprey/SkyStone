@@ -37,26 +37,16 @@ import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
 import DriveEngine.JennyNavigation;
 
-@Autonomous(name="Red Park from Left", group="Competition")
+@Autonomous(name="SafeAuto", group="Competition")
 //@Disabled
-public class AutoRedSafeParkLeft extends LinearOpMode {
+public class SafeAuto extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
-    StoneStackingSystemV2 sss;
     MiscellaneousActions otherActions;
-
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
         otherActions = new MiscellaneousActions(hardwareMap);
-
-        try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        sss = new StoneStackingSystemV2(hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -64,11 +54,9 @@ public class AutoRedSafeParkLeft extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
-        robot.driveDistance(24, JennyNavigation.FORWARD,25,this);
         otherActions.spitTape();
-        sleep(1000);
+        sleep(300);
         otherActions.pauseTape();
-
 //        THIS IS FOR GRABBING FOUNDATION
 //        robot.driveDistance(10, 270, 15, this);
 //        robot.driveDistance(30, 270, 15, this);
@@ -89,7 +77,6 @@ public class AutoRedSafeParkLeft extends LinearOpMode {
 //            robot.driveDistance(89 + i * 8, 270, 25,this);
 //        }
 
-        robot.stopNavigation();
 
         // finish drive code and test
         // may be a good idea to square self against wall

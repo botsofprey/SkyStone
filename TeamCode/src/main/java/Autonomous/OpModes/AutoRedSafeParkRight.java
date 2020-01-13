@@ -51,10 +51,11 @@ public class AutoRedSafeParkRight extends LinearOpMode {
         // also create and initialize function local variables here
         otherActions = new MiscellaneousActions(hardwareMap);
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/RosannaV4.json");
+            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
+        sss = new StoneStackingSystemV2(hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
