@@ -78,26 +78,44 @@ public class CenterToSkystoneTest extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
-        while (opModeIsActive()) {
+        // rough center...
+        boolean skystoneFound = false;
+        while (opModeIsActive() && right.getDistance(INCH) > 5.5) {
+            if(!skystoneFound) robot.driveOnHeadingPID(JennyNavigation.RIGHT,10, this);  //NOTE: MOVING RIGHT
             Bitmap bmp = null;
-            ArrayList<Integer> blockCenters = new ArrayList<Integer>();
-            while (bmp == null && opModeIsActive()) {
+            ArrayList<Integer> blockCenters;
+            long timeStart = System.currentTimeMillis();
+            while (bmp == null && System.currentTimeMillis() - timeStart < 50) {
                 bmp = vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT);
             }
-            blockCenters = stoneFinder.findColumns(bmp, false);
+            if(bmp != null){
+                blockCenters = stoneFinder.findColumns(bmp, false);
 
-            if (blockCenters.size() > 0) {
-                if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 0, 30,this)) break;
-            } else {
-                robot.brake();
+                if (blockCenters.size() > 0) {
+//                telemetry.addData("Skystone", "" + blockCenters.get(0));
+                    skystoneFound = true;
+                    if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 10, 30,this)) break; //Get left-most skystone
+                }else skystoneFound = false;
             }
         }
         robot.brake();
+        double distToWall = right.getDistance(INCH);
 
-        while(opModeIsActive() && back.getDistance(INCH) < 27.5){
-            robot.driveOnHeadingPID(JennyNavigation.FORWARD,10,0,this);
+        if(distToWall > 42) { // to the left of the center
+
+        } else if(distToWall > 35) { // to the right of the center -- should be checking against the actual center
+
+        } else if(distToWall > 28) { // to the left of the center
+
+        } else if(distToWall > 25) { // to the right of the center -- should be checking against the actual center
+
+        } else if(distToWall > 23) { // to the left of the center
+
+        } else if(distToWall > 20) { // to the right of the center -- should be checking against the actual center
+
         }
-        robot.brake();
+
+
         while (opModeIsActive());
         robot.stopNavigation(); // ALWAYS kill everything at the end, leads to crashes of the app otherwise
     }

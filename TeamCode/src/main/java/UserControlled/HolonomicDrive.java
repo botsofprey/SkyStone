@@ -97,17 +97,34 @@ public class HolonomicDrive extends LinearOpMode {
                 backRight.setPower(-gamepad1.right_stick_x);
 
             } else if (gamepad1.left_stick_x > 0) {
-                frontLeft.setPower(-(Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x)));
-                frontRight.setPower(Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x));
-                backLeft.setPower(Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x));
-                backRight.setPower(-(Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x)));
+                frontLeft.setPower(-(Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.sin(Math.toRadians(45))));
+                frontRight.setPower(Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.cos(Math.toRadians(45)));
+                backLeft.setPower(Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.sin(Math.toRadians(45)));
+                backRight.setPower(-(Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.cos(Math.toRadians(45))));
 
             } else if (gamepad1.left_stick_x < 0) {
+                frontLeft.setPower((Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.sin(Math.toRadians(45))));
+                frontRight.setPower(-(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.cos(Math.toRadians(45))));
+                backLeft.setPower(-(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.sin(Math.toRadians(45))));
+                backRight.setPower(Math.atan2(gamepad1.left_stick_y,  gamepad1.left_stick_x) * Math.cos(Math.toRadians(45)));
+
+            } else if (gamepad1.left_stick_y > 0) {
+                frontLeft.setPower(-(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.sin(Math.toRadians(45))));
+                frontRight.setPower(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.cos(Math.toRadians(45)));
+                backLeft.setPower(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.sin(Math.toRadians(45)));
+                backRight.setPower(-(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.cos(Math.toRadians(45))));
+
+            } else if (gamepad1.left_stick_y < 0) {
+                frontLeft.setPower(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.sin(Math.toRadians(45)));
+                frontRight.setPower(-(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.cos(Math.toRadians(45))));
+                backLeft.setPower(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) + Math.sin(Math.toRadians(45)));
+                backRight.setPower(-(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) * Math.cos(Math.toRadians(45))));
 
             }
 
             telemetry.update();
         }
+
         // disable/kill/stop objects here
     }
 

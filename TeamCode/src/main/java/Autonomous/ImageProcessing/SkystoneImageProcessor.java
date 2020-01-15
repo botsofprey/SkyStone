@@ -315,6 +315,19 @@ public class SkystoneImageProcessor {
         return toReturn;
     }
 
+    public boolean skystoneNearCenter(int [] pixels, int imageWidth, int imageHeight, int targetWidth, int targetHeight) {
+        boolean toReturn = false;
+        int blackCount = 0, totalCount = 0;
+        for(int c = (int)(imageWidth / 3.0); c < (2.0/3.0)*imageWidth; c++) {
+            for(int r = (int)(imageHeight / 2.0); r < imageHeight; r++) {
+                totalCount++;
+                if(checkIfBlack(pixels[r*imageWidth + c])) blackCount++;
+            }
+        }
+        if((double)(blackCount)/(double)(totalCount) > 0.50) toReturn = true;
+        return toReturn;
+    }
+
     public boolean checkIfBlack(float [] hsl){
         if (hsl[0] > 0 && hsl[0] < 360) {
             if (hsl[2] < .14) {

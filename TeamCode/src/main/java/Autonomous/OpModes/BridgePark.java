@@ -31,17 +31,21 @@ package Autonomous.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import Actions.MiscellaneousActions;
 import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
 import DriveEngine.JennyNavigation;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
+
 @Autonomous(name="Bridge Park", group="Competition")
 //@Disabled
-public class AutoBlueSafeParkLeft extends LinearOpMode {
+public class BridgePark extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
+    DistanceSensor left, right;
     MiscellaneousActions otherActions;
     @Override
     public void runOpMode() {
@@ -53,6 +57,8 @@ public class AutoBlueSafeParkLeft extends LinearOpMode {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        left = hardwareMap.get(DistanceSensor.class, "left");
+        right = hardwareMap.get(DistanceSensor.class, "right");
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -60,9 +66,9 @@ public class AutoBlueSafeParkLeft extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
-        robot.driveDistance(24, JennyNavigation.FORWARD,25,this);
+        robot.driveDistance(24, (left.getDistance(INCH) < right.getDistance(INCH))? JennyNavigation.RIGHT:JennyNavigation.LEFT,25,this);
         otherActions.spitTape();
-        sleep(1000);
+        sleep(300);
         otherActions.pauseTape();
 
         while (opModeIsActive());

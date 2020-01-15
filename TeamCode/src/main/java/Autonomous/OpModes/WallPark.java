@@ -32,25 +32,22 @@ package Autonomous.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import Actions.MiscellaneousActions;
 import Actions.StoneStackingSystemV2;
+import Autonomous.Location;
 import DriveEngine.JennyNavigation;
-import Autonomous.*;
 
-@Autonomous(name="Park from left", group="Competition")
+@Autonomous(name="Wall Park", group="Competition")
 //@Disabled
-public class LeftSideSafeAuto extends LinearOpMode {
+public class WallPark extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
-    StoneStackingSystemV2 sss;
+    MiscellaneousActions otherActions;
+
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/RosannaV4.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        otherActions = new MiscellaneousActions(hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -58,31 +55,12 @@ public class LeftSideSafeAuto extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
-        robot.driveDistance(24,90,25,this);
-        robot.driveDistance(24,180, 25, this);
+        otherActions.spitTape();
+        sleep(300);
+        otherActions.pauseTape();
 
-//        THIS IS FOR GRABBING FOUNDATION
-//        robot.driveDistance(10, 270, 15, this);
-//        robot.driveDistance(30, 270, 15, this);
-//        if(opModeIsActive())sss.extendRightArm();
-//        sleep();
-//        sss.pauseRightArm();
-//        if(opModeIsActive())sss.extendLeftArm();
-//        if(opModeIsActive())sss.setLeftArmPosition(180);
-//        if(opModeIsActive())sss.setRightArmPosition(180);
-//        robot.driveDistance(38.42, 336, 15, this);
-
-        // For future implementation: get stones
-//        int reps = 6;
-//        for (int i = 0; i < reps && opModeIsActive(); i++){
-//            robot.driveDistance(20,0,25,this);
-//            robot.driveDistance(87 + i * 8,90,25,this);
-//            robot.driveDistance(24,180,25,this);
-//            robot.driveDistance(89 + i * 8, 270, 25,this);
-//        }
-
-        robot.stopNavigation();
-
+        while (opModeIsActive());
+        otherActions.kill();
         // finish drive code and test
         // may be a good idea to square self against wall
 
