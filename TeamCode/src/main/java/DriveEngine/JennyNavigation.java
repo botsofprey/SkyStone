@@ -796,16 +796,16 @@ public class JennyNavigation extends Thread {
         return distanceFromHeading;
     }
 
-    public void turnToHeading(double desiredHeading, LinearOpMode mode){
+    public void turnToHeading(double desiredHeading, LinearOpMode mode) {
         turnController.setSp(0);
         double curHeading = orientation.getOrientation() % 360;
         double rps;
         double distanceFromHeading = 0;
         distanceFromHeading = desiredHeading - curHeading;
-        if(distanceFromHeading > 180) distanceFromHeading = distanceFromHeading - 360;
-        else if(distanceFromHeading < -180) distanceFromHeading = 360 + distanceFromHeading;
-        if(distanceFromHeading >= 0 && distanceFromHeading <= 180){
-            while(Math.abs(distanceFromHeading) > HEADING_THRESHOLD && mode.opModeIsActive()){
+        if(distanceFromHeading > 180) distanceFromHeading -= 360;
+        else if(distanceFromHeading < -180) distanceFromHeading += 360;
+        if(distanceFromHeading >= 0 && distanceFromHeading <= 180) {
+            while(Math.abs(distanceFromHeading) > HEADING_THRESHOLD && mode.opModeIsActive()) {
                 //heading always positive
                 rps = turnController.calculatePID(distanceFromHeading);
                 turn(-rps);
@@ -817,17 +817,16 @@ public class JennyNavigation extends Thread {
             }
             brake();
         }
-
-        else if((distanceFromHeading <= 360 && distanceFromHeading >= 180) || distanceFromHeading < 0){
-            while(Math.abs(distanceFromHeading) > HEADING_THRESHOLD && mode.opModeIsActive()){
+        else if((distanceFromHeading <= 360 && distanceFromHeading >= 180) || distanceFromHeading < 0) {
+            while(Math.abs(distanceFromHeading) > HEADING_THRESHOLD && mode.opModeIsActive()) {
                 //heading always positive
                 rps = turnController.calculatePID(distanceFromHeading);
                 turn(-rps);
                 mode.sleep(5);
                 curHeading = orientation.getOrientation();
                 distanceFromHeading = desiredHeading - curHeading;
-                if(distanceFromHeading > 180) distanceFromHeading = distanceFromHeading - 360;
-                else if(distanceFromHeading < -180) distanceFromHeading = 360 + distanceFromHeading;
+                if(distanceFromHeading > 180) distanceFromHeading -= 360;
+                else if(distanceFromHeading < -180) distanceFromHeading += 360;
             }
             brake();
         }
