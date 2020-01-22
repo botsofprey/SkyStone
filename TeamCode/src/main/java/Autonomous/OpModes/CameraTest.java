@@ -29,6 +29,7 @@
 
 package Autonomous.OpModes;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -43,7 +44,7 @@ import Autonomous.VisionHelper;
  */
 
 @Autonomous(name="Camera Test", group="Testers")
-@Disabled
+//@Disabled
 public class CameraTest extends LinearOpMode {
     // create objects and locally global variables here
 
@@ -73,6 +74,9 @@ public class CameraTest extends LinearOpMode {
                 for (int i = 0; i < recognitions.length; i++)
                     telemetry.addData("Block " + i + " (" + recognitions[i].getLabel() + ")", "" + recognitions[i].getLeft());
             telemetry.update(); // don't forget to update the telemetry to show the new data
+
+            if(gamepad1.a) vision.setLEDMode(RevBlinkinLedDriver.BlinkinPattern.WHITE);
+            else if(gamepad1.b) vision.setLEDMode(RevBlinkinLedDriver.BlinkinPattern.BLACK);
         }
         vision.kill(); // ALWAYS kill everything at the end, leads to crashes of the app otherwise
     }

@@ -61,6 +61,8 @@ public class CenterToSkystoneTest extends LinearOpMode {
 
         // initialize objects and variables here
         vuforia = new VuforiaHelper(hardwareMap);
+//        for (int i = 0; i < 3; i++)
+//            (new DistanceSensor[] { back, right, left })[i] = hardwareMap.get(DistanceSensor.class, (new String[] { "back", "right", "left"})[i]);
         back = hardwareMap.get(DistanceSensor.class, "back");
         right = hardwareMap.get(DistanceSensor.class, "right");
         left = hardwareMap.get(DistanceSensor.class, "left");
@@ -77,7 +79,8 @@ public class CenterToSkystoneTest extends LinearOpMode {
         telemetry.update();
         // nothing goes between the above and below lines
         waitForStart();
-
+//        turn((clockwise) ? -rps : rps);
+        robot.driveDistance(15, JennyNavigation.FORWARD, 20, this);
         // rough center...
         boolean skystoneFound = false;
         while (opModeIsActive() && right.getDistance(INCH) > 5.5) {
@@ -94,28 +97,45 @@ public class CenterToSkystoneTest extends LinearOpMode {
                 if (blockCenters.size() > 0) {
 //                telemetry.addData("Skystone", "" + blockCenters.get(0));
                     skystoneFound = true;
-                    if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 10, 30,this)) break; //Get left-most skystone
-                }else skystoneFound = false;
+                    if (robot.centerOnSkystone(blockCenters.get((blockCenters.size() == 1) ? 0 : 1), 2, 20,this)) break; //Get left-most skystone
+                } else skystoneFound = false;
             }
         }
         robot.brake();
         double distToWall = right.getDistance(INCH);
 
-        if(distToWall > 42) { // to the left of the center
-
-        } else if(distToWall > 35) { // to the right of the center -- should be checking against the actual center
-
-        } else if(distToWall > 28) { // to the left of the center
-
-        } else if(distToWall > 25) { // to the right of the center -- should be checking against the actual center
-
-        } else if(distToWall > 23) { // to the left of the center
-
-        } else if(distToWall > 20) { // to the right of the center -- should be checking against the actual center
-
+        telemetry.addData("dist to wall", distToWall);
+        if (distToWall > 42) { // good
+            while (opModeIsActive() && right.getDistance(INCH) > 41.50) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this); // STONE 1 RIGHT
+            telemetry.addData("first stone", "move right");
+            telemetry.update();
+        } else if (distToWall > 35.0) { // good
+            while (opModeIsActive() && right.getDistance(INCH) < 38.50) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 1 LEFT
+            telemetry.addData("first stone", "move left");
+            telemetry.update();
+        } else if (distToWall > 32.5) { // good for now
+            while (opModeIsActive() && right.getDistance(INCH) > 37.25) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 2 RIGHT
+            telemetry.addData("second stone", "move right");
+            telemetry.update();
+        } else if (distToWall > 28) { // keep testing
+            while (opModeIsActive() && right.getDistance(INCH) < 30.00) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 2 LEFT
+            telemetry.addData("second stone", "move left");
+            telemetry.update();
+        } else if (distToWall > 24) { // keep testing
+            while (opModeIsActive() && right.getDistance(INCH) > 24.50) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 3 RIGHT
+            telemetry.addData("third stone", "move right");
+            telemetry.update();
+        } else if (distToWall > 19.5) { // keep testing
+            while (opModeIsActive() && right.getDistance(INCH) < 24.50) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 3 LEFT
+            telemetry.addData("third stone", "move left");
+            telemetry.update();
         }
+        robot.brake();
 
-
+        while(opModeIsActive() && back.getDistance(INCH) < 28.0) {
+            robot.driveOnHeadingPID(JennyNavigation.FORWARD,15,0,this);
+        }
+        robot.brake();
         while (opModeIsActive());
         robot.stopNavigation(); // ALWAYS kill everything at the end, leads to crashes of the app otherwise
     }

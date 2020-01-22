@@ -145,7 +145,7 @@ public class ImuHandler extends Thread {
         return angle;
     }
 
-    public double[] getAngles(){
+    public double[] getAngles() {
         double[] newAngles = {getOrientation(), angles.secondAngle, angles.thirdAngle};
         return newAngles;
     }

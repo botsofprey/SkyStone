@@ -2,6 +2,7 @@ package Autonomous;
 
 import android.util.Log;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
+import Actions.HardwareWrappers.ServoHandler;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
@@ -67,6 +70,7 @@ public class VisionHelper extends Thread {
     VectorF translation;
     VectorF stoneTranslation;
     private int mode = LOCATION;
+    private RevBlinkinLedDriver LEDStripController;
 
     private static final float mmPerInch        = 25.4f;
     private static final float mmFTCFieldWidth  = (12*6) * mmPerInch;  // the width of the FTC field (from the center point to the outer panels)
@@ -91,7 +95,7 @@ public class VisionHelper extends Thread {
     final int CAMERA_LEFT_DISPLACEMENT_FROM_CENTER = (int)(-mmPerInch);
 
     public VisionHelper(int camera, HardwareMap hardwareMap) {
-        initBoth(camera, hardwareMap);
+        this(camera, BOTH, hardwareMap);
     }
 
     public VisionHelper(int camera, int mode, HardwareMap hardwareMap) {
@@ -111,6 +115,9 @@ public class VisionHelper extends Thread {
             default:
                 break;
         }
+
+        LEDStripController = hardwareMap.get(RevBlinkinLedDriver.class, "LEDStripController");
+        LEDStripController.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
     }
 
     private void initBoth(int camera, HardwareMap hardwareMap) {
@@ -125,6 +132,10 @@ public class VisionHelper extends Thread {
             Log.e("VisionHelper Error", e.toString());
             throw new RuntimeException(e);
         }
+    }
+
+    public void setLEDMode(RevBlinkinLedDriver.BlinkinPattern pattern) {
+        LEDStripController.setPattern(pattern);
     }
 
     @Override
