@@ -29,28 +29,31 @@
 
 package Autonomous.OpModes;
 
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.util.Log;
-
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import Autonomous.ImageProcessing.SkystoneImageProcessor;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
 import Autonomous.VisionHelper;
 
-@Autonomous(name="Save Image Test", group="Testers")
+/**
+ *     Created by Ethan Fisher (and I guess Grant Gupton) on 9/19/19
+ *     Tests camera recognition of blocks
+ */
+
+@Autonomous(name="LED Test", group="Testers")
 //@Disabled
-public class SaveImageTest extends LinearOpMode {
+public class BlinkinLEDTest extends LinearOpMode {
     // create objects and locally global variables here
-    VisionHelper vision;
+    RevBlinkinLedDriver ledController;
+
     @Override
     public void runOpMode() {
+        ledController = hardwareMap.get(RevBlinkinLedDriver.class, "LEDStripController");
+        ledController.resetDeviceConfigurationForOpMode();
         // initialize objects and variables here
         // also create and initialize function local variables here
-        vision = new VisionHelper(VisionHelper.WEBCAM, hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -58,14 +61,10 @@ public class SaveImageTest extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
-        vision.startDetection();
-        vision.setLEDMode(RevBlinkinLedDriver.BlinkinPattern.WHITE);
-
-        while (opModeIsActive()) {
-            telemetry.addData("saved image", "");
-            telemetry.update();
+        while(opModeIsActive()) {
+            if(gamepad1.a) ledController.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
+            else if(gamepad1.b) ledController.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
         }
-        vision.kill();
+        ledController.close();
     }
-    // misc functions here
 }

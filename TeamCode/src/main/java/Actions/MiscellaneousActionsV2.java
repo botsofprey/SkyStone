@@ -3,19 +3,20 @@ package Actions;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.io.IOException;
 
 import Actions.HardwareWrappers.ServoHandler;
 import MotorControllers.MotorController;
 
-public class MiscellaneousActions implements ActionHandler {
+public class MiscellaneousActionsV2 implements ActionHandler {
     HardwareMap hardwareMap;
-    private ServoHandler foundationGrabber;
+    private ServoHandler leftFoundationGrabber, rightFoundationGrabber;
     private MotorController measuringTapeSpitter;
     public static final double FOUNDATION_GRAB = 0, FOUNDATION_RELEASE = 180;
 
-    public MiscellaneousActions(HardwareMap hw) {
+    public MiscellaneousActionsV2(HardwareMap hw) {
         hardwareMap = hw;
         try {
             measuringTapeSpitter = new MotorController("tapeSpitter", "ActionConfig/LiftMotor.json", hardwareMap);
@@ -25,14 +26,22 @@ public class MiscellaneousActions implements ActionHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        foundationGrabber = new ServoHandler("foundationGrabber", hardwareMap);
-        foundationGrabber.setServoRanges(0, 180);
-        foundationGrabber.setDegree(FOUNDATION_RELEASE);
+        leftFoundationGrabber = new ServoHandler("leftFoundationGrabber", hardwareMap);
+        leftFoundationGrabber.setServoRanges(0, 180);
+        leftFoundationGrabber.setDegree(FOUNDATION_RELEASE);
+        rightFoundationGrabber = new ServoHandler("rightFoundationGrabber", hardwareMap);
+        rightFoundationGrabber.setServoRanges(0, 180);
+        rightFoundationGrabber.setDirection(Servo.Direction.REVERSE);
+        rightFoundationGrabber.setDegree(FOUNDATION_RELEASE);
     }
 
-    public void grabFoundation() { foundationGrabber.setDegree(FOUNDATION_GRAB); }
-    public void releaseFoundation(){
-        foundationGrabber.setDegree(FOUNDATION_RELEASE);
+    public void grabFoundation() {
+        rightFoundationGrabber.setDegree(FOUNDATION_GRAB);
+        leftFoundationGrabber.setDegree(FOUNDATION_GRAB);
+    }
+    public void releaseFoundation() {
+        rightFoundationGrabber.setDegree(FOUNDATION_RELEASE);
+        leftFoundationGrabber.setDegree(FOUNDATION_RELEASE);
     }
     public void spitTape() { measuringTapeSpitter.setMotorPower(1); }
     public void retractTape() { measuringTapeSpitter.setMotorPower(-1); }

@@ -39,8 +39,8 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import java.util.ArrayList;
 
-import Actions.MiscellaneousActions;
-import Actions.StoneStackingSystemV2;
+import Actions.MiscellaneousActionsV2;
+import Actions.StoneStackingSystemV3;
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
 import Autonomous.VuforiaHelper;
@@ -53,11 +53,11 @@ import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.I
 public class AnnieV2AutoBlue extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
-    StoneStackingSystemV2 sss;
+    StoneStackingSystemV3 sss;
     VuforiaHelper vuforia;
     SkystoneImageProcessor stoneFinder;
     DistanceSensor back, right, left;
-    MiscellaneousActions otherActions;
+    MiscellaneousActionsV2 otherActions;
 
     @Override
     public void runOpMode() {
@@ -69,14 +69,14 @@ public class AnnieV2AutoBlue extends LinearOpMode {
         right = hardwareMap.get(DistanceSensor.class, "right");
         left = hardwareMap.get(DistanceSensor.class, "left");
         stoneFinder = new SkystoneImageProcessor(SkystoneImageProcessor.DESIRED_HEIGHT, SkystoneImageProcessor.DESIRED_WIDTH,.1,1, SkystoneImageProcessor.STONE_COLOR.BLACK);
-        otherActions = new MiscellaneousActions(hardwareMap);
+        otherActions = new MiscellaneousActionsV2(hardwareMap);
 
         try {
             robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sss = new StoneStackingSystemV2(hardwareMap);
+        sss = new StoneStackingSystemV3(hardwareMap);
 
         // Stone detection
 
@@ -87,9 +87,9 @@ public class AnnieV2AutoBlue extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
-        if(opModeIsActive()) sss.setCentralGripperDegree(StoneStackingSystemV2.CENTRAL_ARM_GRAB);
+        if(opModeIsActive()) sss.setCentralGripperDegree(StoneStackingSystemV3.CENTRAL_ARM_GRAB);
         sleep(500);
-        if(opModeIsActive()) sss.setCentralGripperDegree(StoneStackingSystemV2.CENTRAL_ARM_RELEASE);
+        if(opModeIsActive()) sss.setCentralGripperDegree(StoneStackingSystemV3.CENTRAL_ARM_RELEASE);
 
         robot.driveDistance(7, JennyNavigation.FORWARD, 20, this);
 
@@ -113,19 +113,46 @@ public class AnnieV2AutoBlue extends LinearOpMode {
                 if (blockCenters.size() > 0) {
 //                telemetry.addData("Skystone", "" + blockCenters.get(0));
                     skystoneFound = true;
-                    if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 0, 30,this)) break; //Get left-most skystone
+                    if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 3, 30,this)) break; //Get left-most skystone
                 }else skystoneFound = false;
             }
         }
         robot.brake();
 
-//        Grab skystone
-        while(opModeIsActive() && back.getDistance(INCH) < 27.5) {
-            robot.driveOnHeadingPID(JennyNavigation.FORWARD,15,0,this);
+//      Grab skystone
+        while (opModeIsActive() && back.getDistance(INCH) < 32) {
+            robot.driveOnHeadingPID(JennyNavigation.FORWARD, 15, 0, this);
         }
         robot.brake();
 
-        double firstSkystoneLocation = right.getDistance(INCH);
+        double distToWall = right.getDistance(INCH);
+        if (distToWall > 42) { // good
+            while (opModeIsActive() && right.getDistance(INCH) > 40) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this); // STONE 1 RIGHT
+            telemetry.addData("first stone", "move right");
+            telemetry.update();
+        } else if (distToWall > 35.4) { // good
+            while (opModeIsActive() && right.getDistance(INCH) < 38.50) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 1 LEFT
+            telemetry.addData("first stone", "move left");
+            telemetry.update();
+        } else if (distToWall > 32.5) { // good for now
+            while (opModeIsActive() && right.getDistance(INCH) > 37.25) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 2 RIGHT
+            telemetry.addData("second stone", "move right");
+            telemetry.update();
+        } else if (distToWall > 28) { // keep testing
+            while (opModeIsActive() && right.getDistance(INCH) < 30.00) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 2 LEFT
+            telemetry.addData("second stone", "move left");
+            telemetry.update();
+        } else if (distToWall > 24) { // keep testing
+            while (opModeIsActive() && right.getDistance(INCH) > 24.50) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 3 RIGHT
+            telemetry.addData("third stone", "move right");
+            telemetry.update();
+        } else if (distToWall > 19.5) { // keep testing
+            while (opModeIsActive() && right.getDistance(INCH) < 24.50) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 3 LEFT
+            telemetry.addData("third stone", "move left");
+            telemetry.update();
+        }
+        robot.brake();
+
         sss.grabStoneCenter();
         sleep(750); // wait to grab the stone TODO: grabStoneCenterAndWait() to wait until correct angle reached?
         while(opModeIsActive() && back.getDistance(INCH) > 25) robot.driveOnHeadingPID(180, 20, 0, this);
@@ -134,48 +161,54 @@ public class AnnieV2AutoBlue extends LinearOpMode {
 //        Drive to foundation
         robot.driveDistance(42,JennyNavigation.LEFT,35,this);
 
-        boolean released = false;
         while (opModeIsActive() && left.getDistance(INCH) > 31) {
             robot.driveOnHeadingPID(JennyNavigation.LEFT, 30, 0, this);
+        }
+        sss.releaseStoneCenter();
+        robot.brake();
 
-            if(left.getDistance(INCH) < 60 && !released){
-                released = true;
-                sss.releaseStoneCenter();
-            }
+        //Second stone
+        while(opModeIsActive() && right.getDistance(INCH) > 24) {
+            robot.driveOnHeadingPID(JennyNavigation.RIGHT, 35, 0, this);
         }
         robot.brake();
 
-        while(opModeIsActive() && left.getDistance(INCH) > 48) robot.driveOnHeadingPID(JennyNavigation.LEFT, 15, this);
-        robot.brake();
-
-        robot.turnToHeading(90, 2,this);
-
-        robot.brake();
-        sleep(500);
-
-        robot.turnController.setSp(robot.getOrientation());
-        while (opModeIsActive() && right.getDistance(INCH) < 31){
-            robot.driveOnHeadingPID(JennyNavigation.LEFT, 15, 0, this);
+        //DUPLICATE CODE
+        if(distToWall > 35.4) { // first stone
+            while(opModeIsActive() && right.getDistance(INCH) > 17.5) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
+        } else if(distToWall > 28) { // second stone
+            while(opModeIsActive() && right.getDistance(INCH) > 7) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
+        } else if(distToWall > 19.5) { // third stone
+            while(opModeIsActive() && right.getDistance(INCH) > 5) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
         }
         robot.brake();
-        otherActions.grabFoundation();
-        sleep(500);
-        robot.driveDistance(15, 80, 25, this);
-        idle();
-        robot.driveOnHeadingWithTurning(70, 1, -0.7);
-        sleep(800);
-        otherActions.releaseFoundation();
-        robot.turnToHeading(0, 5, this);
-        otherActions.spitTape();
-        sleep(500);
-        otherActions.pauseTape();
+
+//        Grab skystone
+//        for(int i = 0; i < 3; i++) {
+        while (opModeIsActive() && back.getDistance(INCH) < 32) {
+            robot.driveOnHeadingPID(JennyNavigation.FORWARD, 15, 0, this);
+        }
+//        }
         robot.brake();
 
-        if(firstSkystoneLocation > 35) {
+        sss.grabStoneCenter();
+        sleep(750); // wait to grab the stone TODO: grabStoneCenterAndWait() to wait until correct angle reached?
+        while(opModeIsActive() && back.getDistance(INCH) > 25) robot.driveOnHeadingPID(180, 20, 0, this);
+        robot.brake();
+
+//        Drive to foundation
+        robot.driveDistance(42,JennyNavigation.LEFT,35,this);
+
+        while (opModeIsActive() && left.getDistance(INCH) > 31) {
+            robot.driveOnHeadingPID(JennyNavigation.LEFT, 30, 0, this);
+        }
+        sss.releaseStoneCenter();
+
+        if(distToWall > 35) {
             // go to the left skystone
-        } else if(firstSkystoneLocation > 25) {
+        } else if(distToWall > 25) {
             // go to the middle skystone
-        } else if(firstSkystoneLocation > 20) {
+        } else if(distToWall > 20) {
             // go to the right skystone
         }
 

@@ -82,7 +82,7 @@ public class VuforiaHelper {
                     Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
                     vuLoc.setFrameQueueCapacity(1); //tells VuforiaLocalizer to only store one frame at a time
 
-                } catch (Exception e){
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
                 return vuLoc;

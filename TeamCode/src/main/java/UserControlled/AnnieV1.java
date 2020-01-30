@@ -247,10 +247,10 @@ public class AnnieV1 extends LinearOpMode {
             else if (gamepad2.y)
                 sss.releaseStoneCenter();
             // check if limit switch is pressed and reset the lift encoder
-            if(sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && limitSwitchReleased) {
+            if (sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && limitSwitchReleased) {
                 limitSwitchReleased = false;
                 sss.resetLiftEncoder();
-            } else if(!sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && !limitSwitchReleased) {
+            } else if (!sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && !limitSwitchReleased) {
                 limitSwitchReleased = true;
             }
         }

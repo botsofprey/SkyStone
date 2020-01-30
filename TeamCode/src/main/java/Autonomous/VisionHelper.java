@@ -94,9 +94,7 @@ public class VisionHelper extends Thread {
     final int CAMERA_VERTICAL_DISPLACEMENT_FROM_CENTER = (int)(14*mmPerInch);
     final int CAMERA_LEFT_DISPLACEMENT_FROM_CENTER = (int)(-mmPerInch);
 
-    public VisionHelper(int camera, HardwareMap hardwareMap) {
-        this(camera, BOTH, hardwareMap);
-    }
+    public VisionHelper(int camera, HardwareMap hardwareMap) { this(camera, BOTH, hardwareMap); }
 
     public VisionHelper(int camera, int mode, HardwareMap hardwareMap) {
         switch (mode) {
@@ -117,6 +115,7 @@ public class VisionHelper extends Thread {
         }
 
         LEDStripController = hardwareMap.get(RevBlinkinLedDriver.class, "LEDStripController");
+        LEDStripController.resetDeviceConfigurationForOpMode();
         LEDStripController.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
     }
 
