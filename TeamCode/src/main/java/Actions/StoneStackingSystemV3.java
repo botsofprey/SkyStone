@@ -42,6 +42,7 @@ public class StoneStackingSystemV3 implements ActionHandler {
 
     public void deployCapstone() { capstoneDeployer.setDegree(180); }
     public void releaseCapstone() { capstoneDeployer.setDegree(0); }
+    public void setCapstoneDegree(double degree) {capstoneDeployer.setDegree(degree); }
 
     public void setCentralGripperDegree(double deg) {
         centralGripper.setDegree(deg);

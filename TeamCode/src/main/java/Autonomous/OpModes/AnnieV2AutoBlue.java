@@ -212,6 +212,46 @@ public class AnnieV2AutoBlue extends LinearOpMode {
             // go to the right skystone
         }
 
+
+
+
+        //FOUNDATION
+        while(opModeIsActive() && right.getDistance(INCH) > 48) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, this);
+        robot.brake();
+
+//        robot.turnToHeading(180, this);
+        robot.turnToHeading(90, 2,this);
+
+        robot.brake();
+        sleep(500);
+
+        robot.turnController.setSp(robot.getOrientation());
+        while (opModeIsActive() && left.getDistance(INCH) < 31){
+            robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, 0, this);
+//
+////                telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
+//                telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
+////                telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
+//                telemetry.update();
+        }
+
+        robot.brake();
+        otherActions.grabFoundation();
+        sleep(500);
+        robot.driveOnHeadingWithTurning(100,1,.4);
+        sleep(1300);
+//        while (opModeIsActive());
+        otherActions.releaseFoundation();
+        robot.driveDistance(15,0,25,this);
+        robot.driveDistance(10, 90, 25, this);
+        otherActions.spitTape();
+        sleep(500);
+        otherActions.pauseTape();
+        robot.brake();
+        robot.driveDistance(10, -90, 25, this);
+
+
+
         while (opModeIsActive());
         robot.stopNavigation();
         sss.kill();

@@ -51,11 +51,12 @@ public class AnnieV2 extends LinearOpMode {
     MiscellaneousActionsV2 otherActions;
     SensorPackage sensors;
     JoystickHandler leftStick, rightStick;
-    boolean eStop = false, slowMode = false, tapeStopped = true, liftLowered = true, liftingToPos = false;
+    boolean eStop = false, slowMode = false, superSlowMode = false, tapeStopped = true, liftLowered = true, liftingToPos = false, capstoneDeploy = false;
     boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false,
             rightTrigger1Released = true, rightBumper1Released = true,
             p2DpadUpReleased = true;
-    int stonePosition = 0;
+    int stonePosition = 0, capstoneLocation = 0;
+    long timeDeploy = 0;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
@@ -98,6 +99,7 @@ public class AnnieV2 extends LinearOpMode {
 
                 updateEStop();
                 controlStoneStackingSystem();
+                updateCapstone();
             }
             if(eStop) {
                 stopActions();
@@ -123,13 +125,25 @@ public class AnnieV2 extends LinearOpMode {
     void controlDrive() {
         if (startReleased && gamepad1.start) {
             startReleased = false;
-            slowMode = !slowMode;
+            superSlowMode = !superSlowMode;
         } else if (!gamepad1.start) {
             startReleased = true;
         }
 
-        double drivePower = (slowMode)? leftStick.magnitude()/3.0 : leftStick.magnitude();
-        double turnPower = (slowMode)? rightStick.x()/4.0 : rightStick.x();
+        slowMode = (gamepad1.right_trigger > 0.1);
+
+        double drivePower = 0, turnPower = 0;
+        if(superSlowMode) {
+            drivePower = leftStick.magnitude()/4.0;
+            turnPower = rightStick.x()/5.0;
+        } else if(slowMode) {
+            drivePower = leftStick.magnitude()/3.0;
+            turnPower = rightStick.x()/4.0;
+        } else {
+            drivePower = leftStick.magnitude();
+            turnPower = rightStick.x();
+        }
+
         if(!eStop) robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
     }
 
@@ -150,18 +164,9 @@ public class AnnieV2 extends LinearOpMode {
                 sss.liftToPosition(stonePosition);
                 liftingToPos = true;
             }
-            if(gamepad1.right_bumper && rightBumper1Released) {
-                rightBumper1Released = false;
-            } else if(!gamepad1.right_bumper && !rightBumper1Released) {
-                rightBumper1Released = true;
-                stonePosition--;
-                if(stonePosition < 0) stonePosition = 3;
-                sss.liftToPosition(stonePosition);
-                liftingToPos = true;
-            }
 
-            if(gamepad1.left_trigger > 0.1) sss.deployCapstone();
-            else if(gamepad1.left_bumper) sss.releaseCapstone();
+            if(gamepad1.left_trigger > 0.1) deployCapstone();
+            else if(gamepad1.left_bumper) releaseCapstone();
 
 
             // PLAYER 2
@@ -185,6 +190,8 @@ public class AnnieV2 extends LinearOpMode {
                 liftingToPos = false;
             }
             else if(!liftingToPos) sss.pauseStoneLift();
+            telemetry.addData("Lift: ", sss.getLiftPositionTicks());
+            telemetry.update();
 
             if(gamepad2.left_trigger > 0.1) otherActions.spitTape();
             else if(gamepad2.left_bumper) otherActions.retractTape();
@@ -202,6 +209,28 @@ public class AnnieV2 extends LinearOpMode {
                 limitSwitchReleased = true;
             }
         }
+    }
+
+    void deployCapstone(){
+        capstoneDeploy = true;
+        timeDeploy = System.currentTimeMillis();
+    }
+    void releaseCapstone(){
+        capstoneLocation = 0;
+        capstoneDeploy = false;
+        sss.releaseCapstone();
+    }
+    void updateCapstone(){
+        if(System.currentTimeMillis() - timeDeploy > 20) {
+            timeDeploy = System.currentTimeMillis();
+            if(capstoneDeploy) capstoneLocation++;
+            if(capstoneLocation > 180){
+                capstoneLocation = 180;
+                capstoneDeploy = false;
+            }
+//            if(capstoneLocation < 0) capstoneLocation = 0;
+        }
+        sss.setCapstoneDegree(capstoneLocation);
     }
 
     void stopActions() {
