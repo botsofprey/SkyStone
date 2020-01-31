@@ -221,7 +221,7 @@ public class AnnieV2 extends LinearOpMode {
         sss.releaseCapstone();
     }
     void updateCapstone(){
-        if(System.currentTimeMillis() - timeDeploy > 20) {
+        if(System.currentTimeMillis() - timeDeploy > 50) {
             timeDeploy = System.currentTimeMillis();
             if(capstoneDeploy) capstoneLocation++;
             if(capstoneLocation > 180){

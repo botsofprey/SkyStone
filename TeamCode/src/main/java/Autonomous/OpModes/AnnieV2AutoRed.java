@@ -186,7 +186,7 @@ public class AnnieV2AutoRed extends LinearOpMode {
         } else if(distToWall > STONE_FIVE) { // second stone
             while(opModeIsActive() && left.getDistance(INCH) > DIST_STONE_FIVE) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, 0, this);
         } else if(distToWall > STONE_SIX) { // third stone
-            while(opModeIsActive() && left.getDistance(INCH) > DIST_STONE_SIX) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, 0, this);
+            while(opModeIsActive() && left.getDistance(INCH) > 13.3) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, 0, this);
         }
         robot.brake();
 
@@ -211,14 +211,6 @@ public class AnnieV2AutoRed extends LinearOpMode {
         }
         sss.releaseStoneCenter();
         robot.brake();
-
-        if(distToWall > 35) {
-            // go to the left skystone
-        } else if(distToWall > 25) {
-            // go to the middle skystone
-        } else if(distToWall > 20) {
-            // go to the right skystone
-        }
 
         while (opModeIsActive());
         robot.stopNavigation();
@@ -245,20 +237,14 @@ public class AnnieV2AutoRed extends LinearOpMode {
 //                telemetry.update();
         }
 
-        robot.brake();
-        otherActions.grabFoundation();
-        sleep(500);
-        robot.driveOnHeadingWithTurning(100,1,.4);
-        sleep(1300);
-//        while (opModeIsActive());
-        otherActions.releaseFoundation();
-        robot.driveDistance(15,0,25,this);
-        robot.driveDistance(10, 90, 25, this);
+        robot.turnToHeading(90,5,this);
+        sleep(1000);
+        //SPIT TAPE
         otherActions.spitTape();
-        sleep(500);
+        sleep(750);
         otherActions.pauseTape();
+
         robot.brake();
-        robot.driveDistance(10, -90, 25, this);
         robot.stopNavigation();
         sss.kill();
 //        VuforiaHelper.kill(); -- this crashes the app...

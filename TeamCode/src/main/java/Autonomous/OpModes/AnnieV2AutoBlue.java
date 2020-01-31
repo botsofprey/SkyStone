@@ -127,11 +127,11 @@ public class AnnieV2AutoBlue extends LinearOpMode {
 
         double distToWall = right.getDistance(INCH);
         if (distToWall > 42) { // good
-            while (opModeIsActive() && right.getDistance(INCH) > 40) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this); // STONE 1 RIGHT
+            while (opModeIsActive() && right.getDistance(INCH) > 43) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this); // STONE 1 RIGHT
             telemetry.addData("first stone", "move right");
             telemetry.update();
-        } else if (distToWall > 35.4) { // good
-            while (opModeIsActive() && right.getDistance(INCH) < 38.50) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 1 LEFT
+        } else if (distToWall > 36.4) { // good
+            while (opModeIsActive() && right.getDistance(INCH) < 40.50) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 1 LEFT
             telemetry.addData("first stone", "move left");
             telemetry.update();
         } else if (distToWall > 32.5) { // good for now
@@ -143,7 +143,7 @@ public class AnnieV2AutoBlue extends LinearOpMode {
             telemetry.addData("second stone", "move left");
             telemetry.update();
         } else if (distToWall > 24) { // keep testing
-            while (opModeIsActive() && right.getDistance(INCH) > 24.50) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 3 RIGHT
+            while (opModeIsActive() && right.getDistance(INCH) > 25) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 3 RIGHT
             telemetry.addData("third stone", "move right");
             telemetry.update();
         } else if (distToWall > 19.5) { // keep testing
@@ -155,13 +155,13 @@ public class AnnieV2AutoBlue extends LinearOpMode {
 
         sss.grabStoneCenter();
         sleep(750); // wait to grab the stone TODO: grabStoneCenterAndWait() to wait until correct angle reached?
-        while(opModeIsActive() && back.getDistance(INCH) > 25) robot.driveOnHeadingPID(180, 20, 0, this);
+        for(int i = 0; i < 2; i++) while(opModeIsActive() && back.getDistance(INCH) > 25) robot.driveOnHeadingPID(180, 20, 0, this);
         robot.brake();
 
 //        Drive to foundation
         robot.driveDistance(42,JennyNavigation.LEFT,35,this);
 
-        while (opModeIsActive() && left.getDistance(INCH) > 31) {
+        while (opModeIsActive() && left.getDistance(INCH) > 48) {
             robot.driveOnHeadingPID(JennyNavigation.LEFT, 30, 0, this);
         }
         sss.releaseStoneCenter();
@@ -175,11 +175,11 @@ public class AnnieV2AutoBlue extends LinearOpMode {
 
         //DUPLICATE CODE
         if(distToWall > 35.4) { // first stone
-            while(opModeIsActive() && right.getDistance(INCH) > 17.5) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
+            while(opModeIsActive() && right.getDistance(INCH) > 15.5) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
         } else if(distToWall > 28) { // second stone
-            while(opModeIsActive() && right.getDistance(INCH) > 7) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
+            while(opModeIsActive() && right.getDistance(INCH) > 8) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
         } else if(distToWall > 19.5) { // third stone
-            while(opModeIsActive() && right.getDistance(INCH) > 5) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
+            while(opModeIsActive() && right.getDistance(INCH) > 15.5) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
         }
         robot.brake();
 
@@ -199,56 +199,58 @@ public class AnnieV2AutoBlue extends LinearOpMode {
 //        Drive to foundation
         robot.driveDistance(42,JennyNavigation.LEFT,35,this);
 
-        while (opModeIsActive() && left.getDistance(INCH) > 31) {
+        robot.turnToHeading(JennyNavigation.FORWARD,5,this);
+        while (opModeIsActive() && left.getDistance(INCH) > 48) {
             robot.driveOnHeadingPID(JennyNavigation.LEFT, 30, 0, this);
         }
         sss.releaseStoneCenter();
 
-        if(distToWall > 35) {
-            // go to the left skystone
-        } else if(distToWall > 25) {
-            // go to the middle skystone
-        } else if(distToWall > 20) {
-            // go to the right skystone
-        }
-
+        robot.brake();
 
 
 
         //FOUNDATION
-        while(opModeIsActive() && right.getDistance(INCH) > 48) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, this);
-        robot.brake();
-
-//        robot.turnToHeading(180, this);
-        robot.turnToHeading(90, 2,this);
-
-        robot.brake();
-        sleep(500);
-
-        robot.turnController.setSp(robot.getOrientation());
-        while (opModeIsActive() && left.getDistance(INCH) < 31){
-            robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, 0, this);
+//        while(opModeIsActive() && right.getDistance(INCH) > 48) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, this);
+//        robot.brake();
 //
-////                telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
-//                telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
-////                telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
-//                telemetry.update();
-        }
+////        robot.turnToHeading(180, this);
+//        robot.turnToHeading(90, 2,this);
+//
+//        robot.brake();
+//        sleep(500);
+//
+//        robot.turnController.setSp(robot.getOrientation());
+//        while (opModeIsActive() && left.getDistance(INCH) < 31){
+//            robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, 0, this);
+////
+//////                telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
+////                telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
+//////                telemetry.addData("Back", Double.toString(back.getDistance(INCH)));
+////                telemetry.update();
+//        }
+//
+//        robot.brake();
+//        robot.driveDistance(10,JennyNavigation.RIGHT, 20,this);
 
-        robot.brake();
-        otherActions.grabFoundation();
-        sleep(500);
-        robot.driveOnHeadingWithTurning(100,1,.4);
-        sleep(1300);
-//        while (opModeIsActive());
-        otherActions.releaseFoundation();
-        robot.driveDistance(15,0,25,this);
-        robot.driveDistance(10, 90, 25, this);
-        otherActions.spitTape();
-        sleep(500);
-        otherActions.pauseTape();
-        robot.brake();
-        robot.driveDistance(10, -90, 25, this);
+        //PARKING
+//        otherActions.spitTape();
+//        sleep(750);
+//        otherActions.pauseTape();
+
+
+//        otherActions.grabFoundation();
+//        sleep(500);
+//        robot.driveOnHeadingWithTurning(100,1,.4);
+//        sleep(1300);
+////        while (opModeIsActive());
+//        otherActions.releaseFoundation();
+//        robot.driveDistance(15,0,25,this);
+//        robot.driveDistance(10, 90, 25, this);
+//        otherActions.spitTape();
+//        sleep(500);
+//        otherActions.pauseTape();
+//        robot.brake();
+//        robot.driveDistance(10, -90, 25, this);
 
 
 
