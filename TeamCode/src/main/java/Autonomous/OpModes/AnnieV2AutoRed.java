@@ -237,7 +237,8 @@ public class AnnieV2AutoRed extends LinearOpMode {
 //                telemetry.update();
         }
 
-        robot.turnToHeading(90,5,this);
+        robot.brake();
+        robot.turnToHeading(180,5,this);
         sleep(1000);
         //SPIT TAPE
         otherActions.spitTape();

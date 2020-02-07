@@ -155,16 +155,6 @@ public class AnnieV2 extends LinearOpMode {
             if(gamepad1.a) otherActions.grabFoundation();
             else if(gamepad1.b) otherActions.releaseFoundation();
 
-            if(gamepad1.right_trigger > 0.1 && rightTrigger1Released) {
-                rightTrigger1Released = false;
-            } else if(!(gamepad1.right_trigger > 0.1) && !rightTrigger1Released) {
-                rightTrigger1Released = true;
-                stonePosition++;
-                if(stonePosition > 3) stonePosition = 0;
-                sss.liftToPosition(stonePosition);
-                liftingToPos = true;
-            }
-
             if(gamepad1.left_trigger > 0.1) deployCapstone();
             else if(gamepad1.left_bumper) releaseCapstone();
 
@@ -221,7 +211,7 @@ public class AnnieV2 extends LinearOpMode {
         sss.releaseCapstone();
     }
     void updateCapstone(){
-        if(System.currentTimeMillis() - timeDeploy > 50) {
+        if(System.currentTimeMillis() - timeDeploy > 13) {
             timeDeploy = System.currentTimeMillis();
             if(capstoneDeploy) capstoneLocation++;
             if(capstoneLocation > 180){

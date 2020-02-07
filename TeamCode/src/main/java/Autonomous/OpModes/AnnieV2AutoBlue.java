@@ -233,9 +233,9 @@ public class AnnieV2AutoBlue extends LinearOpMode {
 //        robot.driveDistance(10,JennyNavigation.RIGHT, 20,this);
 
         //PARKING
-//        otherActions.spitTape();
-//        sleep(750);
-//        otherActions.pauseTape();
+        otherActions.spitTape();
+        sleep(750);
+        otherActions.pauseTape();
 
 
 //        otherActions.grabFoundation();

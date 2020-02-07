@@ -33,8 +33,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import Actions.MiscellaneousActions;
-import Actions.StoneStackingSystemV2;
+import Actions.MiscellaneousActionsV2;
+import Actions.StoneStackingSystemV3;
 import Autonomous.Location;
 import DriveEngine.JennyNavigation;
 
@@ -46,12 +46,12 @@ public class BridgePark extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
     DistanceSensor left, right;
-    MiscellaneousActions otherActions;
+    MiscellaneousActionsV2 otherActions;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        otherActions = new MiscellaneousActions(hardwareMap);
+        otherActions = new MiscellaneousActionsV2(hardwareMap);
         try {
             robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {

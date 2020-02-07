@@ -16,7 +16,7 @@ public class StoneStackingSystemV3 implements ActionHandler {
     HardwareMap hardwareMap;
     SpoolMotor lift;
     ServoHandler centralGripper, capstoneDeployer;
-    public static final double CENTRAL_ARM_GRAB = 0, CENTRAL_ARM_RELEASE = 150, CENTRAL_ARM_IN_BOT = 180;
+    public static final double CENTRAL_ARM_GRAB = 0, CENTRAL_ARM_RELEASE = 80, CENTRAL_ARM_IN_BOT = 180;
     public static final double STONE_HEIGHT_1 = 1.74, STONE_HEIGHT_2 = 3.9, STONE_HEIGHT_3 = 5.9, STONE_HEIGHT_4 = 7.75;
     public StoneStackingSystemV3(HardwareMap hw) {
         hardwareMap = hw;

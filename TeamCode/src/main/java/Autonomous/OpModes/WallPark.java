@@ -32,8 +32,8 @@ package Autonomous.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import Actions.MiscellaneousActions;
-import Actions.StoneStackingSystemV2;
+import Actions.MiscellaneousActionsV2;
+import Actions.StoneStackingSystemV3;
 import Autonomous.Location;
 import DriveEngine.JennyNavigation;
 
@@ -41,13 +41,13 @@ import DriveEngine.JennyNavigation;
 //@Disabled
 public class WallPark extends LinearOpMode {
     // create objects and locally global variables here
-    MiscellaneousActions otherActions;
+    MiscellaneousActionsV2 otherActions;
 
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        otherActions = new MiscellaneousActions(hardwareMap);
+        otherActions = new MiscellaneousActionsV2(hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
