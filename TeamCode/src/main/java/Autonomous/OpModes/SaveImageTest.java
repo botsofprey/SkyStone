@@ -59,7 +59,6 @@ public class SaveImageTest extends LinearOpMode {
         waitForStart();
 
         vision.startDetection();
-        vision.setLEDMode(RevBlinkinLedDriver.BlinkinPattern.WHITE);
 
         while (opModeIsActive()) {
             telemetry.addData("saved image", "");

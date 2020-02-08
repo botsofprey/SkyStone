@@ -495,18 +495,21 @@ public class JennyNavigation extends Thread {
         double [] startPositionsInches = motorPositionsInches;
         double [] deltaInches;
         double averagePosition = 0;
-        double currVelocity = 1;
+        double currVelocity = 0;
         double accel = Math.pow(desiredVelocity, 2)/(2*distanceInInches);
         if (heading >= 360) heading -= 360;
         else if (heading < 0) heading += 360;
         double curOrientation = orientation.getOrientation();
         turnController.setSp(curOrientation);
+        double endTime = distanceInInches / desiredVelocity;
+        double startTime = System.currentTimeMillis() / 1000.0;
         while (distanceTraveled < distanceInInches && mode.opModeIsActive()) {
+            double deltaTime = (System.currentTimeMillis() / 1000.0) - startTime;
             //ACCELERATION CODE
-            if ((distanceTraveled <= distanceInInches / 3.0)) {
-                currVelocity = desiredVelocity / (distanceInInches / 3.0);
-            } else if (distanceTraveled > (2.0 * distanceInInches / 3.0)) {
-                currVelocity = (desiredVelocity / (2.0 * distanceInInches / 3.0)) * (distanceInInches - distanceTraveled);
+            if (deltaTime <= 0.5) {
+                currVelocity = desiredVelocity * deltaTime / 0.5;
+            } else if (distanceTraveled >= (2.0/3.0 * distanceInInches)) {
+                currVelocity = desiredVelocity * (1 - (distanceTraveled - (2.0/3.0) * distanceInInches) / (1.0/3.0 * distanceInInches));
             } else {
                 currVelocity = desiredVelocity;
             }

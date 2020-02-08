@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import java.util.ArrayList;
@@ -18,9 +19,9 @@ import Autonomous.VuforiaHelper;
 /*
     An opmode to test saving images using vuforia
  */
-@Autonomous(name="Detect Stones Test", group="Testers")  // @Autonomous(...) is the other common choice
+@Autonomous(name="Detect SkyStones Test", group="Testers")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class DetectStonesTest extends LinearOpMode {
+public class DetectSkyStonesTest extends LinearOpMode {
 
     SkystoneImageProcessor stoneFinder;
     @Override
@@ -30,7 +31,7 @@ public class DetectStonesTest extends LinearOpMode {
         VuforiaHelper vuforia = new VuforiaHelper(hardwareMap);
         //wait for the op mode to start, this is the time to change teams
         //initialize the image processor 
-        stoneFinder = new SkystoneImageProcessor(SkystoneImageProcessor.DESIRED_HEIGHT, SkystoneImageProcessor.DESIRED_WIDTH,.1,1, SkystoneImageProcessor.STONE_COLOR.YELLOW);
+        stoneFinder = new SkystoneImageProcessor(SkystoneImageProcessor.DESIRED_HEIGHT, SkystoneImageProcessor.DESIRED_WIDTH,.1,1, SkystoneImageProcessor.STONE_COLOR.BLACK);
         telemetry.addData("Status","Initialized");
         telemetry.update();
         waitForStart();

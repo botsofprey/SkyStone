@@ -77,14 +77,20 @@ public class FoundationRed extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
-        sss.setLiftPosition(10);
-        while(left.getDistance(INCH) < 28) robot.driveOnHeadingPID(JennyNavigation.LEFT, 25,this);
+
+
+        sss.setLiftPosition(5);
+        while(left.getDistance(INCH) > 18) robot.driveOnHeadingPID(JennyNavigation.LEFT, 25,this);
         robot.brake();
-        while(back.getDistance(INCH) < 32) robot.driveOnHeadingPID(JennyNavigation.FORWARD, 25,this);
+        while(back.getDistance(INCH) < 33.5) robot.driveOnHeadingPID(JennyNavigation.FORWARD, 25,this);
         robot.brake();
         otherActions.grabFoundation();
-        while(back.getDistance(INCH) < 5) robot.driveOnHeadingPID(JennyNavigation.BACK, 25,this);
+        sleep(750);
+        robot.driveOnHeadingWithTurning(170,0.7,-.25);
+        sleep(1500);
+        otherActions.releaseFoundation();
         robot.brake();
+        sleep(500);
 
         robot.stopNavigation();
 //        VuforiaHelper.kill(); -- this crashes the app...

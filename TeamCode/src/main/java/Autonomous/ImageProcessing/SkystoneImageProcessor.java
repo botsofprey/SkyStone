@@ -2,6 +2,7 @@ package Autonomous.ImageProcessing;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -24,9 +25,10 @@ public class SkystoneImageProcessor {
     public static final double FAR_AWAY_MIN_PERCENT_COLUMN_CHECK = 0.1;
     public static final int CLOSE_UP_MIN_COLUMN_WIDTH = 3;
     public static final int FAR_AWAY_MIN_COLUMN_WIDTH = 1;
+    public static final int LEFT = 0, CENTER = 1, RIGHT = 2;
+    private static final int STONE_WIDTH_PIXELS = 8;
     public enum STONE_COLOR {YELLOW,BLACK};
     STONE_COLOR colorToFind = STONE_COLOR.BLACK;
-
 
     /**
      * constructor for this class, you should not use this as you can not set the team's color to look for
@@ -69,11 +71,9 @@ public class SkystoneImageProcessor {
      */
 
     public void setRequiredMinimumColumnWidth(double percentOfWidthOfImage){
-        int widthInPixels = (int)(percentOfWidthOfImage*imageWidth + .5);
-        if(widthInPixels <= 0) widthInPixels = 1;
-        else if(widthInPixels >1){
-            throw new RuntimeException("Wanted Column Width Greater Than Image Width!");
-        }
+        int widthInPixels = (int) (percentOfWidthOfImage * imageWidth + .5);
+        if (widthInPixels <= 0) widthInPixels = 1;
+        else if (widthInPixels > 1) throw new RuntimeException("Wanted Column Width Greater Than Image Width!");
         minimumColumnWidth = widthInPixels;
     }
 
@@ -83,10 +83,9 @@ public class SkystoneImageProcessor {
      * @param percentOfImageHeight  the minimum percentage of a column to be the team's color before calling the column a cryptobox column
      */
 
-    public void setRequiredPercentOfImageColumnBlue(double percentOfImageHeight){
-        if(percentOfImageHeight > 1){
+    public void setRequiredPercentOfImageColumnBlue(double percentOfImageHeight) {
+        if (percentOfImageHeight > 1)
             throw new RuntimeException("Wanted Column Height Percent Greater Than 1.0!");
-        }
         percentRequiredInColumnToCheck = percentOfImageHeight;
     }
 
@@ -155,6 +154,21 @@ public class SkystoneImageProcessor {
         return columnBounds;
     }
 
+    private ArrayList<Integer> getYellowColumnBounds(ArrayList<Integer> columnsWithRequiredYellowPercent) {
+        Log.d("Stone width", Integer.toString(columnsWithRequiredYellowPercent.get(columnsWithRequiredYellowPercent.size()-1) - columnsWithRequiredYellowPercent.get(0)));
+        ArrayList<Integer> columnBounds = new ArrayList<>();
+        if(columnsWithRequiredYellowPercent.size() > 0) {
+            columnBounds.add(columnsWithRequiredYellowPercent.get(0));
+            columnBounds.add(columnsWithRequiredYellowPercent.get(STONE_WIDTH_PIXELS-1));
+            if(columnsWithRequiredYellowPercent.size() > STONE_WIDTH_PIXELS) {
+                columnBounds.add(columnsWithRequiredYellowPercent.get(STONE_WIDTH_PIXELS));
+                columnBounds.add(columnsWithRequiredYellowPercent.get(STONE_WIDTH_PIXELS * 2 - 2));
+            }
+        }
+
+        return columnBounds;
+    }
+
     /**
      * this function determines the centers of the colored cryptobox columns. This can only be used if two columns are in the view of the camera.
      * as this is typically not the case, it is suggested that you use the findColumnCenters function
@@ -195,23 +209,24 @@ public class SkystoneImageProcessor {
      * @return
      */
 
-    public ArrayList<Integer> findColumns(Bitmap bmp, boolean shouldModifyImage){
+    public ArrayList<Integer> findColumns(Bitmap bmp, boolean shouldModifyImage) {
         //Log.d("CF IMG ","Height: " + bmp.getHeight() + " Width: " + bmp.getWidth());
         if(bmp.getHeight() > imageHeight && bmp.getWidth() > imageWidth){
             bmp = scaleBmp(bmp);
         }
         ArrayList<Integer> columnCenters = new ArrayList<Integer>();
         int width = bmp.getWidth(), height = bmp.getHeight();
-        int newHeight = (int)((1.0/2.0)*height);
+        int newHeight = (int)((1.0/4.0)*height);
         int[] pixels = new int[width * height];
-        bmp.getPixels(pixels, 0, width, 0, (int)((1.0/2.0)*height), width, newHeight);
+        bmp.getPixels(pixels, 0, width, 0, (int)((3.0/4.0)*height), width, newHeight);
         long collapseStart = System.currentTimeMillis();
         int [] frequencyByColumn = null;
-        if(colorToFind == STONE_COLOR.BLACK) frequencyByColumn = collapseVerticallyByBlackCount(pixels,width,newHeight);
-        else if(colorToFind == STONE_COLOR.YELLOW) frequencyByColumn = collapseVerticallyByYellowCount(pixels,width,newHeight);
+        if (colorToFind == STONE_COLOR.BLACK) frequencyByColumn = collapseVerticallyByBlackCount(pixels,width,newHeight);
+        else if (colorToFind == STONE_COLOR.YELLOW) frequencyByColumn = collapseVerticallyByYellowCount(pixels,width,newHeight);
         //Log.d("CF IMG PROC", "Collapse Time: " + (System.currentTimeMillis() - collapseStart));
         ArrayList<Integer> interestingColumns = getColumnsWithRequiredBlackCount(frequencyByColumn);
-        ArrayList<Integer> columnBounds = getColumnBounds(interestingColumns);
+
+        ArrayList<Integer> columnBounds = (colorToFind == STONE_COLOR.YELLOW) ? getYellowColumnBounds(interestingColumns) : getColumnBounds(interestingColumns);
 //        for (int i = 0; i < columnBounds.size(); i++) {
 //            Log.d("Bound", columnBounds.get(i).toString());
 //        }
@@ -234,7 +249,7 @@ public class SkystoneImageProcessor {
      * This function modifies the pixels to show where the center of the colored columns are
      */
 
-    private void showColumnCenters(int [] pixels, int height, int width, ArrayList<Integer> columnCenters, int colorToShowWith){
+    private void showColumnCenters(int [] pixels, int height, int width, ArrayList<Integer> columnCenters, int colorToShowWith) {
         for (int i = 0; i < columnCenters.size(); i++) {
             for (int r = 0; r < height; r++) {
                 pixels[r * width + columnCenters.get(i).intValue()] = colorToShowWith;
@@ -242,11 +257,62 @@ public class SkystoneImageProcessor {
         }
     }
 
+    /*
+    *  This function finds if it is left, center, or right Skystone
+    */
+
+    public int findSkystonePixelLocation(Bitmap bmp) {
+        ArrayList<Integer> columnCenters = findColumnCenters(bmp, false);
+        if(columnCenters == null) return -1;
+        else {
+            int center = columnCenters.get(0);
+            return Math.abs(center - (int) (bmp.getWidth() / 2.0));
+        }
+    }
+
+    public int getSkystoneRelativePosition(Bitmap bmp) {
+        int width = bmp.getWidth(), height = bmp.getHeight();
+        int newHeight = (int)(1.0/2.0 * height);
+        int[] pixels = new int[width * height];
+        bmp.getPixels(pixels, 0, width, 0, (int)((1.0/2.0)*height), width, newHeight);
+        int[] columnFrequencies = collapseVerticallyByBlackCount(pixels, DESIRED_WIDTH, DESIRED_HEIGHT);
+        ArrayList<Integer> columnsWithRequiredPercent = getColumnsWithRequiredBlackCount(columnFrequencies);
+        ArrayList<Integer> skystoneBounds = getColumnBounds(columnsWithRequiredPercent);
+        int skystoneCenter = getColumnCenters(skystoneBounds).get(0);
+
+        int[] yellowFrequencies = collapseVerticallyByYellowCount(pixels, DESIRED_WIDTH, DESIRED_HEIGHT);
+        ArrayList<Integer> columnsWithRequiredYellow = getColumnsWithRequiredBlackCount(yellowFrequencies);
+        ArrayList<Integer> stoneBounds = getYellowColumnBounds(columnsWithRequiredYellow);
+        ArrayList<Integer> stoneCenters = getColumnCenters(stoneBounds);
+
+        if(skystoneCenter > stoneCenters.get(1)) {
+            return RIGHT;
+        } else if(skystoneCenter > stoneCenters.get(0)) {
+            return CENTER;
+        } else {
+            return LEFT;
+        }
+    }
+
+    public double getSkystonePositionInches(Bitmap bmp) {
+        int width = bmp.getWidth(), height = bmp.getHeight();
+        int newHeight = (int)(1.0/2.0 * height);
+        int[] pixels = new int[width * height];
+        bmp.getPixels(pixels, 0, width, 0, (int)((1.0/2.0)*height), width, newHeight);
+        int[] columnFrequencies = collapseVerticallyByBlackCount(pixels, DESIRED_WIDTH, DESIRED_HEIGHT);
+        ArrayList<Integer> columnsWithRequiredPercent = getColumnsWithRequiredBlackCount(columnFrequencies);
+        ArrayList<Integer> skystoneBounds = getColumnBounds(columnsWithRequiredPercent);
+
+        int skystoneWidth = Math.abs(skystoneBounds.get(1) - skystoneBounds.get(0));
+        int distToCenter = (int)((skystoneBounds.get(1) - width/2.0) - (DESIRED_WIDTH / 2.0));
+        double distToTravel = distToCenter * (7.0/skystoneWidth);
+        return distToTravel;
+    }
 
     /*
         this function will show the blue pixels in an image
      */
-    public void showBlackPixels(int [] pixels, int height, int width, int colorToReplaceWith){
+    public void showBlackPixels(int [] pixels, int height, int width, int colorToReplaceWith) {
         for (int c = 0; c < width; c++) {
             int numberOfBlackPixels = 0;
             for (int r = 0; r < height; r++) {
@@ -267,7 +333,7 @@ public class SkystoneImageProcessor {
     }
 
 
-    public void showYellowPixels(int [] pixels, int height, int width, int colorToReplaceWith){
+    public void showYellowPixels(int [] pixels, int height, int width, int colorToReplaceWith) {
         for (int c = 0; c < width; c++) {
             int numberOfYellowPixels = 0;
             for (int r = 0; r < height; r++) {
@@ -287,21 +353,21 @@ public class SkystoneImageProcessor {
         }
     }
 
-    public int [] collapseVerticallyByBlackCount(int [] pixels, int imageWidth, int imageHeight){
+    public int [] collapseVerticallyByBlackCount(int [] pixels, int imageWidth, int imageHeight) {
         //collapse into a single, frequency based
         int [] toReturn = new int[imageWidth];
-        for(int c = 0; c < imageWidth; c ++){
-            for(int r = 0; r < imageHeight; r ++){
-                int color = pixels[r*imageWidth + c];
-                if(checkIfBlack(color)){
-                    toReturn[c] ++;
+        for (int c = 0; c < imageWidth; c ++) {
+            for (int r = 0; r < imageHeight; r ++) {
+                int color = pixels[r * imageWidth + c];
+                if(checkIfBlack(color)) {
+                    toReturn[c]++;
                 }
             }
         }
         return toReturn;
     }
 
-    public int [] collapseVerticallyByYellowCount(int [] pixels, int imageWidth, int imageHeight){
+    public int [] collapseVerticallyByYellowCount(int [] pixels, int imageWidth, int imageHeight) {
         //collapse into a single, frequency based
         int [] toReturn = new int[imageWidth];
         for(int c = 0; c < imageWidth; c ++){
@@ -328,32 +394,32 @@ public class SkystoneImageProcessor {
         return toReturn;
     }
 
-    public boolean checkIfBlack(float [] hsl){
+    public boolean checkIfBlack(float [] hsl) {
         if (hsl[0] > 0 && hsl[0] < 360) {
-            if (hsl[2] < .14) {
+            if (hsl[2] < .19) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean checkIfYellow(float [] hsl){
+    public boolean checkIfYellow(float [] hsl) {
         if (hsl[0] > 0 || hsl[0] < 360) {
-            if (hsl[1] > .66) {
-                if (hsl[2] > .63) {
+            if (hsl[1] > .64) {
+                if (hsl[2] > .40 && hsl[2] < .76) {
                     return true;
                 }
             }
         }
         return false;
     }
-    public boolean checkIfBlack(int color){
+    public boolean checkIfBlack(int color) {
         float [] hsl = new float[3];
         Color.colorToHSV(color,hsl);
         return checkIfBlack(hsl);
     }
     
-    public boolean checkIfYellow(int color){
+    public boolean checkIfYellow(int color) {
         float [] hsl = new float[3];
         Color.colorToHSV(color,hsl);
         return checkIfYellow(hsl);

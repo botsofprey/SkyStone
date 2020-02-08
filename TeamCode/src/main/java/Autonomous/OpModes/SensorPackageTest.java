@@ -42,6 +42,7 @@ import SensorHandlers.LimitSwitch;
 import SensorHandlers.SensorPackage;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.METER;
 
 @Autonomous(name="Sensor Package Test", group="Testers")
 //@Disabled
@@ -64,10 +65,10 @@ public class SensorPackageTest extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
 //            telemetry.addData("Left Sensor", sensors.getSensor(LIDARSensor.class, "left"));
-            telemetry.addData("Left Dist", sensors.getSensor(LIDARSensor.class, "left").getDistance(INCH));
+            telemetry.addData("Left Dist", sensors.getSensor(LIDARSensor.class, "left").getDistance(METER));
 //            telemetry.addData("Back Sensor", sensors.getSensor(LIDARSensor.class, "back"));
-            telemetry.addData("Back Dist", sensors.getSensor(LIDARSensor.class, "back").getDistance(INCH));
-            telemetry.addData("Right Dist", sensors.getSensor(LIDARSensor.class, "right").getDistance(INCH));
+            telemetry.addData("Back Dist", sensors.getSensor(LIDARSensor.class, "back").getDistance(METER));
+            telemetry.addData("Right Dist", sensors.getSensor(LIDARSensor.class, "right").getDistance(METER));
             telemetry.addData("Lift Reset", sensors.getSensor(LimitSwitch.class, "liftReset").isPressed());
             telemetry.update();
         }

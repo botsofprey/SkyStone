@@ -40,7 +40,7 @@ import DriveEngine.JennyNavigation;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
 @Autonomous(name="Drive Distance", group="Testers")
-@Disabled
+//@Disabled
 public class DriveDistanceTest extends LinearOpMode {
     // create objects and locally global variables here
 
@@ -65,17 +65,7 @@ public class DriveDistanceTest extends LinearOpMode {
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
 
-        telemetry.addData("Starting Orientation", "" + robot.getOrientation());
-
-//        robot.driveDistance(20,0,15,this);
-//        sleep(1000);
-//        robot.driveDistance(30, 90, 15, this);
-        while(back.getDistance(INCH) < 10) {
-            robot.driveOnHeadingPID(0, 25, 0, this);
-        }
-        robot.brake();
-
-        telemetry.addData("Final Orientation", "" + robot.getOrientation());
+        robot.driveDistanceAccelerationBased(36, 0, 35, this);
 
         robot.stopNavigation();
 
