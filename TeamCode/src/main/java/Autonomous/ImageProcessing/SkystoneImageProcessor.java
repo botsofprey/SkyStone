@@ -159,11 +159,9 @@ public class SkystoneImageProcessor {
         ArrayList<Integer> columnBounds = new ArrayList<>();
         if(columnsWithRequiredYellowPercent.size() > 0) {
             columnBounds.add(columnsWithRequiredYellowPercent.get(0));
-            columnBounds.add(columnsWithRequiredYellowPercent.get(STONE_WIDTH_PIXELS-1));
-            if(columnsWithRequiredYellowPercent.size() > STONE_WIDTH_PIXELS) {
-                columnBounds.add(columnsWithRequiredYellowPercent.get(STONE_WIDTH_PIXELS));
-                columnBounds.add(columnsWithRequiredYellowPercent.get(STONE_WIDTH_PIXELS * 2 - 2));
-            }
+            columnBounds.add(columnsWithRequiredYellowPercent.get(columnsWithRequiredYellowPercent.size()/2-1));
+            columnBounds.add(columnsWithRequiredYellowPercent.get(columnsWithRequiredYellowPercent.size()/2));
+            columnBounds.add(columnsWithRequiredYellowPercent.get(columnsWithRequiredYellowPercent.size()-1));
         }
 
         return columnBounds;
@@ -271,19 +269,11 @@ public class SkystoneImageProcessor {
     }
 
     public int getSkystoneRelativePosition(Bitmap bmp) {
-        int width = bmp.getWidth(), height = bmp.getHeight();
-        int newHeight = (int)(1.0/2.0 * height);
-        int[] pixels = new int[width * height];
-        bmp.getPixels(pixels, 0, width, 0, (int)((1.0/2.0)*height), width, newHeight);
-        int[] columnFrequencies = collapseVerticallyByBlackCount(pixels, DESIRED_WIDTH, DESIRED_HEIGHT);
-        ArrayList<Integer> columnsWithRequiredPercent = getColumnsWithRequiredBlackCount(columnFrequencies);
-        ArrayList<Integer> skystoneBounds = getColumnBounds(columnsWithRequiredPercent);
-        int skystoneCenter = getColumnCenters(skystoneBounds).get(0);
+        colorToFind = STONE_COLOR.BLACK;
+        int skystoneCenter = findColumns(bmp, false).get(0);
 
-        int[] yellowFrequencies = collapseVerticallyByYellowCount(pixels, DESIRED_WIDTH, DESIRED_HEIGHT);
-        ArrayList<Integer> columnsWithRequiredYellow = getColumnsWithRequiredBlackCount(yellowFrequencies);
-        ArrayList<Integer> stoneBounds = getYellowColumnBounds(columnsWithRequiredYellow);
-        ArrayList<Integer> stoneCenters = getColumnCenters(stoneBounds);
+        colorToFind = STONE_COLOR.YELLOW;
+        ArrayList<Integer> stoneCenters = findColumns(bmp, false);
 
         if(skystoneCenter > stoneCenters.get(1)) {
             return RIGHT;
@@ -396,7 +386,7 @@ public class SkystoneImageProcessor {
 
     public boolean checkIfBlack(float [] hsl) {
         if (hsl[0] > 0 && hsl[0] < 360) {
-            if (hsl[2] < .19) {
+            if (hsl[2] < 0.45) {
                 return true;
             }
         }
@@ -406,7 +396,7 @@ public class SkystoneImageProcessor {
     public boolean checkIfYellow(float [] hsl) {
         if (hsl[0] > 0 || hsl[0] < 360) {
             if (hsl[1] > .64) {
-                if (hsl[2] > .40 && hsl[2] < .76) {
+                if (hsl[2] > .5) {
                     return true;
                 }
             }

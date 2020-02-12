@@ -43,6 +43,7 @@ import Autonomous.VuforiaHelper;
 import DriveEngine.JennyNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.METER;
 
 @Autonomous(name="Detect Skystone From Wall", group="Competition")
 //@Disabled
@@ -54,7 +55,7 @@ public class DetectSkystoneFromWall extends LinearOpMode {
     SkystoneImageProcessor stoneFinder;
     DistanceSensor back, right, left;
     MiscellaneousActionsV2 otherActions;
-
+    static final double LEFT_DIST = .48, BACK_DIST = .91, CENTER_DIST = .73, RIGHT_DIST = .91; //LEFT .54 LEAVE THIS COMMENT FOR NOW PLEASE
     @Override
     public void runOpMode() {
         // initialize objects and variables here
@@ -101,10 +102,34 @@ public class DetectSkystoneFromWall extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
+        //TODO: should we only drop if we found skystone?
         if(opModeIsActive()) sss.setCentralGripperDegree(StoneStackingSystemV3.CENTRAL_ARM_GRAB);
         sleep(500);
         if(opModeIsActive()) sss.setCentralGripperDegree(StoneStackingSystemV3.CENTRAL_ARM_RELEASE);
 
+        //TODO: Implementing PID to LIDAR Sensors soon...
+
+        // FOR RED
+        // LEFT: .54 m
+        // RIGHT: .91 m
+
+        if(posStr.equals("CENTER"))while(back.getDistance(METER) < .91) robot.driveOnHeadingPID(JennyNavigation.FORWARD, 25, this);
+        else if (posStr.equals("LEFT")){
+            while(back.getDistance(METER) < .91 && left.getDistance(METER) > LEFT_DIST){
+                robot.driveOnHeadingPID(Math.toDegrees(Math.atan2(LEFT_DIST - CENTER_DIST, BACK_DIST)), 25, this);
+            }
+        }
+        else if (posStr.equals("RIGHT")){
+            while(back.getDistance(METER) < .91 && left.getDistance(METER) < RIGHT_DIST){
+                robot.driveOnHeadingPID(Math.toDegrees(Math.atan2(RIGHT_DIST - CENTER_DIST, BACK_DIST)), 25, this);
+
+            }
+        }
+        robot.brake();
+        //else check again
+        telemetry.addData("Angle L: ", Math.atan2(LEFT_DIST - CENTER_DIST, BACK_DIST));
+        telemetry.addData("Angle R: ", Math.atan2(RIGHT_DIST - CENTER_DIST, BACK_DIST));
+        telemetry.update();
 //        double distToWall = left.getDistance(INCH);
 //        if (distToWall > STONE_ONE_LEFT) { //
 //            while (opModeIsActive() && left.getDistance(INCH) > DIST_STONE_ONE_LEFT) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this); // STONE 1 LEFT

@@ -80,7 +80,7 @@ public class RedReset extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
-        while(opModeIsActive() && (left.getDistance(INCH) < 42 || left.getDistance(INCH) > 50)){
+        while(opModeIsActive() && (left.getDistance(INCH) < 28.75 || left.getDistance(INCH) > 50)){
             if(left.getDistance(INCH) < 42)
                 robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20,0,this);
             if(left.getDistance(INCH) > 50)

@@ -42,9 +42,9 @@ import DriveEngine.JennyNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
-@Autonomous(name="FoundationRed", group="Competition")
+@Autonomous(name="FoundationBlue", group="Competition")
 //@Disabled
-public class FoundationRed extends LinearOpMode {
+public class FoundationBlue extends LinearOpMode {
     // create objects and locally global variables here
     JennyNavigation robot;
     DistanceSensor back, right, left;
@@ -80,15 +80,15 @@ public class FoundationRed extends LinearOpMode {
 
 
         sss.setLiftPosition(5);
-        while(right.getDistance(INCH) > 18) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 25,this);
+        while(left.getDistance(INCH) > 18) robot.driveOnHeadingPID(JennyNavigation.LEFT, 25,this);
         robot.brake();
         while(back.getDistance(INCH) < 20) robot.driveOnHeadingPID(JennyNavigation.FORWARD, 25,this);
         robot.brake();
-        while(back.getDistance(INCH) < 33.5) robot.driveOnHeadingPID(JennyNavigation.FORWARD, 15, this);
+        while(back.getDistance(INCH) < 36) robot.driveOnHeadingPID(JennyNavigation.FORWARD, 15, this);
         robot.brake();
         otherActions.grabFoundation();
         sleep(750);
-        robot.driveOnHeadingWithTurning(200,0.5,.2);
+        robot.driveOnHeadingWithTurning(160,0.5,-.2);
         sleep(1750);
         robot.brake();
         otherActions.grabFoundation();
