@@ -33,9 +33,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Actions.MiscellaneousActionsV2;
-import Actions.StoneStackingSystemV3;
-import Autonomous.Location;
-import DriveEngine.JennyNavigation;
 
 @Autonomous(name="Wall Park", group="Competition")
 //@Disabled

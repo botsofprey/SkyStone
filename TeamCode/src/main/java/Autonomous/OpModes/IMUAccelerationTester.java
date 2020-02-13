@@ -34,20 +34,20 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Autonomous.Location;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 import UserControlled.JoystickHandler;
 
 @Autonomous(name="Accelerometer Tester", group="Testers")
 @Disabled
 public class IMUAccelerationTester extends LinearOpMode {
-    JennyNavigation navigation;
+    AnnieNavigation navigation;
     JoystickHandler leftStick, rightStick;
     double[] accelerations = new double[3];
 
     @Override
     public void runOpMode() {
         try {
-            navigation = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            navigation = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }

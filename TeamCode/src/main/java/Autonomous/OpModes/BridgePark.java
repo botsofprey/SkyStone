@@ -34,9 +34,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import Actions.MiscellaneousActionsV2;
-import Actions.StoneStackingSystemV3;
 import Autonomous.Location;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
@@ -44,7 +43,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.I
 //@Disabled
 public class BridgePark extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
+    AnnieNavigation robot;
     DistanceSensor left, right;
     MiscellaneousActionsV2 otherActions;
     @Override
@@ -53,7 +52,7 @@ public class BridgePark extends LinearOpMode {
         // also create and initialize function local variables here
         otherActions = new MiscellaneousActionsV2(hardwareMap);
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,7 +65,7 @@ public class BridgePark extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
-        robot.driveDistance(24, (left.getDistance(INCH) < right.getDistance(INCH))? JennyNavigation.RIGHT:JennyNavigation.LEFT,25,this);
+        robot.driveDistance(24, (left.getDistance(INCH) < right.getDistance(INCH))? AnnieNavigation.RIGHT: AnnieNavigation.LEFT,25,this);
         otherActions.spitTape();
         sleep(300);
         otherActions.pauseTape();

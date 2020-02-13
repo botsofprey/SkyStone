@@ -40,16 +40,15 @@ import Actions.StoneStackingSystemV3;
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
 import Autonomous.VuforiaHelper;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.METER;
 
 @Autonomous(name="Detect Skystone From Wall", group="Competition")
 //@Disabled
 public class DetectSkystoneFromWall extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
+    AnnieNavigation robot;
     StoneStackingSystemV3 sss;
     VuforiaHelper vuforia;
     SkystoneImageProcessor stoneFinder;
@@ -69,7 +68,7 @@ public class DetectSkystoneFromWall extends LinearOpMode {
         otherActions = new MiscellaneousActionsV2(hardwareMap);
 
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,27 +77,30 @@ public class DetectSkystoneFromWall extends LinearOpMode {
         vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT);
         sleep(100);
         // Stone detection
-        int pos = stoneFinder.getSkystoneRelativePosition(vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT));
 
-        String posStr = "";
-        switch (pos) {
-            case SkystoneImageProcessor.LEFT:
-                posStr = "LEFT";
-                break;
-            case SkystoneImageProcessor.CENTER:
-                posStr = "CENTER";
-                break;
-            case SkystoneImageProcessor.RIGHT:
-                posStr = "RIGHT";
-                break;
-            default:
-                posStr = "NOT FOUND";
-                break;
+        while(!opModeIsActive()) {
+            int pos = stoneFinder.getSkystoneRelativePosition(vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT));
+            String posStr = "";
+            switch (pos) {
+                case SkystoneImageProcessor.LEFT:
+                    posStr = "LEFT";
+                    break;
+                case SkystoneImageProcessor.CENTER:
+                    posStr = "CENTER";
+                    break;
+                case SkystoneImageProcessor.RIGHT:
+                    posStr = "RIGHT";
+                    break;
+                default:
+                    posStr = "NOT FOUND";
+                    break;
+            }
+            telemetry.addData("Skystone position", posStr);
+            // add any other useful telemetry data or logging data here
+            telemetry.addData("Status", "Initialized");
+            telemetry.addData("Op Mode", opModeIsActive());
+            telemetry.update();
         }
-        telemetry.addData("Skystone position", posStr);
-        // add any other useful telemetry data or logging data here
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
         // nothing goes between the above and below lines
         waitForStart();
 
@@ -107,24 +109,25 @@ public class DetectSkystoneFromWall extends LinearOpMode {
         sleep(500);
         if(opModeIsActive()) sss.setCentralGripperDegree(StoneStackingSystemV3.CENTRAL_ARM_RELEASE);
 
-        //TODO: Implementing PID to LIDAR Sensors soon...
-
         // FOR RED
         // LEFT: .54 m
         // RIGHT: .91 m
 
-        if(posStr.equals("CENTER"))while(back.getDistance(METER) < .91) robot.driveOnHeadingPID(JennyNavigation.FORWARD, 25, this);
-        else if (posStr.equals("LEFT")){
-            while(back.getDistance(METER) < .91 && left.getDistance(METER) > LEFT_DIST){
-                robot.driveOnHeadingPID(Math.toDegrees(Math.atan2(LEFT_DIST - CENTER_DIST, BACK_DIST)), 25, this);
-            }
-        }
-        else if (posStr.equals("RIGHT")){
-            while(back.getDistance(METER) < .91 && left.getDistance(METER) < RIGHT_DIST){
-                robot.driveOnHeadingPID(Math.toDegrees(Math.atan2(RIGHT_DIST - CENTER_DIST, BACK_DIST)), 25, this);
-
-            }
-        }
+        //TODO: Don't you need to initialize the turnController before using driveOnHeading? -- Mr. McDonald
+        //Example: robot.turnController.setSp(robot.getOrientation());
+//        if (posStr.equals("CENTER")) {
+//            while (back.getDistance(METER) < .91 && opModeIsActive()) {
+//                robot.driveOnHeadingPID(AnnieNavigation.FORWARD, 25, this);
+//            }
+//        } else if (posStr.equals("LEFT")) {
+//            while (back.getDistance(METER) < .91 && left.getDistance(METER) > LEFT_DIST && opModeIsActive()) {
+//                robot.driveOnHeadingPID(Math.toDegrees(Math.atan2(LEFT_DIST - CENTER_DIST, BACK_DIST)), 25, this);
+//            }
+//        } else if (posStr.equals("RIGHT")) {
+//            while (back.getDistance(METER) < .91 && left.getDistance(METER) < RIGHT_DIST && opModeIsActive()) {
+//                robot.driveOnHeadingPID(Math.toDegrees(Math.atan2(RIGHT_DIST - CENTER_DIST, BACK_DIST)), 25, this);
+//            }
+//        }
         robot.brake();
         //else check again
         telemetry.addData("Angle L: ", Math.atan2(LEFT_DIST - CENTER_DIST, BACK_DIST));
@@ -132,27 +135,27 @@ public class DetectSkystoneFromWall extends LinearOpMode {
         telemetry.update();
 //        double distToWall = left.getDistance(INCH);
 //        if (distToWall > STONE_ONE_LEFT) { //
-//            while (opModeIsActive() && left.getDistance(INCH) > DIST_STONE_ONE_LEFT) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this); // STONE 1 LEFT
+//            while (opModeIsActive() && left.getDistance(INCH) > DIST_STONE_ONE_LEFT) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, this); // STONE 1 LEFT
 //            telemetry.addData("first stone", "move left");
 //            telemetry.update();
 //        } else if (distToWall > STONE_ONE_RIGHT) { //
-//            while (opModeIsActive() && left.getDistance(INCH) < DIST_STONE_ONE_RIGHT) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 1 RIGHT
+//            while (opModeIsActive() && left.getDistance(INCH) < DIST_STONE_ONE_RIGHT) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, this);// STONE 1 RIGHT
 //            telemetry.addData("first stone", "move right");
 //            telemetry.update();
 //        } else if (distToWall > STONE_TWO_RIGHT) { //
-//            while (opModeIsActive() && left.getDistance(INCH) < DIST_STONE_TWO_RIGHT) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 2 RIGHT
+//            while (opModeIsActive() && left.getDistance(INCH) < DIST_STONE_TWO_RIGHT) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, this);// STONE 2 RIGHT
 //            telemetry.addData("second stone", "move right");
 //            telemetry.update();
 //        } else if (distToWall > STONE_TWO_LEFT) { //
-//            while (opModeIsActive() && left.getDistance(INCH) > DIST_STONE_TWO_LEFT) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 2 LEFT
+//            while (opModeIsActive() && left.getDistance(INCH) > DIST_STONE_TWO_LEFT) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, this);// STONE 2 LEFT
 //            telemetry.addData("second stone", "move left");
 //            telemetry.update();
 //        } else if (distToWall > STONE_THREE_LEFT) { //
-//            while (opModeIsActive() && left.getDistance(INCH) > DIST_STONE_THREE_LEFT) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 3 LEFT
+//            while (opModeIsActive() && left.getDistance(INCH) > DIST_STONE_THREE_LEFT) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, this);// STONE 3 LEFT
 //            telemetry.addData("third stone", "move left");
 //            telemetry.update();
 //        } else if (distToWall > STONE_THREE_RIGHT) { //
-//            while (opModeIsActive() && left.getDistance(INCH) < DIST_STONE_THREE_RIGHT) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 3 RIGHT
+//            while (opModeIsActive() && left.getDistance(INCH) < DIST_STONE_THREE_RIGHT) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, this);// STONE 3 RIGHT
 //            telemetry.addData("third stone", "move right");
 //            telemetry.update();
 //        }
@@ -165,14 +168,14 @@ public class DetectSkystoneFromWall extends LinearOpMode {
 //        robot.brake();
 //
 ////        Drive to foundation
-//        robot.driveDistance(42, JennyNavigation.RIGHT,35,this);
+//        robot.driveDistance(42, AnnieNavigation.RIGHT,35,this);
 //
 ////        sss.liftToPosition(1); // For foundation dropping
 //        while (opModeIsActive() && right.getDistance(INCH) > 31) {
-//            robot.driveOnHeadingPID(JennyNavigation.RIGHT, 30, 0, this);
+//            robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 30, 0, this);
 //        }
 ////        while (opModeIsActive() && back.getDistance(INCH) > 38) {  // For foundation dropping
-////            robot.driveOnHeadingPID(JennyNavigation.FORWARD, 30, 0, this);
+////            robot.driveOnHeadingPID(AnnieNavigation.FORWARD, 30, 0, this);
 ////        }
 //
 //        sss.releaseStoneCenter();
@@ -180,24 +183,24 @@ public class DetectSkystoneFromWall extends LinearOpMode {
 //
 //        //Second stone
 //        while(opModeIsActive() && left.getDistance(INCH) > 24) {
-//            robot.driveOnHeadingPID(JennyNavigation.LEFT, 35, 0, this);
+//            robot.driveOnHeadingPID(AnnieNavigation.LEFT, 35, 0, this);
 //        }
 //        robot.brake();
 //
 //        //DUPLICATE CODE
 ////        if(distToWall > STONE_FOUR) { // first stone
-////            while(opModeIsActive() && left.getDistance(INCH) > DIST_STONE_FOUR) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, 0, this);
+////            while(opModeIsActive() && left.getDistance(INCH) > DIST_STONE_FOUR) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, 0, this);
 ////        } else if(distToWall > STONE_FIVE) { // second stone
-////            while(opModeIsActive() && left.getDistance(INCH) > DIST_STONE_FIVE) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, 0, this);
+////            while(opModeIsActive() && left.getDistance(INCH) > DIST_STONE_FIVE) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, 0, this);
 ////        } else if(distToWall > STONE_SIX) { // third stone
-////            while(opModeIsActive() && left.getDistance(INCH) > 13.3) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, 0, this);
+////            while(opModeIsActive() && left.getDistance(INCH) > 13.3) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, 0, this);
 ////        }
 ////        robot.brake();
 //
 ////        Grab skystone
 ////        for(int i = 0; i < 3; i++) {
 //        while (opModeIsActive() && back.getDistance(INCH) < 36) { //Check this later
-//            robot.driveOnHeadingPID(JennyNavigation.FORWARD, 15, 0, this);
+//            robot.driveOnHeadingPID(AnnieNavigation.FORWARD, 15, 0, this);
 //        }
 ////        }
 //        robot.brake();
@@ -208,10 +211,10 @@ public class DetectSkystoneFromWall extends LinearOpMode {
 //        robot.brake();
 //
 ////        Drive to foundation
-//        robot.driveDistance(42,JennyNavigation.RIGHT,35,this);
+//        robot.driveDistance(42,AnnieNavigation.RIGHT,35,this);
 //
 //        while (opModeIsActive() && right.getDistance(INCH) > 31) {
-//            robot.driveOnHeadingPID(JennyNavigation.RIGHT, 30, 0, this);
+//            robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 30, 0, this);
 //        }
 //        sss.releaseStoneCenter();
 //        robot.brake();
@@ -222,7 +225,7 @@ public class DetectSkystoneFromWall extends LinearOpMode {
 
 
         //FOUNDATION
-        while(opModeIsActive() && right.getDistance(INCH) > 48) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, this);
+        while(opModeIsActive() && right.getDistance(INCH) > 48) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 15, this);
         robot.brake();
 
 //        robot.turnToHeading(180, this);
@@ -233,7 +236,7 @@ public class DetectSkystoneFromWall extends LinearOpMode {
 
         robot.turnController.setSp(robot.getOrientation());
         while (opModeIsActive() && left.getDistance(INCH) < 31){
-            robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, 0, this);
+            robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 15, 0, this);
 //
 ////                telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
 //                telemetry.addData("Right", Double.toString(right.getDistance(INCH)));

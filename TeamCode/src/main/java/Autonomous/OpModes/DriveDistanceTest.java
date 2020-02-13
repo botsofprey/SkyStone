@@ -30,21 +30,18 @@
 package Autonomous.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import Autonomous.Location;
-import DriveEngine.JennyNavigation;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
+import DriveEngine.AnnieNavigation;
 
 @Autonomous(name="Drive Distance", group="Testers")
 //@Disabled
 public class DriveDistanceTest extends LinearOpMode {
     // create objects and locally global variables here
 
-    JennyNavigation robot;
+    AnnieNavigation robot;
     DistanceSensor back;
 
     @Override
@@ -52,7 +49,7 @@ public class DriveDistanceTest extends LinearOpMode {
         // initialize objects and variables here
         // also create and initialize function local variables here
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }

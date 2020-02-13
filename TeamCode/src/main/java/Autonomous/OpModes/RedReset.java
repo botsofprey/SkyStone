@@ -29,22 +29,14 @@
 
 package Autonomous.OpModes;
 
-import android.graphics.Bitmap;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import java.util.ArrayList;
-
-import Actions.MiscellaneousActionsV2;
-import Actions.StoneStackingSystemV3;
-import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
-import Autonomous.VuforiaHelper;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
@@ -52,7 +44,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.I
 //@Disabled
 public class RedReset extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
+    AnnieNavigation robot;
     DistanceSensor back, right, left;
 
 
@@ -66,7 +58,7 @@ public class RedReset extends LinearOpMode {
         left = hardwareMap.get(DistanceSensor.class, "left");
 
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,12 +74,12 @@ public class RedReset extends LinearOpMode {
 
         while(opModeIsActive() && (left.getDistance(INCH) < 28.75 || left.getDistance(INCH) > 50)){
             if(left.getDistance(INCH) < 42)
-                robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20,0,this);
+                robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20,0,this);
             if(left.getDistance(INCH) > 50)
-                robot.driveOnHeadingPID(JennyNavigation.LEFT, 20,0,this);
+                robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20,0,this);
         }
         while(opModeIsActive() && back.getDistance(INCH) > 6){
-            robot.driveOnHeadingPID(JennyNavigation.BACK, 20,0,this);
+            robot.driveOnHeadingPID(AnnieNavigation.BACK, 20,0,this);
         }
         robot.stopNavigation();
 //        VuforiaHelper.kill(); -- this crashes the app...

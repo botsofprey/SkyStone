@@ -33,19 +33,19 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Autonomous.Location;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 
 @Autonomous(name="AccelTest", group="Testers")
 //@Disabled
 public class AccelTest extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
+    AnnieNavigation robot;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }

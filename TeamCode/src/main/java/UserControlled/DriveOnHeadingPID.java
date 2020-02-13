@@ -32,23 +32,20 @@ package UserControlled;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.Range;
 
 import Autonomous.Location;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 
 @TeleOp(name="Drive On Heading PID test", group="Testers")
 @Disabled
 public class DriveOnHeadingPID extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
+    AnnieNavigation robot;
 
     @Override
     public void runOpMode() {
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }

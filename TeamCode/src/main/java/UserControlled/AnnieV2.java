@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import Actions.MiscellaneousActionsV2;
 import Actions.StoneStackingSystemV3;
 import Autonomous.Location;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 import SensorHandlers.LIDARSensor;
 import SensorHandlers.LimitSwitch;
 import SensorHandlers.SensorPackage;
@@ -46,7 +46,7 @@ import SensorHandlers.SensorPackage;
 //@Disabled
 public class AnnieV2 extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
+    AnnieNavigation robot;
     StoneStackingSystemV3 sss;
     MiscellaneousActionsV2 otherActions;
     SensorPackage sensors;
@@ -62,7 +62,7 @@ public class AnnieV2 extends LinearOpMode {
         // initialize objects and variables here
         // also create and initialize function local variables here
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }

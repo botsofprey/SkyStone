@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import Autonomous.Location;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
@@ -43,7 +43,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.I
 @Disabled
 public class DriveToStartingSpot extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
+    AnnieNavigation robot;
     DistanceSensor back, right, left;
     @Override
     public void runOpMode() {
@@ -53,7 +53,7 @@ public class DriveToStartingSpot extends LinearOpMode {
         right = hardwareMap.get(DistanceSensor.class, "right");
         left = hardwareMap.get(DistanceSensor.class, "left");
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,7 +67,7 @@ public class DriveToStartingSpot extends LinearOpMode {
         // assumes robot is facing forward, and starts by going backwards
         double distToWall = back.getDistance(INCH);
         while (opModeIsActive() && distToWall > 5) {
-            robot.driveOnHeadingPID(JennyNavigation.BACK, 15, 0, this);
+            robot.driveOnHeadingPID(AnnieNavigation.BACK, 15, 0, this);
             distToWall = back.getDistance(INCH);
         }
         robot.brake();
@@ -75,7 +75,7 @@ public class DriveToStartingSpot extends LinearOpMode {
         // goes left to required distance from wall
         distToWall = left.getDistance(INCH);
         while(opModeIsActive() && distToWall > 50) {
-            robot.driveOnHeadingPID(JennyNavigation.LEFT, 15, 0, this);
+            robot.driveOnHeadingPID(AnnieNavigation.LEFT, 15, 0, this);
             distToWall = left.getDistance(INCH);
         }
         robot.brake();

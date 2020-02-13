@@ -30,20 +30,17 @@
 package Autonomous.OpModes;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import Autonomous.Location;
 import java.util.ArrayList;
 
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.VuforiaHelper;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
@@ -53,7 +50,7 @@ public class CenterToSkystoneTest extends LinearOpMode {
     // create objects and locally global variables here
     SkystoneImageProcessor stoneFinder;
     VuforiaHelper vuforia;
-    JennyNavigation robot;
+    AnnieNavigation robot;
     DistanceSensor back, right, left;
 
     @Override
@@ -68,7 +65,7 @@ public class CenterToSkystoneTest extends LinearOpMode {
         left = hardwareMap.get(DistanceSensor.class, "left");
         stoneFinder = new SkystoneImageProcessor(SkystoneImageProcessor.DESIRED_HEIGHT, SkystoneImageProcessor.DESIRED_WIDTH,.1,1, SkystoneImageProcessor.STONE_COLOR.BLACK);
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,11 +77,11 @@ public class CenterToSkystoneTest extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 //        turn((clockwise) ? -rps : rps);
-        robot.driveDistance(15, JennyNavigation.FORWARD, 20, this);
+        robot.driveDistance(15, AnnieNavigation.FORWARD, 20, this);
         // rough center...
         boolean skystoneFound = false;
         while (opModeIsActive() && right.getDistance(INCH) > 5.5) {
-            if(!skystoneFound) robot.driveOnHeadingPID(JennyNavigation.RIGHT,10, this);  //NOTE: MOVING RIGHT
+            if(!skystoneFound) robot.driveOnHeadingPID(AnnieNavigation.RIGHT,10, this);  //NOTE: MOVING RIGHT
             Bitmap bmp = null;
             ArrayList<Integer> blockCenters;
             long timeStart = System.currentTimeMillis();
@@ -106,34 +103,34 @@ public class CenterToSkystoneTest extends LinearOpMode {
 
         telemetry.addData("dist to wall", distToWall);
         if (distToWall > 42) { // good
-            while (opModeIsActive() && right.getDistance(INCH) > 41.50) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this); // STONE 1 RIGHT
+            while (opModeIsActive() && right.getDistance(INCH) > 41.50) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, this); // STONE 1 RIGHT
             telemetry.addData("first stone", "move right");
             telemetry.update();
         } else if (distToWall > 35.0) { // good
-            while (opModeIsActive() && right.getDistance(INCH) < 38.50) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 1 LEFT
+            while (opModeIsActive() && right.getDistance(INCH) < 38.50) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, this);// STONE 1 LEFT
             telemetry.addData("first stone", "move left");
             telemetry.update();
         } else if (distToWall > 32.5) { // good for now
-            while (opModeIsActive() && right.getDistance(INCH) > 37.25) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 2 RIGHT
+            while (opModeIsActive() && right.getDistance(INCH) > 37.25) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, this);// STONE 2 RIGHT
             telemetry.addData("second stone", "move right");
             telemetry.update();
         } else if (distToWall > 28) { // keep testing
-            while (opModeIsActive() && right.getDistance(INCH) < 30.00) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 2 LEFT
+            while (opModeIsActive() && right.getDistance(INCH) < 30.00) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, this);// STONE 2 LEFT
             telemetry.addData("second stone", "move left");
             telemetry.update();
         } else if (distToWall > 24) { // keep testing
-            while (opModeIsActive() && right.getDistance(INCH) > 24.50) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 3 RIGHT
+            while (opModeIsActive() && right.getDistance(INCH) > 24.50) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, this);// STONE 3 RIGHT
             telemetry.addData("third stone", "move right");
             telemetry.update();
         } else if (distToWall > 19.5) { // keep testing
-            while (opModeIsActive() && right.getDistance(INCH) < 24.50) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 3 LEFT
+            while (opModeIsActive() && right.getDistance(INCH) < 24.50) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, this);// STONE 3 LEFT
             telemetry.addData("third stone", "move left");
             telemetry.update();
         }
         robot.brake();
 
         while(opModeIsActive() && back.getDistance(INCH) < 28.0) {
-            robot.driveOnHeadingPID(JennyNavigation.FORWARD,15,0,this);
+            robot.driveOnHeadingPID(AnnieNavigation.FORWARD,15,0,this);
         }
         robot.brake();
         while (opModeIsActive());

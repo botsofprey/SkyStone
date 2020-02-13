@@ -36,15 +36,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import Autonomous.Location;
-import DriveEngine.JennyNavigation;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
+import DriveEngine.AnnieNavigation;
 
 @Autonomous(name="RotateTest", group="Competition")
 //@Disabled
 public class RotateTest extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
+    AnnieNavigation robot;
     DistanceSensor back, right, left;
 
 
@@ -58,7 +56,7 @@ public class RotateTest extends LinearOpMode {
         left = hardwareMap.get(DistanceSensor.class, "left");
 
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }

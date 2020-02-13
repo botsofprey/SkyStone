@@ -44,7 +44,7 @@ import Actions.StoneStackingSystemV3;
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
 import Autonomous.VuforiaHelper;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
@@ -52,7 +52,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.I
 //@Disabled
 public class AnnieV2AutoBlue extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
+    AnnieNavigation robot;
     StoneStackingSystemV3 sss;
     VuforiaHelper vuforia;
     SkystoneImageProcessor stoneFinder;
@@ -72,7 +72,7 @@ public class AnnieV2AutoBlue extends LinearOpMode {
         otherActions = new MiscellaneousActionsV2(hardwareMap);
 
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -91,7 +91,7 @@ public class AnnieV2AutoBlue extends LinearOpMode {
         sleep(500);
         if(opModeIsActive()) sss.setCentralGripperDegree(StoneStackingSystemV3.CENTRAL_ARM_RELEASE);
 
-        robot.driveDistance(7, JennyNavigation.FORWARD, 20, this);
+        robot.driveDistance(7, AnnieNavigation.FORWARD, 20, this);
 
 
         // NEW SKYSTONE SEARCHING ALGORITHM!!!
@@ -100,7 +100,7 @@ public class AnnieV2AutoBlue extends LinearOpMode {
 //        Search for skystone and break if found
         boolean skystoneFound = false;
         while (opModeIsActive() && right.getDistance(INCH) > 5.5) {
-            if(!skystoneFound) robot.driveOnHeadingPID(JennyNavigation.RIGHT,10, this);  //NOTE: MOVING RIGHT
+            if(!skystoneFound) robot.driveOnHeadingPID(AnnieNavigation.RIGHT,10, this);  //NOTE: MOVING RIGHT
             Bitmap bmp = null;
             ArrayList<Integer> blockCenters;
             long timeStart = System.currentTimeMillis();
@@ -121,33 +121,33 @@ public class AnnieV2AutoBlue extends LinearOpMode {
 
 //      Grab skystone
         while (opModeIsActive() && back.getDistance(INCH) < 32) {
-            robot.driveOnHeadingPID(JennyNavigation.FORWARD, 15, 0, this);
+            robot.driveOnHeadingPID(AnnieNavigation.FORWARD, 15, 0, this);
         }
         robot.brake();
 
         double distToWall = right.getDistance(INCH);
         if (distToWall > 42) { // good
-            while (opModeIsActive() && right.getDistance(INCH) > 43) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this); // STONE 1 RIGHT
+            while (opModeIsActive() && right.getDistance(INCH) > 43) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, this); // STONE 1 RIGHT
             telemetry.addData("first stone", "move right");
             telemetry.update();
         } else if (distToWall > 36.4) { // good
-            while (opModeIsActive() && right.getDistance(INCH) < 40.50) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 1 LEFT
+            while (opModeIsActive() && right.getDistance(INCH) < 40.50) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, this);// STONE 1 LEFT
             telemetry.addData("first stone", "move left");
             telemetry.update();
         } else if (distToWall > 32.5) { // good for now
-            while (opModeIsActive() && right.getDistance(INCH) > 37.25) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 2 RIGHT
+            while (opModeIsActive() && right.getDistance(INCH) > 37.25) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, this);// STONE 2 RIGHT
             telemetry.addData("second stone", "move right");
             telemetry.update();
         } else if (distToWall > 28) { // keep testing
-            while (opModeIsActive() && right.getDistance(INCH) < 30.00) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 2 LEFT
+            while (opModeIsActive() && right.getDistance(INCH) < 30.00) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, this);// STONE 2 LEFT
             telemetry.addData("second stone", "move left");
             telemetry.update();
         } else if (distToWall > 24) { // keep testing
-            while (opModeIsActive() && right.getDistance(INCH) > 25) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, this);// STONE 3 RIGHT
+            while (opModeIsActive() && right.getDistance(INCH) > 25) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, this);// STONE 3 RIGHT
             telemetry.addData("third stone", "move right");
             telemetry.update();
         } else if (distToWall > 19.5) { // keep testing
-            while (opModeIsActive() && right.getDistance(INCH) < 24.50) robot.driveOnHeadingPID(JennyNavigation.LEFT, 20, this);// STONE 3 LEFT
+            while (opModeIsActive() && right.getDistance(INCH) < 24.50) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, this);// STONE 3 LEFT
             telemetry.addData("third stone", "move left");
             telemetry.update();
         }
@@ -159,34 +159,34 @@ public class AnnieV2AutoBlue extends LinearOpMode {
         robot.brake();
 
 //        Drive to foundation
-        robot.driveDistance(42,JennyNavigation.LEFT,35,this);
+        robot.driveDistance(42, AnnieNavigation.LEFT,35,this);
 
         while (opModeIsActive() && left.getDistance(INCH) > 48) {
-            robot.driveOnHeadingPID(JennyNavigation.LEFT, 30, 0, this);
+            robot.driveOnHeadingPID(AnnieNavigation.LEFT, 30, 0, this);
         }
         sss.releaseStoneCenter();
         robot.brake();
 
         //Second stone
         while(opModeIsActive() && right.getDistance(INCH) > 24) {
-            robot.driveOnHeadingPID(JennyNavigation.RIGHT, 35, 0, this);
+            robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 35, 0, this);
         }
         robot.brake();
 
         //DUPLICATE CODE
         if(distToWall > 35.4) { // first stone
-            while(opModeIsActive() && right.getDistance(INCH) > 15.5) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
+            while(opModeIsActive() && right.getDistance(INCH) > 15.5) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, 0, this);
         } else if(distToWall > 28) { // second stone
-            while(opModeIsActive() && right.getDistance(INCH) > 8) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
+            while(opModeIsActive() && right.getDistance(INCH) > 8) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, 0, this);
         } else if(distToWall > 19.5) { // third stone
-            while(opModeIsActive() && right.getDistance(INCH) > 15.5) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 20, 0, this);
+            while(opModeIsActive() && right.getDistance(INCH) > 15.5) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 20, 0, this);
         }
         robot.brake();
 
 //        Grab skystone
 //        for(int i = 0; i < 3; i++) {
         while (opModeIsActive() && back.getDistance(INCH) < 32) {
-            robot.driveOnHeadingPID(JennyNavigation.FORWARD, 15, 0, this);
+            robot.driveOnHeadingPID(AnnieNavigation.FORWARD, 15, 0, this);
         }
 //        }
         robot.brake();
@@ -197,11 +197,11 @@ public class AnnieV2AutoBlue extends LinearOpMode {
         robot.brake();
 
 //        Drive to foundation
-        robot.driveDistance(42,JennyNavigation.LEFT,35,this);
+        robot.driveDistance(42, AnnieNavigation.LEFT,35,this);
 
-        robot.turnToHeading(JennyNavigation.FORWARD,5,this);
+        robot.turnToHeading(AnnieNavigation.FORWARD,5,this);
         while (opModeIsActive() && left.getDistance(INCH) > 48) {
-            robot.driveOnHeadingPID(JennyNavigation.LEFT, 30, 0, this);
+            robot.driveOnHeadingPID(AnnieNavigation.LEFT, 30, 0, this);
         }
         sss.releaseStoneCenter();
 
@@ -210,7 +210,7 @@ public class AnnieV2AutoBlue extends LinearOpMode {
 
 
         //FOUNDATION
-//        while(opModeIsActive() && right.getDistance(INCH) > 48) robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, this);
+//        while(opModeIsActive() && right.getDistance(INCH) > 48) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 15, this);
 //        robot.brake();
 //
 ////        robot.turnToHeading(180, this);
@@ -221,7 +221,7 @@ public class AnnieV2AutoBlue extends LinearOpMode {
 //
 //        robot.turnController.setSp(robot.getOrientation());
 //        while (opModeIsActive() && left.getDistance(INCH) < 31){
-//            robot.driveOnHeadingPID(JennyNavigation.RIGHT, 15, 0, this);
+//            robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 15, 0, this);
 ////
 //////                telemetry.addData("Left", Double.toString(left.getDistance(INCH)));
 ////                telemetry.addData("Right", Double.toString(right.getDistance(INCH)));
@@ -230,7 +230,7 @@ public class AnnieV2AutoBlue extends LinearOpMode {
 //        }
 //
 //        robot.brake();
-//        robot.driveDistance(10,JennyNavigation.RIGHT, 20,this);
+//        robot.driveDistance(10,AnnieNavigation.RIGHT, 20,this);
 
         //PARKING
         otherActions.spitTape();

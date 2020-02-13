@@ -5,7 +5,10 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.io.InputStream;
 
@@ -15,7 +18,9 @@ import Autonomous.Location;
 import MotorControllers.JsonConfigReader;
 import MotorControllers.MotorController;
 import MotorControllers.PIDController;
+import SensorHandlers.DistanceSensor;
 import SensorHandlers.ImuHandler;
+import SensorHandlers.SensorPackage;
 
 
 /**
@@ -25,7 +30,7 @@ import SensorHandlers.ImuHandler;
 /*
     The base class for every opmode --- it sets up our drive system and contains all it's funcitons
  */
-public class JennyNavigation extends Thread {
+public class AnnieNavigation extends Thread {
     public MotorController[] driveMotors = new MotorController[4];
     public static final int FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR = 0;
     public static final int FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR = 1;
@@ -51,6 +56,8 @@ public class JennyNavigation extends Thread {
     private volatile long startTime = System.nanoTime();
     private volatile HeadingVector IMUTravelVector = new HeadingVector();
     private volatile Location IMUDistance = new Location(0, 0);
+    private DistanceSensor[] distanceSensors;
+    public static final int LEFT_SENSOR = 0, BACK_SENSOR = 1, RIGHT_SENSOR = 2;
 
     private final double HEADING_THRESHOLD = 1;
     private final double WHEEL_BASE_RADIUS = 20;
@@ -61,12 +68,16 @@ public class JennyNavigation extends Thread {
     private double acceleration = 0;
     private HardwareMap hardwareMap;
 
-    public JennyNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile) throws Exception {
+    public AnnieNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile) throws Exception {
         hardwareMap = hw;
         initializeUsingConfigFile(configFile);
         orientationOffset = robotOrientationOffset;
         orientation = new ImuHandler("imu", orientationOffset, hardwareMap);
         myLocation = new Location(startLocation.getX(),startLocation.getY());
+        distanceSensors = new DistanceSensor[3];
+        distanceSensors[LEFT_SENSOR] = hardwareMap.get(DistanceSensor.class, "left");
+        distanceSensors[BACK_SENSOR] = hardwareMap.get(DistanceSensor.class, "back");
+        distanceSensors[RIGHT_SENSOR] = hardwareMap.get(DistanceSensor.class, "right");
         for(int i = 0; i < wheelVectors.length; i++){
             wheelVectors[i] = new HeadingVector();
         }
@@ -116,17 +127,60 @@ public class JennyNavigation extends Thread {
     }
 
     private void updateLocation(){
+        boolean shouldTranslateX = false, shouldTranslateY = false;
+        double expectedY, expectedX;
+        double simpleHeading = robotHeading % 360;
+        if((simpleHeading < 1 && simpleHeading > -1) ||
+                (simpleHeading < 181 && simpleHeading > 179)) {
+            if(distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) < distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) &&
+                    distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
+                expectedX = 72.0 - distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) - LEFT_SENSOR_DIST_TO_CENTER;
+                if(simpleHeading < 181 && simpleHeading > 179) expectedX *= -1;
+            } else if(distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
+                expectedX = 72.0 - distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) - RIGHT_SENSOR_DIST_TO_CENTER;
+                if(simpleHeading < 1 && simpleHeading > -1) expectedX *= -1;
+            } else {
+                shouldTranslateX = true;
+            }
+            if(distanceSensors[BACK_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
+                expectedY = 72.0 - distanceSensors[BACK_SENSOR].getDistance(DistanceUnit.INCH) - BACK_SENSOR_DIST_TO_CENTER;
+                if(simpleHeading < 1 && simpleHeading > -1) expectedY *= -1;
+            } else {
+                shouldTranslateY = true;
+            }
+        } else if((simpleHeading < 271 && simpleHeading > 269) ||
+                (simpleHeading < 91 && simpleHeading > 89)) {
+            if (distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) < distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) &&
+                    distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
+                expectedY = 72.0 - distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) - LEFT_SENSOR_DIST_TO_CENTER;
+                if (simpleHeading < 271 && simpleHeading > 269) expectedY *= -1;
+            } else if(distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
+                expectedY = 72.0 - distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) - RIGHT_SENSOR_DIST_TO_CENTER;
+                if(simpleHeading < 91 && simpleHeading > 89) expectedY *= -1;
+            } else {
+                shouldTranslateY = true;
+            }
+            if(distanceSensors[BACK_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
+                expectedX = 72.0 - distanceSensors[BACK_SENSOR].getDistance(DistanceUnit.INCH) - BACK_SENSOR_DIST_TO_CENTER;
+                if(simpleHeading < 271 && simpleHeading > 269) expectedX *= -1;
+            } else {
+                shouldTranslateX = true;
+            }
+        } else {
+            shouldTranslateX = true;
+            shouldTranslateY = true;
+        }
         HeadingVector travelVector = wheelVectors[0].addVectors(wheelVectors);
-        travelVector = new HeadingVector(travelVector.x()/2, travelVector.y()/2);
+        travelVector = new HeadingVector(travelVector.x() / 2, travelVector.y() / 2);
         double headingOfRobot = travelVector.getHeading();
         double magnitudeOfRobot = travelVector.getMagnitude();
-        double actualHeading = (headingOfRobot + robotHeading)%360;
+        double actualHeading = (headingOfRobot + robotHeading) % 360;
         robotMovementVector.calculateVector(actualHeading, magnitudeOfRobot);
         double deltaX = robotMovementVector.x();
         double deltaY = robotMovementVector.y();
-        myLocation.addXY(deltaX, deltaY);
-        Log.d("Location","X:" + myLocation.getX() + " Y:" + myLocation.getY());
-
+        if(shouldTranslateX) myLocation.addX(deltaX);
+        if(shouldTranslateY) myLocation.addY(deltaY);
+        Log.d("Location", "X:" + myLocation.getX() + " Y:" + myLocation.getY());
     }
 
     private void updateIMUTrackedDistance() {

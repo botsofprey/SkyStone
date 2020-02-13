@@ -40,7 +40,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
 import Autonomous.VisionHelper;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
@@ -48,7 +48,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.I
 //@Disabled
 public class AnnieV1AutoRed extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
+    AnnieNavigation robot;
     StoneStackingSystemV2 sss;
     VisionHelper vision;
     DistanceSensor back, right, left;
@@ -62,7 +62,7 @@ public class AnnieV1AutoRed extends LinearOpMode {
         right = hardwareMap.get(DistanceSensor.class, "right");
         left = hardwareMap.get(DistanceSensor.class, "left");
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,7 +140,7 @@ public class AnnieV1AutoRed extends LinearOpMode {
 //        robot.driveDistance(13, 0, 15, this);
         distToWall = back.getDistance(INCH);
         while(opModeIsActive() && distToWall < 27.5){
-            robot.driveOnHeadingPID(JennyNavigation.FORWARD,5,0,this);
+            robot.driveOnHeadingPID(AnnieNavigation.FORWARD,5,0,this);
             distToWall = back.getDistance(INCH);
         }
         robot.brake();

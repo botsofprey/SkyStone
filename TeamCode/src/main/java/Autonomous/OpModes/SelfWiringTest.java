@@ -40,20 +40,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
 import Autonomous.VisionHelper;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 import SensorHandlers.LIDARSensor;
 import SensorHandlers.LimitSwitch;
 import SensorHandlers.SensorPackage;
 
-import static DriveEngine.JennyNavigation.BACK_LEFT_HOLONOMIC_DRIVE_MOTOR;
-import static DriveEngine.JennyNavigation.BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR;
-import static DriveEngine.JennyNavigation.FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR;
-import static DriveEngine.JennyNavigation.FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR;
+import static DriveEngine.AnnieNavigation.BACK_LEFT_HOLONOMIC_DRIVE_MOTOR;
+import static DriveEngine.AnnieNavigation.BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR;
+import static DriveEngine.AnnieNavigation.FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR;
+import static DriveEngine.AnnieNavigation.FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR;
 
 @Autonomous(name = "Self Wiring Test", group = "Testers")
 @Disabled
 public class SelfWiringTest extends LinearOpMode {
-    private JennyNavigation navigation;
+    private AnnieNavigation navigation;
     private StoneStackingSystemV2 sss;
     private SensorPackage sensors;
 
@@ -74,7 +74,7 @@ public class SelfWiringTest extends LinearOpMode {
                 new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"));
 
         try {
-            navigation = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            navigation = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }

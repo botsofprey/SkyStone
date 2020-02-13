@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import Actions.MiscellaneousActionsV2;
 import Actions.StoneStackingSystemV3;
 import Autonomous.Location;
-import DriveEngine.JennyNavigation;
+import DriveEngine.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
@@ -46,7 +46,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.I
 //@Disabled
 public class FoundationBlue extends LinearOpMode {
     // create objects and locally global variables here
-    JennyNavigation robot;
+    AnnieNavigation robot;
     DistanceSensor back, right, left;
     MiscellaneousActionsV2 otherActions;
     StoneStackingSystemV3 sss;
@@ -63,7 +63,7 @@ public class FoundationBlue extends LinearOpMode {
         sss = new StoneStackingSystemV3(hardwareMap);
 
         try {
-            robot = new JennyNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,11 +80,11 @@ public class FoundationBlue extends LinearOpMode {
 
 
         sss.setLiftPosition(5);
-        while(left.getDistance(INCH) > 18) robot.driveOnHeadingPID(JennyNavigation.LEFT, 25,this);
+        while(left.getDistance(INCH) > 18) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 25,this);
         robot.brake();
-        while(back.getDistance(INCH) < 20) robot.driveOnHeadingPID(JennyNavigation.FORWARD, 25,this);
+        while(back.getDistance(INCH) < 20) robot.driveOnHeadingPID(AnnieNavigation.FORWARD, 25,this);
         robot.brake();
-        while(back.getDistance(INCH) < 36) robot.driveOnHeadingPID(JennyNavigation.FORWARD, 15, this);
+        while(back.getDistance(INCH) < 36) robot.driveOnHeadingPID(AnnieNavigation.FORWARD, 15, this);
         robot.brake();
         otherActions.grabFoundation();
         sleep(750);
