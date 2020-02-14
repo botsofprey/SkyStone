@@ -45,7 +45,7 @@ public class AnnieNavigation extends Thread {
     private volatile long threadDelayMillis = 10;
     public volatile double robotHeading = 0;
     private volatile double [] lastMotorPositionsInInches = {0,0,0,0};
-    public PIDController headingController, turnController, cameraTranslationYController, cameraTranslationXController, cameraOrientationController;
+    public PIDController headingController, turnController, cameraTranslationYController, cameraTranslationXController, cameraOrientationController, xPositionController, yPositionController;
     private volatile Location myLocation;
     private volatile HeadingVector [] wheelVectors = new HeadingVector[4];
     private volatile HeadingVector robotMovementVector = new HeadingVector();
@@ -1047,6 +1047,30 @@ public class AnnieNavigation extends Thread {
             correctedDriveOnHeadingIMU(heading - curOrientation, desiredSpeed, 10, mode);
         }
         brake();
+    }
+
+    public void driveToLocationPID(Location startLocation, Location targetLocation, double desiredSpeed, LinearOpMode mode) {
+        xPositionController.setSp(targetLocation.getX());
+        yPositionController.setSp(targetLocation.getY());
+        turnController.setSp(targetLocation.getHeading());
+
+        double xDist =  targetLocation.getX() - startLocation.getX();
+        double yDist = targetLocation.getY() - startLocation.getY();
+        double distToHeading = targetLocation.getHeading() - startLocation.getHeading();
+
+        double xCorrection = xPositionController.calculatePID(xDist);
+        double yCorrection = yPositionController.calculatePID(yDist);
+        double turnCorrection = turnController.calculatePID(distToHeading);
+
+        double[] motorVelocities = new double[4];
+        motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredSpeed * (yCorrection + xCorrection);
+        motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredSpeed * (yCorrection - xCorrection);
+        motorVelocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredSpeed * (yCorrection + xCorrection);
+        motorVelocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredSpeed * (yCorrection - xCorrection);
+
+        // TODO: add in turn
+
+        applyMotorVelocities(motorVelocities);
     }
 
     public void driveToLocation(Location targetLocation, double desiredSpeed, LinearOpMode mode){

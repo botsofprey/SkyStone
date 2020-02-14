@@ -23,10 +23,8 @@ public class SkystoneImageProcessor {
     public static final int DESIRED_WIDTH = 40;
     public static final double CLOSE_UP_MIN_PERCENT_COLUMN_CHECK = 0.3;
     public static final double FAR_AWAY_MIN_PERCENT_COLUMN_CHECK = 0.1;
-    public static final int CLOSE_UP_MIN_COLUMN_WIDTH = 3;
-    public static final int FAR_AWAY_MIN_COLUMN_WIDTH = 1;
     public static final int LEFT = 0, CENTER = 1, RIGHT = 2;
-    private static final int STONE_WIDTH_PIXELS = 8;
+    public static final int UNKNOWN = -500;
     public enum STONE_COLOR {YELLOW,BLACK};
     STONE_COLOR colorToFind = STONE_COLOR.BLACK;
 
@@ -270,18 +268,45 @@ public class SkystoneImageProcessor {
 
     public int getSkystoneRelativePosition(Bitmap bmp) {
         colorToFind = STONE_COLOR.BLACK;
-        int skystoneCenter = findColumns(bmp, false).get(0);
+        ArrayList<Integer> skystoneCenters = findColumns(bmp, false);
+        int skystoneCenter = UNKNOWN;
+        if(skystoneCenters != null && skystoneCenters.size() > 0) skystoneCenter = skystoneCenters.get(0);
 
         colorToFind = STONE_COLOR.YELLOW;
         ArrayList<Integer> stoneCenters = findColumns(bmp, false);
 
-        if(skystoneCenter > stoneCenters.get(1)) {
-            return RIGHT;
-        } else if(skystoneCenter > stoneCenters.get(0)) {
-            return CENTER;
-        } else {
-            return LEFT;
+        if(skystoneCenter != UNKNOWN) {
+            if(stoneCenters != null && stoneCenters.size() > 1) {
+                if (skystoneCenter > stoneCenters.get(1)) {
+                    return RIGHT;
+                } else if (skystoneCenter > stoneCenters.get(0)) {
+                    return CENTER;
+                } else {
+                    return LEFT;
+                }
+            }
+        } else if(stoneCenters != null && stoneCenters.size() > 1) {
+            colorToFind = STONE_COLOR.YELLOW;
+            int width = bmp.getWidth(), height = bmp.getHeight();
+            int[] pixels = new int[width * height];
+            int newHeight = (int)((1.0/4.0)*height);
+            bmp.getPixels(pixels, 0, width, 0, (int)((3.0/4.0)*height), width, newHeight);
+            int[] frequencyByCol = collapseVerticallyByYellowCount(pixels, width, newHeight);
+            ArrayList<Integer> interestingColumns = getColumnsWithRequiredBlackCount(frequencyByCol);
+            ArrayList<Integer> colBounds = getColumnBounds(interestingColumns);
+            int stoneWidth = colBounds.get(1) - colBounds.get(0);
+            if(stoneCenters.get(1) - stoneCenters.get(0) > stoneWidth+2) { // if the stones are split with something in between
+                Log.d("Stone based processing:","CENTER");
+                return CENTER;
+            } else if(stoneCenters.get(1) > 2*stoneWidth+4) { // if the right stone is far right and the left stone is in the middle
+                Log.d("Stone based processing:","LEFT");
+                return LEFT;
+            } else if(stoneCenters.get(1) > stoneWidth+2) { // if the right stone is in the middle and the left stone is on the left
+                Log.d("Stone based processing:","RIGHT");
+                return RIGHT;
+            }
         }
+        return UNKNOWN;
     }
 
     public double getSkystonePositionInches(Bitmap bmp) {

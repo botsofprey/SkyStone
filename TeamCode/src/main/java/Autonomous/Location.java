@@ -69,11 +69,14 @@ public class Location {
         y += dy;
     }
 
-
     public double distanceToLocation(Location location){
         double distance = 0;
         distance = Math.sqrt(Math.pow((location.getX() - getX()), 2) + Math.pow((location.getY() - getY()), 2));
         return distance;
+    }
+
+    public boolean withinRectangle(Rectangle area) {
+        return (x >= area.left && x <= area.right && y >= area.top && y <= area.bottom);
     }
 
     public String toString() {
