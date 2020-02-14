@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.io.InputStream;
+import java.util.HashMap;
 
 import Autonomous.HeadingVector;
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
@@ -18,9 +19,7 @@ import Autonomous.Location;
 import MotorControllers.JsonConfigReader;
 import MotorControllers.MotorController;
 import MotorControllers.PIDController;
-import SensorHandlers.DistanceSensor;
 import SensorHandlers.ImuHandler;
-import SensorHandlers.SensorPackage;
 
 
 /**
@@ -31,12 +30,13 @@ import SensorHandlers.SensorPackage;
     The base class for every opmode --- it sets up our drive system and contains all it's funcitons
  */
 public class AnnieNavigation extends Thread {
+    private static final double GOOD_DIST_READING_TOLERANCE = 72.0;
     public MotorController[] driveMotors = new MotorController[4];
     public static final int FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR = 0;
     public static final int FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR = 1;
     public static final int BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR = 2;
     public static final int BACK_LEFT_HOLONOMIC_DRIVE_MOTOR = 3;
-    public static final double LOCATION_DISTANCE_TOLERANCE = .5;
+    public static final double LOCATION_DISTANCE_TOLERANCE = 1.0;
     public static final long DEFAULT_DELAY_MILLIS = 10;
     public static final double FORWARD = 0;
     public static final double BACK = 180;
@@ -57,7 +57,9 @@ public class AnnieNavigation extends Thread {
     private volatile HeadingVector IMUTravelVector = new HeadingVector();
     private volatile Location IMUDistance = new Location(0, 0);
     private DistanceSensor[] distanceSensors;
-    public static final int LEFT_SENSOR = 0, BACK_SENSOR = 1, RIGHT_SENSOR = 2;
+    public static final int LEFT_SENSOR = 0, BACK_SENSOR = 1, RIGHT_SENSOR = 2, DRIVE_BASE = 3;
+    private HashMap<Integer, int[]> updateLocationInformation[] = new HashMap[4];
+    public static final int Q1 = 0, Q2 = 1, Q3 = 2, Q4 = 3, NORTH = 0, SOUTH = 180, EAST = 90, WEST = 270;
 
     private final double HEADING_THRESHOLD = 1;
     private final double WHEEL_BASE_RADIUS = 20;
@@ -71,6 +73,7 @@ public class AnnieNavigation extends Thread {
     public AnnieNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile) throws Exception {
         hardwareMap = hw;
         initializeUsingConfigFile(configFile);
+        populateHashmaps();
         orientationOffset = robotOrientationOffset;
         orientation = new ImuHandler("imu", orientationOffset, hardwareMap);
         myLocation = new Location(startLocation.getX(),startLocation.getY());
@@ -130,46 +133,60 @@ public class AnnieNavigation extends Thread {
         boolean shouldTranslateX = false, shouldTranslateY = false;
         double expectedY, expectedX;
         double simpleHeading = robotHeading % 360;
-        if((simpleHeading < 1 && simpleHeading > -1) ||
-                (simpleHeading < 181 && simpleHeading > 179)) {
-            if(distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) < distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) &&
-                    distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
-                expectedX = 72.0 - distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) - LEFT_SENSOR_DIST_TO_CENTER;
-                if(simpleHeading < 181 && simpleHeading > 179) expectedX *= -1;
-            } else if(distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
-                expectedX = 72.0 - distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) - RIGHT_SENSOR_DIST_TO_CENTER;
-                if(simpleHeading < 1 && simpleHeading > -1) expectedX *= -1;
-            } else {
-                shouldTranslateX = true;
-            }
-            if(distanceSensors[BACK_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
-                expectedY = 72.0 - distanceSensors[BACK_SENSOR].getDistance(DistanceUnit.INCH) - BACK_SENSOR_DIST_TO_CENTER;
-                if(simpleHeading < 1 && simpleHeading > -1) expectedY *= -1;
-            } else {
-                shouldTranslateY = true;
-            }
-        } else if((simpleHeading < 271 && simpleHeading > 269) ||
-                (simpleHeading < 91 && simpleHeading > 89)) {
-            if (distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) < distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) &&
-                    distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
-                expectedY = 72.0 - distanceSensors[LEFT_SENSOR].getDistance(DistanceUnit.INCH) - LEFT_SENSOR_DIST_TO_CENTER;
-                if (simpleHeading < 271 && simpleHeading > 269) expectedY *= -1;
-            } else if(distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
-                expectedY = 72.0 - distanceSensors[RIGHT_SENSOR].getDistance(DistanceUnit.INCH) - RIGHT_SENSOR_DIST_TO_CENTER;
-                if(simpleHeading < 91 && simpleHeading > 89) expectedY *= -1;
-            } else {
-                shouldTranslateY = true;
-            }
-            if(distanceSensors[BACK_SENSOR].getDistance(DistanceUnit.INCH) < GOOD_DISTANCE_READING_TOLERANCE) {
-                expectedX = 72.0 - distanceSensors[BACK_SENSOR].getDistance(DistanceUnit.INCH) - BACK_SENSOR_DIST_TO_CENTER;
-                if(simpleHeading < 271 && simpleHeading > 269) expectedX *= -1;
-            } else {
-                shouldTranslateX = true;
-            }
-        } else {
+
+        // sensor location tracking
+        int quadrant = -1;
+        if(myLocation.getX() >= 0 && myLocation.getY() >= 0) quadrant = Q1;
+        else if(myLocation.getX() < 0 && myLocation.getY() >= 0) quadrant = Q2;
+        else if(myLocation.getX() < 0 && myLocation.getY() < 0) quadrant = Q3;
+        else if(myLocation.getX() >= 0 && myLocation.getY() < 0) quadrant = Q4;
+        int dir = -1;
+        if(simpleHeading < 1 && simpleHeading > -1) dir = NORTH;
+        else if(simpleHeading < 91 && simpleHeading > 89) dir = EAST; // REVIEW: suggest to define HEADING_TOLERANCE = 1 and use abs(simpleHeading - 90) < HEADING_TOLERANCE
+        else if(simpleHeading < 181 && simpleHeading > 179) dir = SOUTH;
+        else if(simpleHeading < 271 && simpleHeading > 269) dir = WEST;
+        else {
+            // if not lined up to a square direction, then just use wheel odometry to track position
             shouldTranslateX = true;
             shouldTranslateY = true;
         }
+
+        if(!shouldTranslateX) {
+            int[] sensorsToUse = updateLocationInformation[quadrant].get(dir);
+            if(sensorsToUse != null && sensorsToUse[0] == DRIVE_BASE) shouldTranslateX = true;
+            else if(sensorsToUse != null && sensorsToUse[1] == DRIVE_BASE) shouldTranslateY = true;
+            if(!shouldTranslateX) {
+                // REVIEW: there are several conditions to check to determine if a distance reading is good, so
+                // is is best to encapsulate this in a class.  I suggest to have a sensor.getGoodDistance()
+                // function that returns a Double distance or null, if a good distances isn't available.
+                // Then, have a separate function that can be called in the null case, for example sensor.explainNull()
+                // to get a message describing the problem, which can be reported in telemetry or logs.
+                // An alternate implementation would have getDistance() return a double only if a good distance is
+                // available and throw InvalidDistanceException otherwise.  Then, this code can catch the exception
+                // to report in telemetry or logs.
+                double dist = distanceSensors[sensorsToUse[0]].getDistance(DistanceUnit.INCH);
+                if(dist < GOOD_DIST_READING_TOLERANCE) {
+                    // REVIEW: the magic numbers in the following formula should be pulled out as named constants
+                    expectedX = 72.0 - dist - 7.0;
+                    if (quadrant == Q2 || quadrant == Q3) expectedX *= -1;
+                    myLocation.setX(expectedX);
+                } else {
+                    shouldTranslateX = true;
+                }
+            }
+            if(!shouldTranslateY) {
+                double dist = distanceSensors[sensorsToUse[1]].getDistance(DistanceUnit.INCH);
+                if(dist < GOOD_DIST_READING_TOLERANCE) {
+                    expectedY = 72.0 - dist - 7.0;
+                    if (quadrant == Q3 || quadrant == Q4) expectedY *= -1;
+                    myLocation.setY(expectedY);
+                } else {
+                    shouldTranslateY = true;
+                }
+            }
+        }
+
+        // wheel location tracking
         HeadingVector travelVector = wheelVectors[0].addVectors(wheelVectors);
         travelVector = new HeadingVector(travelVector.x() / 2, travelVector.y() / 2);
         double headingOfRobot = travelVector.getHeading();
@@ -985,18 +1002,20 @@ public class AnnieNavigation extends Thread {
             deltaY = targetLocation.getY() - startLocation.getY();
             heading = Math.toDegrees(Math.atan2(deltaY, deltaX)) - 90;
             heading = 360 - heading;
-            heading = (heading - orientation.getOrientation()) % 360;
+            heading = (heading /*- orientation.getOrientation()*/) % 360;
             if (heading >= 360) heading -= 360;
             if (heading < 0) heading += 360;
-            Log.d("Heading", ""+heading);
+            Log.d("Drive Heading", ""+heading);
             double curOrientation = restrictAngle(orientation.getOrientation(), 180, mode);
+            Log.d("Robot Heading", ""+curOrientation);
             double fracOfDistance = distanceToTravel / (totalDistanceToTravel);
             if(fracOfDistance > 1) fracOfDistance = 1;
             turnController.setSp(/*(1-fracOfDistance)*(targetLocation.getHeading()) + (fracOfDistance)*(startHeading)*/targetLocation.getHeading());
-            correctedDriveOnHeadingIMU(heading - curOrientation, desiredSpeed, 10, mode);
+            correctedDriveOnHeadingIMU(heading /*- curOrientation*/, desiredSpeed, 10, mode);
         }
         brake();
-        driveToLocation(startLocation, targetLocation, desiredSpeed, 10000, mode);
+        Log.d("Location: ", "REACHED!");
+//        driveToLocation(startLocation, targetLocation, desiredSpeed, 10000, mode);
     }
 
     private void driveToLocation(Location startLocation, Location targetLocation, double desiredSpeed, double secToQuit, LinearOpMode mode){
@@ -1041,6 +1060,9 @@ public class AnnieNavigation extends Thread {
     public void navigatePath(Location[] path, double desiredSpeed, LinearOpMode mode) {
         for(int i = 0; i < path.length; i++) {
             driveToLocation(path[i], desiredSpeed, mode);
+            Log.d("Target Location", path[i]+"");
+            Log.d("Actual Location", getRobotLocation()+"");
+            mode.sleep(1000);
         }
     }
 
@@ -1073,5 +1095,32 @@ public class AnnieNavigation extends Thread {
         while(mode.opModeIsActive() && angleToChange < referenceAngle - 180) angleToChange += 360;
         while (mode.opModeIsActive() && angleToChange > referenceAngle + 180) angleToChange -= 360;
         return angleToChange;
+    }
+
+    private void populateHashmaps() {
+        updateLocationInformation[Q1] = new HashMap<>();
+        updateLocationInformation[Q2] = new HashMap<>();
+        updateLocationInformation[Q3] = new HashMap<>();
+        updateLocationInformation[Q4] = new HashMap<>();
+
+        updateLocationInformation[Q1].put(NORTH, new int[] {RIGHT_SENSOR, DRIVE_BASE});
+        updateLocationInformation[Q1].put(EAST, new int[] {DRIVE_BASE, LEFT_SENSOR});
+        updateLocationInformation[Q1].put(SOUTH, new int[] {LEFT_SENSOR, BACK_SENSOR});
+        updateLocationInformation[Q1].put(WEST, new int[] {BACK_SENSOR, RIGHT_SENSOR});
+
+        updateLocationInformation[Q2].put(NORTH, new int[] {LEFT_SENSOR, DRIVE_BASE});
+        updateLocationInformation[Q2].put(EAST, new int[] {BACK_SENSOR, LEFT_SENSOR});
+        updateLocationInformation[Q2].put(SOUTH, new int[] {RIGHT_SENSOR, BACK_SENSOR});
+        updateLocationInformation[Q2].put(WEST, new int[] {DRIVE_BASE, RIGHT_SENSOR});
+
+        updateLocationInformation[Q3].put(NORTH, new int[] {LEFT_SENSOR, BACK_SENSOR});
+        updateLocationInformation[Q3].put(EAST, new int[] {BACK_SENSOR, RIGHT_SENSOR});
+        updateLocationInformation[Q3].put(SOUTH, new int[] {RIGHT_SENSOR, DRIVE_BASE});
+        updateLocationInformation[Q3].put(WEST, new int[] {DRIVE_BASE, LEFT_SENSOR});
+
+        updateLocationInformation[Q4].put(NORTH, new int[] {RIGHT_SENSOR, BACK_SENSOR});
+        updateLocationInformation[Q4].put(EAST, new int[] {DRIVE_BASE, RIGHT_SENSOR});
+        updateLocationInformation[Q4].put(SOUTH, new int[] {LEFT_SENSOR, DRIVE_BASE});
+        updateLocationInformation[Q4].put(WEST, new int[] {BACK_SENSOR, LEFT_SENSOR});
     }
 }
