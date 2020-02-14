@@ -9,6 +9,8 @@ public class LIDARSensor implements Sensor {
     DistanceSensor lidarSensor;
     int id;
     String name;
+    public static final double GOOD_DIST_TOLERANCE = 10;
+    double lastDistance = 0, currentDistance = 0;
 
     public LIDARSensor() {
 
@@ -34,8 +36,16 @@ public class LIDARSensor implements Sensor {
     public void setId(int id) { this.id = id; }
     public void setName(String n) { this.name = n; }
 
-    public double getDistance(DistanceUnit d){
-        return lidarSensor.getDistance(d);
+    public double getDistance(){
+        lastDistance = currentDistance;
+        currentDistance = lidarSensor.getDistance(DistanceUnit.INCH);
+        return currentDistance;
+    }
+
+    public Double getGoodDistance() {
+        double distToCheck = getDistance();
+        if(Math.abs(distToCheck - lastDistance) < GOOD_DIST_TOLERANCE) return distToCheck;
+        return null;
     }
 
     @Override

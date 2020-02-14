@@ -179,7 +179,7 @@ public class SelfWiringTest extends LinearOpMode {
         telemetry.addData("Sensors", "Put your hand within 6 in of the LEFT distance sensor");
         telemetry.update();
         sleep(500);
-        if(sensors.getSensor(LIDARSensor.class, "left").getDistance(DistanceUnit.INCH) <= 6) leftLIDARGood = true;
+        if(sensors.getSensor(LIDARSensor.class, "left").getDistance() <= 6) leftLIDARGood = true;
 
         telemetry.addData("Sensors", "Checking... Right Distance");
         telemetry.update();
@@ -187,7 +187,7 @@ public class SelfWiringTest extends LinearOpMode {
         telemetry.addData("Sensors", "Put your hand within 6 in of the RIGHT distance sensor");
         telemetry.update();
         sleep(500);
-        if(sensors.getSensor(LIDARSensor.class, "right").getDistance(DistanceUnit.INCH) <= 6) rightLIDARGood = true;
+        if(sensors.getSensor(LIDARSensor.class, "right").getDistance() <= 6) rightLIDARGood = true;
 
         telemetry.addData("Sensors", "Checking... Back Distance");
         telemetry.update();
@@ -195,7 +195,7 @@ public class SelfWiringTest extends LinearOpMode {
         telemetry.addData("Sensors", "Put your hand within 6 in of the BACK distance sensor");
         telemetry.update();
         sleep(500);
-        if(sensors.getSensor(LIDARSensor.class, "back").getDistance(DistanceUnit.INCH) <= 6) backLIDARGood = true;
+        if(sensors.getSensor(LIDARSensor.class, "back").getDistance() <= 6) backLIDARGood = true;
 
         telemetry.addData("SSS", "Checking... Lift and Lift Limit Switch");
         telemetry.update();

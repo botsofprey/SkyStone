@@ -16,10 +16,12 @@ import java.util.HashMap;
 import Autonomous.HeadingVector;
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
+import Autonomous.Rectangle;
 import MotorControllers.JsonConfigReader;
 import MotorControllers.MotorController;
 import MotorControllers.PIDController;
 import SensorHandlers.ImuHandler;
+import SensorHandlers.LIDARSensor;
 
 
 /**
@@ -30,6 +32,7 @@ import SensorHandlers.ImuHandler;
     The base class for every opmode --- it sets up our drive system and contains all it's funcitons
  */
 public class AnnieNavigation extends Thread {
+    public static final Rectangle NO_GO_ZONE = new Rectangle(0, 0, 144, 48);
     private static final double GOOD_DIST_READING_TOLERANCE = 72.0;
     public MotorController[] driveMotors = new MotorController[4];
     public static final int FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR = 0;
@@ -37,6 +40,8 @@ public class AnnieNavigation extends Thread {
     public static final int BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR = 2;
     public static final int BACK_LEFT_HOLONOMIC_DRIVE_MOTOR = 3;
     public static final double LOCATION_DISTANCE_TOLERANCE = 1.0;
+    public static final double LIDAR_DISTANCE_TOLERANCE = 2.0;
+    public static final long TIME_TOLERANCE = 250;
     public static final long DEFAULT_DELAY_MILLIS = 10;
     public static final double FORWARD = 0;
     public static final double BACK = 180;
@@ -56,7 +61,7 @@ public class AnnieNavigation extends Thread {
     private volatile long startTime = System.nanoTime();
     private volatile HeadingVector IMUTravelVector = new HeadingVector();
     private volatile Location IMUDistance = new Location(0, 0);
-    private DistanceSensor[] distanceSensors;
+    private LIDARSensor[] distanceSensors;
     public static final int LEFT_SENSOR = 0, BACK_SENSOR = 1, RIGHT_SENSOR = 2, DRIVE_BASE = 3;
     private HashMap<Integer, int[]> updateLocationInformation[] = new HashMap[4];
     public static final int Q1 = 0, Q2 = 1, Q3 = 2, Q4 = 3, NORTH = 0, SOUTH = 180, EAST = 90, WEST = 270;
@@ -77,10 +82,10 @@ public class AnnieNavigation extends Thread {
         orientationOffset = robotOrientationOffset;
         orientation = new ImuHandler("imu", orientationOffset, hardwareMap);
         myLocation = new Location(startLocation.getX(),startLocation.getY());
-        distanceSensors = new DistanceSensor[3];
-        distanceSensors[LEFT_SENSOR] = hardwareMap.get(DistanceSensor.class, "left");
-        distanceSensors[BACK_SENSOR] = hardwareMap.get(DistanceSensor.class, "back");
-        distanceSensors[RIGHT_SENSOR] = hardwareMap.get(DistanceSensor.class, "right");
+        distanceSensors = new LIDARSensor[3];
+        distanceSensors[LEFT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), LEFT_SENSOR, "left");
+        distanceSensors[BACK_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), BACK_SENSOR, "back");
+        distanceSensors[RIGHT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), RIGHT_SENSOR, "right");
         for(int i = 0; i < wheelVectors.length; i++){
             wheelVectors[i] = new HeadingVector();
         }
@@ -151,41 +156,6 @@ public class AnnieNavigation extends Thread {
             shouldTranslateY = true;
         }
 
-        if(!shouldTranslateX) {
-            int[] sensorsToUse = updateLocationInformation[quadrant].get(dir);
-            if(sensorsToUse != null && sensorsToUse[0] == DRIVE_BASE) shouldTranslateX = true;
-            else if(sensorsToUse != null && sensorsToUse[1] == DRIVE_BASE) shouldTranslateY = true;
-            if(!shouldTranslateX) {
-                // REVIEW: there are several conditions to check to determine if a distance reading is good, so
-                // is is best to encapsulate this in a class.  I suggest to have a sensor.getGoodDistance()
-                // function that returns a Double distance or null, if a good distances isn't available.
-                // Then, have a separate function that can be called in the null case, for example sensor.explainNull()
-                // to get a message describing the problem, which can be reported in telemetry or logs.
-                // An alternate implementation would have getDistance() return a double only if a good distance is
-                // available and throw InvalidDistanceException otherwise.  Then, this code can catch the exception
-                // to report in telemetry or logs.
-                double dist = distanceSensors[sensorsToUse[0]].getDistance(DistanceUnit.INCH);
-                if(dist < GOOD_DIST_READING_TOLERANCE) {
-                    // REVIEW: the magic numbers in the following formula should be pulled out as named constants
-                    expectedX = 72.0 - dist - 7.0;
-                    if (quadrant == Q2 || quadrant == Q3) expectedX *= -1;
-                    myLocation.setX(expectedX);
-                } else {
-                    shouldTranslateX = true;
-                }
-            }
-            if(!shouldTranslateY) {
-                double dist = distanceSensors[sensorsToUse[1]].getDistance(DistanceUnit.INCH);
-                if(dist < GOOD_DIST_READING_TOLERANCE) {
-                    expectedY = 72.0 - dist - 7.0;
-                    if (quadrant == Q3 || quadrant == Q4) expectedY *= -1;
-                    myLocation.setY(expectedY);
-                } else {
-                    shouldTranslateY = true;
-                }
-            }
-        }
-
         // wheel location tracking
         HeadingVector travelVector = wheelVectors[0].addVectors(wheelVectors);
         travelVector = new HeadingVector(travelVector.x() / 2, travelVector.y() / 2);
@@ -195,9 +165,56 @@ public class AnnieNavigation extends Thread {
         robotMovementVector.calculateVector(actualHeading, magnitudeOfRobot);
         double deltaX = robotMovementVector.x();
         double deltaY = robotMovementVector.y();
+
+        if(!myLocation.withinRectangle(NO_GO_ZONE)) {
+            if (!shouldTranslateX) {
+                int[] sensorsToUse = updateLocationInformation[quadrant].get(dir);
+                if (sensorsToUse != null && sensorsToUse[0] == DRIVE_BASE) shouldTranslateX = true;
+                else if (sensorsToUse != null && sensorsToUse[1] == DRIVE_BASE)
+                    shouldTranslateY = true;
+                if (!shouldTranslateX) {
+                    // REVIEW: there are several conditions to check to determine if a distance reading is good, so
+                    // is is best to encapsulate this in a class.  I suggest to have a sensor.getGoodDistance()
+                    // function that returns a Double distance or null, if a good distances isn't available.
+                    // Then, have a separate function that can be called in the null case, for example sensor.explainNull()
+                    // to get a message describing the problem, which can be reported in telemetry or logs.
+                    // An alternate implementation would have getDistance() return a double only if a good distance is
+                    // available and throw InvalidDistanceException otherwise.  Then, this code can catch the exception
+                    // to report in telemetry or logs.
+                    double dist = distanceSensors[sensorsToUse[0]].getGoodDistance();
+                    if (dist < GOOD_DIST_READING_TOLERANCE) {
+                        // REVIEW: the magic numbers in the following formula should be pulled out as named constants
+                        expectedX = 72.0 - dist - 7.0;
+                        if (quadrant == Q2 || quadrant == Q3) expectedX *= -1;
+                        if (Math.abs(expectedX - myLocation.getX() + deltaX) <= LIDAR_DISTANCE_TOLERANCE)
+                            myLocation.setX(expectedX);
+                        else shouldTranslateX = true;
+                    } else {
+                        shouldTranslateX = true;
+                    }
+                }
+                if (!shouldTranslateY) {
+                    double dist = distanceSensors[sensorsToUse[1]].getGoodDistance();
+                    if (dist < GOOD_DIST_READING_TOLERANCE) {
+                        expectedY = 72.0 - dist - 7.0;
+                        if (quadrant == Q3 || quadrant == Q4) expectedY *= -1;
+                        myLocation.setY(expectedY);
+                        if (Math.abs(expectedY - myLocation.getY() + deltaY) <= LIDAR_DISTANCE_TOLERANCE)
+                            myLocation.setY(expectedY);
+                        else shouldTranslateY = true;
+                    } else {
+                        shouldTranslateY = true;
+                    }
+                }
+            }
+        }else{
+            shouldTranslateX = shouldTranslateY = true;
+        }
         if(shouldTranslateX) myLocation.addX(deltaX);
         if(shouldTranslateY) myLocation.addY(deltaY);
         Log.d("Location", "X:" + myLocation.getX() + " Y:" + myLocation.getY());
+        Log.d("Sensor X:", shouldTranslateX ? "ENCODER" : "LIDAR");
+        Log.d("Sensor Y:", shouldTranslateY ? "ENCODER" : "LIDAR");
     }
 
     private void updateIMUTrackedDistance() {
@@ -796,7 +813,7 @@ public class AnnieNavigation extends Thread {
                 minValue = finalVelocities[i];
             }
         }
-        //scale all motor powers to correspond with maxVelocities
+        //scale all motor powers to correspond withf maxVelocities
         double scaleValue = 1;
         if(Math.abs(maxValue) >= Math.abs(minValue)){
             if(maxValue > driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].getMaxSpeed()){
@@ -1057,20 +1074,46 @@ public class AnnieNavigation extends Thread {
         double xDist =  targetLocation.getX() - startLocation.getX();
         double yDist = targetLocation.getY() - startLocation.getY();
         double distToHeading = targetLocation.getHeading() - startLocation.getHeading();
+        double startTime = 0;
+        while (mode.opModeIsActive()) {
+            if(!(xDist > LOCATION_DISTANCE_TOLERANCE || yDist > LOCATION_DISTANCE_TOLERANCE || distToHeading > HEADING_THRESHOLD)){
+                startTime = System.currentTimeMillis();
+            }
+            if(System.currentTimeMillis() - startTime > TIME_TOLERANCE){
+                break;
+            }
 
-        double xCorrection = xPositionController.calculatePID(xDist);
-        double yCorrection = yPositionController.calculatePID(yDist);
-        double turnCorrection = turnController.calculatePID(distToHeading);
+            xDist = targetLocation.getX() - startLocation.getX();
+            yDist = targetLocation.getY() - startLocation.getY();
+            distToHeading = targetLocation.getHeading() - startLocation.getHeading();
 
-        double[] motorVelocities = new double[4];
-        motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredSpeed * (yCorrection + xCorrection);
-        motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredSpeed * (yCorrection - xCorrection);
-        motorVelocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredSpeed * (yCorrection + xCorrection);
-        motorVelocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredSpeed * (yCorrection - xCorrection);
+            double xCorrection = xPositionController.calculatePID(xDist);
+            double yCorrection = yPositionController.calculatePID(yDist);
+            double turnCorrection = turnController.calculatePID(distToHeading);
 
-        // TODO: add in turn
+            double[] motorVelocities = new double[4];
+            motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection + turnCorrection;
+            motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = yCorrection - xCorrection - turnCorrection;
+            motorVelocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection - turnCorrection;
+            motorVelocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection - xCorrection + turnCorrection;
 
-        applyMotorVelocities(motorVelocities);
+            double maxValue = motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR], minValue = motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR];
+            for (double d : motorVelocities) {
+                if (maxValue < d) maxValue = d;
+                else if (minValue > d) minValue = d;
+            }
+            double toScaleBy = (Math.abs(maxValue) > Math.abs(minValue)) ? Math.abs(desiredSpeed / maxValue) : Math.abs(desiredSpeed / minValue);
+            for (int i = 0; i < motorVelocities.length; i++) {
+                motorVelocities[i] *= toScaleBy;
+            }
+
+            applyMotorVelocities(motorVelocities);
+        }
+        brake();
+    }
+
+    public void driveToLocationPID(Location targetLocation, double desiredSpeed, LinearOpMode mode) {
+        driveToLocationPID(myLocation, targetLocation, desiredSpeed, mode);
     }
 
     public void driveToLocation(Location targetLocation, double desiredSpeed, LinearOpMode mode){

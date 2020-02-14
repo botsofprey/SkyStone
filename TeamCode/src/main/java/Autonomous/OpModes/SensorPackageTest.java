@@ -65,10 +65,10 @@ public class SensorPackageTest extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
 //            telemetry.addData("Left Sensor", sensors.getSensor(LIDARSensor.class, "left"));
-            telemetry.addData("Left Dist", sensors.getSensor(LIDARSensor.class, "left").getDistance(METER));
+            telemetry.addData("Left Dist", sensors.getSensor(LIDARSensor.class, "left").getDistance());
 //            telemetry.addData("Back Sensor", sensors.getSensor(LIDARSensor.class, "back"));
-            telemetry.addData("Back Dist", sensors.getSensor(LIDARSensor.class, "back").getDistance(METER));
-            telemetry.addData("Right Dist", sensors.getSensor(LIDARSensor.class, "right").getDistance(METER));
+            telemetry.addData("Back Dist", sensors.getSensor(LIDARSensor.class, "back").getDistance());
+            telemetry.addData("Right Dist", sensors.getSensor(LIDARSensor.class, "right").getDistance());
             telemetry.addData("Lift Reset", sensors.getSensor(LimitSwitch.class, "liftReset").isPressed());
             telemetry.update();
         }
