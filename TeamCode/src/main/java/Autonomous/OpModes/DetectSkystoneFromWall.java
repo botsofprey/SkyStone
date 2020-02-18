@@ -41,6 +41,7 @@ import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
 import Autonomous.VuforiaHelper;
 import DriveEngine.AnnieNavigation;
+import Autonomous.ConfigVariables;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
@@ -68,7 +69,8 @@ public class DetectSkystoneFromWall extends LinearOpMode {
         otherActions = new MiscellaneousActionsV2(hardwareMap);
 
         try {
-            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(60, -32, 270), 270, "RobotConfig/AnnieV1.json");
+            robot.stopLoggingData();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,9 +79,9 @@ public class DetectSkystoneFromWall extends LinearOpMode {
         vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT);
         sleep(100);
         // Stone detection
-
+        int pos = SkystoneImageProcessor.UNKNOWN;
         while(!opModeIsActive()) {
-            int pos = stoneFinder.getSkystoneRelativePosition(vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT));
+            pos = stoneFinder.getSkystoneRelativePosition(vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT));
             String posStr = "";
             switch (pos) {
                 case SkystoneImageProcessor.LEFT:
@@ -103,7 +105,7 @@ public class DetectSkystoneFromWall extends LinearOpMode {
         }
         // nothing goes between the above and below lines
         waitForStart();
-
+        robot.startLoggingData();
         //TODO: should we only drop if we found skystone?
         if(opModeIsActive()) sss.setCentralGripperDegree(StoneStackingSystemV3.CENTRAL_ARM_GRAB);
         sleep(500);
@@ -112,6 +114,20 @@ public class DetectSkystoneFromWall extends LinearOpMode {
         // FOR RED
         // LEFT: .54 m
         // RIGHT: .91 m
+
+        switch (pos) { // TODO: test this separately... it's not working...
+            case SkystoneImageProcessor.CENTER:
+                robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_CENTER_RED, 35, this);
+                break;
+            case SkystoneImageProcessor.LEFT:
+                robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_LEFT_RED, 35, this);
+                break;
+            case SkystoneImageProcessor.RIGHT:
+                robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_RIGHT_RED, 35, this);
+                break;
+            default:
+                break;
+        }
 
         //TODO: Don't you need to initialize the turnController before using driveOnHeading? -- Mr. McDonald
         //Example: robot.turnController.setSp(robot.getOrientation());

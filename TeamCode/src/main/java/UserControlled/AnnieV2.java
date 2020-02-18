@@ -63,6 +63,7 @@ public class AnnieV2 extends LinearOpMode {
         // also create and initialize function local variables here
         try {
             robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot.stopLoggingData();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -167,7 +168,7 @@ public class AnnieV2 extends LinearOpMode {
                 p2DpadUpReleased = true;
                 stonePosition++;
                 if(stonePosition > 4) stonePosition = 1;
-                sss.liftToPosition(stonePosition);
+//                sss.liftToPosition(stonePosition);
                 liftingToPos = true;
             }
 
@@ -180,7 +181,7 @@ public class AnnieV2 extends LinearOpMode {
                 liftingToPos = false;
             }
             else if(!liftingToPos) sss.pauseStoneLift();
-            telemetry.addData("Lift: ", sss.getLiftPositionTicks());
+//            telemetry.addData("Lift: ", sss.getLiftPositionTicks());
             telemetry.update();
 
             if(gamepad2.left_trigger > 0.1) otherActions.spitTape();

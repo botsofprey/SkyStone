@@ -32,6 +32,14 @@
   "CAMERA_ORIENTATION_Ki":"0",
   "CAMERA_ORIENTATION_Ki_MAX":"0",
   "CAMERA_ORIENTATION_Kd":"0",
+  "X_POSITION_Kp":"0.25",
+  "X_POSITION_Ki":"0",
+  "X_POSITION_Ki_MAX":"0",
+  "X_POSITION_Kd":"0",
+  "Y_POSITION_Kp":"0.25",
+  "Y_POSITION_Ki":"0",
+  "Y_POSITION_Ki_MAX":"0",
+  "Y_POSITION_Kd":"0",
   "ACCELERATION":"0",
   "IMU_NAME":"imu"
 }

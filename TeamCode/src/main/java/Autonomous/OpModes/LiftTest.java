@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
+import Actions.HardwareWrappers.DoubledSpoolMotor;
 import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
 
@@ -42,26 +43,15 @@ import DriveEngine.AnnieNavigation;
 //@Disabled
 public class LiftTest extends LinearOpMode {
     // create objects and locally global variables here
-    AnnieNavigation robot;
-    DistanceSensor back, right, left;
-
+    DoubledSpoolMotor lift;
 
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        back = hardwareMap.get(DistanceSensor.class, "back");
-        right = hardwareMap.get(DistanceSensor.class, "right");
-        left = hardwareMap.get(DistanceSensor.class, "left");
 
-        try {
-            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Stone detection
+        lift = new DoubledSpoolMotor(new String[] {"liftMotor1", "liftMotor2"}, "ActionConfig/SSSLift.json", 50, 50, hardwareMap);
 
 
         // add any other useful telemetry data or logging data here
@@ -71,9 +61,10 @@ public class LiftTest extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-
+            if(gamepad1.right_trigger > 0.1) lift.extendWithPower();
+            else if(gamepad1.right_bumper) lift.retractWithPower();
+            else lift.holdPosition();
         }
-        robot.stopNavigation();
 //        VuforiaHelper.kill(); -- this crashes the app...
 
         // finish drive code and test

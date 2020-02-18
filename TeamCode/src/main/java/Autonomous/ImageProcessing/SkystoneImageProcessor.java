@@ -153,9 +153,8 @@ public class SkystoneImageProcessor {
     }
 
     private ArrayList<Integer> getYellowColumnBounds(ArrayList<Integer> columnsWithRequiredYellowPercent) {
-        Log.d("Stone width", Integer.toString(columnsWithRequiredYellowPercent.get(columnsWithRequiredYellowPercent.size()-1) - columnsWithRequiredYellowPercent.get(0)));
         ArrayList<Integer> columnBounds = new ArrayList<>();
-        if(columnsWithRequiredYellowPercent.size() > 0) {
+        if(columnsWithRequiredYellowPercent.size() > 1) {
             columnBounds.add(columnsWithRequiredYellowPercent.get(0));
             columnBounds.add(columnsWithRequiredYellowPercent.get(columnsWithRequiredYellowPercent.size()/2-1));
             columnBounds.add(columnsWithRequiredYellowPercent.get(columnsWithRequiredYellowPercent.size()/2));
@@ -210,7 +209,7 @@ public class SkystoneImageProcessor {
         if(bmp.getHeight() > imageHeight && bmp.getWidth() > imageWidth){
             bmp = scaleBmp(bmp);
         }
-        ArrayList<Integer> columnCenters = new ArrayList<Integer>();
+        ArrayList<Integer> columnCenters = null;
         int width = bmp.getWidth(), height = bmp.getHeight();
         int newHeight = (int)((1.0/4.0)*height);
         int[] pixels = new int[width * height];
@@ -238,7 +237,9 @@ public class SkystoneImageProcessor {
             showColumnCenters(pixels,newHeight,width,columnCenters, Color.RED);
             bmp.setPixels(pixels, 0, width, 0, 0, width, height);
         }
-        return columnCenters;
+
+        if(columnCenters != null && columnCenters.size() > 0) return columnCenters;
+        return null;
     }
 
     /**
@@ -285,6 +286,7 @@ public class SkystoneImageProcessor {
                     return LEFT;
                 }
             }
+            return UNKNOWN;
         } else if(stoneCenters != null && stoneCenters.size() > 1) {
             colorToFind = STONE_COLOR.YELLOW;
             int width = bmp.getWidth(), height = bmp.getHeight();

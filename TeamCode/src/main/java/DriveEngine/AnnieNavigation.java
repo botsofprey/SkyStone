@@ -57,7 +57,7 @@ public class AnnieNavigation extends Thread {
 
     public ImuHandler orientation;
     private double orientationOffset = 0;
-    private volatile boolean shouldRun = true;
+    private volatile boolean shouldRun = true, loggingData = true;
     private volatile long startTime = System.nanoTime();
     private volatile HeadingVector IMUTravelVector = new HeadingVector();
     private volatile Location IMUDistance = new Location(0, 0);
@@ -86,6 +86,9 @@ public class AnnieNavigation extends Thread {
         distanceSensors[LEFT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), LEFT_SENSOR, "left");
         distanceSensors[BACK_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), BACK_SENSOR, "back");
         distanceSensors[RIGHT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), RIGHT_SENSOR, "right");
+        distanceSensors[LEFT_SENSOR].getDistance();
+        distanceSensors[BACK_SENSOR].getDistance();
+        distanceSensors[RIGHT_SENSOR].getDistance();
         for(int i = 0; i < wheelVectors.length; i++){
             wheelVectors[i] = new HeadingVector();
         }
@@ -102,7 +105,7 @@ public class AnnieNavigation extends Thread {
                 }
                 while (shouldRun) {
                     try {
-                        updateData();
+                        if(loggingData) updateData();
                     }
                     catch (Exception e){
                         shouldRun = false;
@@ -113,6 +116,14 @@ public class AnnieNavigation extends Thread {
             }
         }).start();
 
+    }
+
+    public void stopLoggingData() {
+        loggingData = false;
+    }
+
+    public void startLoggingData() {
+        loggingData = true;
     }
 
     public void setOrientationOffset(double offset){
@@ -181,10 +192,10 @@ public class AnnieNavigation extends Thread {
                     // An alternate implementation would have getDistance() return a double only if a good distance is
                     // available and throw InvalidDistanceException otherwise.  Then, this code can catch the exception
                     // to report in telemetry or logs.
-                    double dist = distanceSensors[sensorsToUse[0]].getGoodDistance();
-                    if (dist < GOOD_DIST_READING_TOLERANCE) {
+                    Double dist = distanceSensors[sensorsToUse[0]].getGoodDistance();
+                    if (dist != null && dist < GOOD_DIST_READING_TOLERANCE) {
                         // REVIEW: the magic numbers in the following formula should be pulled out as named constants
-                        expectedX = 72.0 - dist - 7.0;
+                        expectedX = 71.0 - dist - 7.0;
                         if (quadrant == Q2 || quadrant == Q3) expectedX *= -1;
                         if (Math.abs(expectedX - myLocation.getX() + deltaX) <= LIDAR_DISTANCE_TOLERANCE)
                             myLocation.setX(expectedX);
@@ -194,9 +205,9 @@ public class AnnieNavigation extends Thread {
                     }
                 }
                 if (!shouldTranslateY) {
-                    double dist = distanceSensors[sensorsToUse[1]].getGoodDistance();
-                    if (dist < GOOD_DIST_READING_TOLERANCE) {
-                        expectedY = 72.0 - dist - 7.0;
+                    Double dist = distanceSensors[sensorsToUse[1]].getGoodDistance();
+                    if (dist != null && dist < GOOD_DIST_READING_TOLERANCE) {
+                        expectedY = 71.0 - dist - 7.0;
                         if (quadrant == Q3 || quadrant == Q4) expectedY *= -1;
                         myLocation.setY(expectedY);
                         if (Math.abs(expectedY - myLocation.getY() + deltaY) <= LIDAR_DISTANCE_TOLERANCE)
@@ -322,15 +333,19 @@ public class AnnieNavigation extends Thread {
             cameraTranslationXController.setIMax(reader.getDouble("CAMERA_TRANSLATION_X_Ki_MAX"));
             cameraOrientationController = new PIDController(reader.getDouble("CAMERA_ORIENTATION_Kp"), reader.getDouble("CAMERA_ORIENTATION_Ki"), reader.getDouble("CAMERA_ORIENTATION_Kd"));
             cameraOrientationController.setIMax(reader.getDouble("CAMERA_ORIENTATION_Ki_MAX"));
+            xPositionController = new PIDController(reader.getDouble("X_POSITION_Kp"), reader.getDouble("X_POSITION_Ki"), reader.getDouble("X_POSITION_Kd"));
+            yPositionController = new PIDController(reader.getDouble("Y_POSITION_Kp"), reader.getDouble("Y_POSITION_Ki"), reader.getDouble("Y_POSITION_Kd"));
+            xPositionController.setIMax(reader.getDouble("X_POSITION_Ki_MAX"));
+            yPositionController.setIMax(reader.getDouble("Y_POSITION_Ki_MAX"));
         } catch(Exception e){
             Log.e(" Drive Engine Error", "Config File Read Fail: " + e.toString());
             throw new RuntimeException("Drive Engine Config Read Failed!:" + e.toString());
         }
     }
+
     public void correctedDriveOnHeadingIMU(double heading, double desiredVelocity, LinearOpMode mode) {
         correctedDriveOnHeadingIMU(heading,desiredVelocity,DEFAULT_DELAY_MILLIS,mode);
     }
-
 
     public void correctedDriveOnHeadingIMU(double heading, double desiredVelocity, long delayTimeMillis, LinearOpMode mode) {
         desiredVelocity = Math.abs(desiredVelocity);

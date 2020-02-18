@@ -79,7 +79,7 @@ public class FoundationBlue extends LinearOpMode {
 
 
 
-        sss.setLiftPosition(5);
+//        sss.setLiftPosition(5);
         while(left.getDistance(INCH) > 18) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 25,this);
         robot.brake();
         while(back.getDistance(INCH) < 20) robot.driveOnHeadingPID(AnnieNavigation.FORWARD, 25,this);

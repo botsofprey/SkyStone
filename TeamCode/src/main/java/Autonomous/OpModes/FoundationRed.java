@@ -79,7 +79,7 @@ public class FoundationRed extends LinearOpMode {
 
 
 
-        sss.setLiftPosition(5);
+//        sss.setLiftPosition(5);
         while(right.getDistance(INCH) > 18) robot.driveOnHeadingPID(AnnieNavigation.RIGHT, 25,this);
         robot.brake();
         while(back.getDistance(INCH) < 20) robot.driveOnHeadingPID(AnnieNavigation.FORWARD, 25,this);
