@@ -38,19 +38,21 @@ import java.util.List;
 
 import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
+import Autonomous.ConfigVariables;
 
 @Autonomous(name="Drive to Position", group="Testers")
 //@Disabled
 public class DriveToPositionTest extends LinearOpMode {
 
-    double heading = 90;
+    double heading = 270;
     AnnieNavigation robot;
     DistanceSensor back;
 
     @Override
     public void runOpMode() {
         try {
-            robot = new AnnieNavigation(hardwareMap, new Location(-60, -50), heading, "RobotConfig/AnnieV1.json");
+            robot = new AnnieNavigation(hardwareMap, new Location(60, -32), heading, "RobotConfig/AnnieV1.json");
+            robot.disableSensorLocationTracking();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,7 +84,9 @@ public class DriveToPositionTest extends LinearOpMode {
 
         telemetry.addData("Start Location 2", robot.getRobotLocation());
         telemetry.update();
-        robot.navigatePath(locations.toArray(new Location[0]), 15, this);
+        robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_LEFT_RED, 45, this);
+//        robot.navigatePathPID(locations.toArray(new Location[0]), 15, this);
+
         telemetry.addData("End Location", robot.getRobotLocation());
         telemetry.update();
 

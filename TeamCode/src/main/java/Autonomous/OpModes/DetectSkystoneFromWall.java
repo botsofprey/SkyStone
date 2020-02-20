@@ -117,15 +117,13 @@ public class DetectSkystoneFromWall extends LinearOpMode {
 
         switch (pos) { // TODO: test this separately... it's not working...
             case SkystoneImageProcessor.CENTER:
-                robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_CENTER_RED, 35, this);
+                robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_CENTER_RED, 15, this);
                 break;
             case SkystoneImageProcessor.LEFT:
-                robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_LEFT_RED, 35, this);
-                break;
-            case SkystoneImageProcessor.RIGHT:
-                robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_RIGHT_RED, 35, this);
+                robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_LEFT_RED, 15, this);
                 break;
             default:
+                robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_RIGHT_RED, 15, this);
                 break;
         }
 
@@ -146,9 +144,6 @@ public class DetectSkystoneFromWall extends LinearOpMode {
 //        }
         robot.brake();
         //else check again
-        telemetry.addData("Angle L: ", Math.atan2(LEFT_DIST - CENTER_DIST, BACK_DIST));
-        telemetry.addData("Angle R: ", Math.atan2(RIGHT_DIST - CENTER_DIST, BACK_DIST));
-        telemetry.update();
 //        double distToWall = left.getDistance(INCH);
 //        if (distToWall > STONE_ONE_LEFT) { //
 //            while (opModeIsActive() && left.getDistance(INCH) > DIST_STONE_ONE_LEFT) robot.driveOnHeadingPID(AnnieNavigation.LEFT, 20, this); // STONE 1 LEFT

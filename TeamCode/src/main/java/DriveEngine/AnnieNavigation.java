@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.io.InputStream;
@@ -39,7 +40,7 @@ public class AnnieNavigation extends Thread {
     public static final int FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR = 1;
     public static final int BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR = 2;
     public static final int BACK_LEFT_HOLONOMIC_DRIVE_MOTOR = 3;
-    public static final double LOCATION_DISTANCE_TOLERANCE = 1.0;
+    public static final double LOCATION_DISTANCE_TOLERANCE = 0.75, ROUGH_LOCATION_DISTANCE_TOLERANCE = 1.5, STOPPING_DISTANCE_TOLERANCE = 5.0;
     public static final double LIDAR_DISTANCE_TOLERANCE = 2.0;
     public static final long TIME_TOLERANCE = 250;
     public static final long DEFAULT_DELAY_MILLIS = 10;
@@ -57,13 +58,13 @@ public class AnnieNavigation extends Thread {
 
     public ImuHandler orientation;
     private double orientationOffset = 0;
-    private volatile boolean shouldRun = true, loggingData = true;
+    private volatile boolean shouldRun = true, loggingData = true, usingSensors = true;
     private volatile long startTime = System.nanoTime();
     private volatile HeadingVector IMUTravelVector = new HeadingVector();
     private volatile Location IMUDistance = new Location(0, 0);
     private LIDARSensor[] distanceSensors;
     public static final int LEFT_SENSOR = 0, BACK_SENSOR = 1, RIGHT_SENSOR = 2, DRIVE_BASE = 3;
-    private HashMap<Integer, int[]> updateLocationInformation[] = new HashMap[4];
+    private HashMap<Integer, int[]> updateLocationInformation[] = new HashMap[4]; // structure: {direction, {xSensor, ySensor}}
     public static final int Q1 = 0, Q2 = 1, Q3 = 2, Q4 = 3, NORTH = 0, SOUTH = 180, EAST = 90, WEST = 270;
 
     private final double HEADING_THRESHOLD = 1;
@@ -81,14 +82,15 @@ public class AnnieNavigation extends Thread {
         populateHashmaps();
         orientationOffset = robotOrientationOffset;
         orientation = new ImuHandler("imu", orientationOffset, hardwareMap);
-        myLocation = new Location(startLocation.getX(),startLocation.getY());
+        myLocation = new Location(startLocation.getX(),startLocation.getY(), robotOrientationOffset);
         distanceSensors = new LIDARSensor[3];
         distanceSensors[LEFT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), LEFT_SENSOR, "left");
         distanceSensors[BACK_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), BACK_SENSOR, "back");
         distanceSensors[RIGHT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), RIGHT_SENSOR, "right");
-        distanceSensors[LEFT_SENSOR].getDistance();
-        distanceSensors[BACK_SENSOR].getDistance();
-        distanceSensors[RIGHT_SENSOR].getDistance();
+//        distanceSensors[LEFT_SENSOR].getDistance(); We shouldn't need these because of initSensor in LIDARSensor class
+//        distanceSensors[BACK_SENSOR].getDistance();
+//        distanceSensors[RIGHT_SENSOR].getDistance();
+        getInitialLocation();
         for(int i = 0; i < wheelVectors.length; i++){
             wheelVectors[i] = new HeadingVector();
         }
@@ -107,7 +109,7 @@ public class AnnieNavigation extends Thread {
                     try {
                         if(loggingData) updateData();
                     }
-                    catch (Exception e){
+                    catch (Exception e) {
                         shouldRun = false;
                         throw new RuntimeException(e);
                     }
@@ -118,6 +120,41 @@ public class AnnieNavigation extends Thread {
 
     }
 
+    private void getInitialLocation() {
+        // SOME LOGICAL ERROR IN FINDING QUADRANT MOST LIKELY -- CHECK HASHTABLE FOR LOCATION CHECKS
+        int quadrant = -1;
+        if(myLocation.getX() >= 0 && myLocation.getY() >= 0) quadrant = Q1;
+        else if(myLocation.getX() < 0 && myLocation.getY() >= 0) quadrant = Q2;
+        else if(myLocation.getX() < 0 && myLocation.getY() < 0) quadrant = Q3;
+        else if(myLocation.getX() >= 0 && myLocation.getY() < 0) quadrant = Q4;
+        Log.d("Quadrant: ", ""+quadrant);
+
+        double simpleHeading = myLocation.getHeading() % 360;
+        int dir = -1;
+        if(simpleHeading < 1 && simpleHeading > -1) dir = NORTH;
+        else if(simpleHeading < 91 && simpleHeading > 89) dir = EAST; // REVIEW: suggest to define HEADING_TOLERANCE = 1 and use abs(simpleHeading - 90) < HEADING_TOLERANCE
+        else if(simpleHeading < 181 && simpleHeading > 179) dir = SOUTH;
+        else if(simpleHeading < 271 && simpleHeading > 269) dir = WEST;
+        Log.d("Direction: ", ""+dir);
+
+        int[] sensorsToUse = updateLocationInformation[quadrant].get(dir);
+        if (sensorsToUse != null && sensorsToUse[0] != DRIVE_BASE) {
+            double x = 71.0 - distanceSensors[sensorsToUse[0]].getDistance() - 7.0;
+            x *= quadrant == Q2 || quadrant == Q3 ? -1 : 1; //TODO this is wrong I'm pretty sure
+            Log.d("Start sensor X: ", "" + x);
+            Log.d("Start loc X: ", myLocation.getX()+"");
+            if (Math.abs(myLocation.getX() - x) < 50) myLocation.setX(x);
+        }
+        if (sensorsToUse != null && sensorsToUse[1] != DRIVE_BASE) {
+            double y = 71.0 - distanceSensors[sensorsToUse[1]].getDistance() - 7.0;
+            y *= quadrant == Q3 || quadrant == Q4 ? -1 : 1;
+            Log.d("Start sensor Y: ", "" + y);
+            Log.d("Start loc Y:", myLocation.getY()+"");
+            if (Math.abs(myLocation.getY() - y) < 50) myLocation.setY(y);
+        }
+        // TODO how can we stop both run and logcat from filling up with IMU Locations? It's really annoying cuz i can't see what's printed out from AnnieNavigation -- type in your filter, right now its location...
+    }
+
     public void stopLoggingData() {
         loggingData = false;
     }
@@ -126,26 +163,34 @@ public class AnnieNavigation extends Thread {
         loggingData = true;
     }
 
-    public void setOrientationOffset(double offset){
+    public void useSensorLocationTracking() {
+        usingSensors = true;
+    }
+
+    public void disableSensorLocationTracking() {
+        usingSensors = false;
+    }
+
+    public void setOrientationOffset(double offset) {
         orientationOffset = offset;
         orientation.setOrientationOffset(orientationOffset);
     }
 
-    private void updateLastMotorPositionsInInches(){
+    private void updateLastMotorPositionsInInches() {
         for (int i = 0; i < driveMotors.length; i++){
             lastMotorPositionsInInches[i] = driveMotors[i].getInchesFromStart();
         }
     }
 
-    private void updateHeading(){
+    private void updateHeading() {
         robotHeading = (orientation.getOrientation());
     }
 
-    public Location getRobotLocation(){
-        return new Location(myLocation.getX(),myLocation.getY());
+    public Location getRobotLocation() {
+        return new Location(myLocation.getX(), myLocation.getY());
     }
 
-    private void updateLocation(){
+    private void updateLocation() {
         boolean shouldTranslateX = false, shouldTranslateY = false;
         double expectedY, expectedX;
         double simpleHeading = robotHeading % 360;
@@ -177,7 +222,7 @@ public class AnnieNavigation extends Thread {
         double deltaX = robotMovementVector.x();
         double deltaY = robotMovementVector.y();
 
-        if(!myLocation.withinRectangle(NO_GO_ZONE)) {
+        if (!myLocation.withinRectangle(NO_GO_ZONE) && usingSensors) {
             if (!shouldTranslateX) {
                 int[] sensorsToUse = updateLocationInformation[quadrant].get(dir);
                 if (sensorsToUse != null && sensorsToUse[0] == DRIVE_BASE) shouldTranslateX = true;
@@ -193,11 +238,12 @@ public class AnnieNavigation extends Thread {
                     // available and throw InvalidDistanceException otherwise.  Then, this code can catch the exception
                     // to report in telemetry or logs.
                     Double dist = distanceSensors[sensorsToUse[0]].getGoodDistance();
+                    Log.d("X sensor dist: ", dist+"");
                     if (dist != null && dist < GOOD_DIST_READING_TOLERANCE) {
                         // REVIEW: the magic numbers in the following formula should be pulled out as named constants
                         expectedX = 71.0 - dist - 7.0;
                         if (quadrant == Q2 || quadrant == Q3) expectedX *= -1;
-                        if (Math.abs(expectedX - myLocation.getX() + deltaX) <= LIDAR_DISTANCE_TOLERANCE)
+                        if (Math.abs(expectedX - (myLocation.getX() + deltaX)) <= LIDAR_DISTANCE_TOLERANCE)
                             myLocation.setX(expectedX);
                         else shouldTranslateX = true;
                     } else {
@@ -210,7 +256,7 @@ public class AnnieNavigation extends Thread {
                         expectedY = 71.0 - dist - 7.0;
                         if (quadrant == Q3 || quadrant == Q4) expectedY *= -1;
                         myLocation.setY(expectedY);
-                        if (Math.abs(expectedY - myLocation.getY() + deltaY) <= LIDAR_DISTANCE_TOLERANCE)
+                        if (Math.abs(expectedY - (myLocation.getY() + deltaY)) <= LIDAR_DISTANCE_TOLERANCE)
                             myLocation.setY(expectedY);
                         else shouldTranslateY = true;
                     } else {
@@ -223,9 +269,16 @@ public class AnnieNavigation extends Thread {
         }
         if(shouldTranslateX) myLocation.addX(deltaX);
         if(shouldTranslateY) myLocation.addY(deltaY);
+        myLocation.setHeading(restrictAngle(orientation.getOrientation(), 0));
         Log.d("Location", "X:" + myLocation.getX() + " Y:" + myLocation.getY());
         Log.d("Sensor X:", shouldTranslateX ? "ENCODER" : "LIDAR");
         Log.d("Sensor Y:", shouldTranslateY ? "ENCODER" : "LIDAR");
+    }
+
+    private double restrictAngle(double angleToChange, double referenceAngle) {
+        while(angleToChange < referenceAngle - 180) angleToChange += 360;
+        while (angleToChange > referenceAngle + 180) angleToChange -= 360;
+        return angleToChange;
     }
 
     private void updateIMUTrackedDistance() {
@@ -271,7 +324,7 @@ public class AnnieNavigation extends Thread {
         return robotHeading;
     }
 
-    public void initializeUsingConfigFile(String file){
+    public void initializeUsingConfigFile(String file) {
         InputStream stream = null;
         try {
             stream = hardwareMap.appContext.getAssets().open(file);
@@ -281,7 +334,7 @@ public class AnnieNavigation extends Thread {
             throw new RuntimeException("Drive Engine Open Config File Fail: " + e.toString());
         }
         JsonConfigReader reader = new JsonConfigReader(stream);
-        try{
+        try {
             driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = new MotorController(reader.getString("FRONT_LEFT_MOTOR_NAME"), "MotorConfig/DriveMotors/NewHolonomicDriveMotorConfig.json", hardwareMap);
             driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = new MotorController(reader.getString("FRONT_RIGHT_MOTOR_NAME"), "MotorConfig/DriveMotors/NewHolonomicDriveMotorConfig.json", hardwareMap);
             driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = new MotorController(reader.getString("BACK_LEFT_MOTOR_NAME"), "MotorConfig/DriveMotors/NewHolonomicDriveMotorConfig.json", hardwareMap);
@@ -317,10 +370,10 @@ public class AnnieNavigation extends Thread {
             else if(reader.getString("BACK_RIGHT_MOTOR_DIRECTION").equals("FORWARD")) {
                 driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].setDirection(DcMotorSimple.Direction.FORWARD);
             }
-            if(reader.getString("BACK_LEFT_MOTOR_DIRECTION").equals("REVERSE")) {
+            if (reader.getString("BACK_LEFT_MOTOR_DIRECTION").equals("REVERSE")) {
                 driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].setDirection(DcMotorSimple.Direction.REVERSE);
             }
-            else if(reader.getString("BACK_LEFT_MOTOR_DIRECTION").equals("FORWARD")) {
+            else if (reader.getString("BACK_LEFT_MOTOR_DIRECTION").equals("FORWARD")) {
                 driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].setDirection(DcMotorSimple.Direction.FORWARD);
             }
             headingController = new PIDController(reader.getDouble("HEADING_Kp"), reader.getDouble("HEADING_Ki"), reader.getDouble("HEADING_Kd"));
@@ -851,7 +904,7 @@ public class AnnieNavigation extends Thread {
         applyMotorVelocities(finalVelocities);
     }
 
-    public double [] calculateTurnVelocitiesRelativeToMax(double percentOfMax){
+    public double[] calculateTurnVelocitiesRelativeToMax(double percentOfMax){
         double[] velocities = new double[4];
         double maxWheelVelocity = driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].getMaxSpeed();
         if(Double.isNaN(percentOfMax)) percentOfMax = 0;
@@ -1082,45 +1135,94 @@ public class AnnieNavigation extends Thread {
     }
 
     public void driveToLocationPID(Location startLocation, Location targetLocation, double desiredSpeed, LinearOpMode mode) {
-        xPositionController.setSp(targetLocation.getX());
-        yPositionController.setSp(targetLocation.getY());
-        turnController.setSp(targetLocation.getHeading());
+        xPositionController.setSp(0);
+        yPositionController.setSp(0);
+        turnController.setSp(0);
 
+        double turnGain = 150;
+        double decel = 30;
+        double accel = 30;
+        double velInit = desiredSpeed/2.0;
         double xDist =  targetLocation.getX() - startLocation.getX();
         double yDist = targetLocation.getY() - startLocation.getY();
+        double distToTravel = Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
+        double distTravelled = 0;
+        double velocity = 0;
         double distToHeading = targetLocation.getHeading() - startLocation.getHeading();
-        double startTime = 0;
-        while (mode.opModeIsActive()) {
-            if(!(xDist > LOCATION_DISTANCE_TOLERANCE || yDist > LOCATION_DISTANCE_TOLERANCE || distToHeading > HEADING_THRESHOLD)){
-                startTime = System.currentTimeMillis();
-            }
-            if(System.currentTimeMillis() - startTime > TIME_TOLERANCE){
-                break;
-            }
-
+        distToHeading = restrictAngle(distToHeading, 0, mode);
+        long startTime = System.currentTimeMillis();
+        while (mode.opModeIsActive() && (Math.abs(xDist) > LOCATION_DISTANCE_TOLERANCE || Math.abs(yDist) > LOCATION_DISTANCE_TOLERANCE || Math.abs(distToHeading) > HEADING_THRESHOLD)) {
             xDist = targetLocation.getX() - startLocation.getX();
             yDist = targetLocation.getY() - startLocation.getY();
             distToHeading = targetLocation.getHeading() - startLocation.getHeading();
+            distToHeading = restrictAngle(distToHeading, 0, mode);
+            distTravelled = Math.sqrt(Math.pow(targetLocation.getX(), 2) + Math.pow(targetLocation.getY(), 2)) - Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
 
-            double xCorrection = xPositionController.calculatePID(xDist);
-            double yCorrection = yPositionController.calculatePID(yDist);
-            double turnCorrection = turnController.calculatePID(distToHeading);
+//            This wasn't really logging and I got confused
+            Log.d("Xdist", "" + xDist);
+            Log.d("Ydist", "" + yDist);
+
+
+            double timeToStop = velocity / decel;
+            double distToStop = 0.5 * velocity * timeToStop - (STOPPING_DISTANCE_TOLERANCE /* ((desiredSpeed > 25)? 2.5:1.0 )*/);
+
+            if (distTravelled >= distToTravel - distToStop) {
+                velocity = velocity - decel * (System.currentTimeMillis() - startTime) / 1000.0;
+                if(velocity > desiredSpeed) velocity = desiredSpeed;
+                if(velocity < 10) velocity = 10; // limit to 10 to allow PID to take over
+            } else {
+                velocity = velocity + accel * (System.currentTimeMillis() - startTime) / 1000.0;
+                if(velocity > desiredSpeed) velocity = desiredSpeed;
+            }
+            startTime = System.currentTimeMillis();
+
+            double xCorrection = xPositionController.calculatePID(-xDist);
+            Log.d("xCorrection: ", xCorrection + "");
+            double yCorrection = yPositionController.calculatePID(-yDist);
+            Log.d("yCorrection: ", yCorrection + "");
+            double turnCorrection = turnController.calculatePID(-distToHeading) * turnGain;
+            Log.d("turnCorrection: ", turnCorrection + "");
 
             double[] motorVelocities = new double[4];
-            motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection + turnCorrection;
-            motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = yCorrection - xCorrection - turnCorrection;
-            motorVelocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection - turnCorrection;
-            motorVelocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection - xCorrection + turnCorrection;
+            if(startLocation.getHeading() <= 45 && startLocation.getHeading() > -45) { // 0
+                Log.d("dir", "0");
+                motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection + turnCorrection;
+                motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = yCorrection - xCorrection - turnCorrection;
+                motorVelocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection - turnCorrection;
+                motorVelocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection - xCorrection + turnCorrection;
+
+            } else if(startLocation.getHeading() <= 135 && startLocation.getHeading() > 45) { // 90
+                Log.d("dir", "90");
+                motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection + xCorrection + turnCorrection;
+                motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection - turnCorrection;
+                motorVelocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection + xCorrection - turnCorrection;
+                motorVelocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection + turnCorrection;
+
+            } else if(startLocation.getHeading() <= -135 || startLocation.getHeading() > 135) { // 180 or -180
+                Log.d("dir", "180");
+                motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection - xCorrection + turnCorrection;
+                motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection + xCorrection - turnCorrection;
+                motorVelocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection - xCorrection - turnCorrection;
+                motorVelocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection + xCorrection + turnCorrection;
+
+            } else if(startLocation.getHeading() <= -45 && startLocation.getHeading() > -135) { // -90
+                Log.d("dir", "-90");
+                motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection - xCorrection + turnCorrection;
+                motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection - xCorrection - turnCorrection;
+                motorVelocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = yCorrection - xCorrection - turnCorrection;
+                motorVelocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection - xCorrection + turnCorrection;
+
+            }
 
             double maxValue = motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR], minValue = motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR];
+
             for (double d : motorVelocities) {
                 if (maxValue < d) maxValue = d;
                 else if (minValue > d) minValue = d;
             }
-            double toScaleBy = (Math.abs(maxValue) > Math.abs(minValue)) ? Math.abs(desiredSpeed / maxValue) : Math.abs(desiredSpeed / minValue);
-            for (int i = 0; i < motorVelocities.length; i++) {
-                motorVelocities[i] *= toScaleBy;
-            }
+
+            double toScaleBy = (Math.abs(maxValue) > Math.abs(minValue)) ? Math.abs(velocity / maxValue) : Math.abs(velocity / minValue);
+            for (int i = 0; i < motorVelocities.length; i++) motorVelocities[i] *= toScaleBy;
 
             applyMotorVelocities(motorVelocities);
         }
@@ -1139,6 +1241,11 @@ public class AnnieNavigation extends Thread {
         driveToLocation(myLocation, targetLocation, desiredSpeed, secToQuit, mode);
     }
 
+    public double getDistanceFrom(Location location) {
+        // TODO
+        return 0;
+    }
+
     public void navigatePath(Location[] path, double desiredSpeed, LinearOpMode mode) {
         for(int i = 0; i < path.length; i++) {
             driveToLocation(path[i], desiredSpeed, mode);
@@ -1151,6 +1258,12 @@ public class AnnieNavigation extends Thread {
     public void navigatePath(Location[] path, double desiredSpeed, double[] secToQuit, LinearOpMode mode) {
         for(int i = 0; i < path.length; i++) {
             driveToLocation(path[i], desiredSpeed, secToQuit[i], mode);
+        }
+    }
+
+    public void navigatePathPID(Location[] path, double desiredSpeed, LinearOpMode mode) {
+        for(Location toTravelTo : path) {
+            driveToLocationPID(toTravelTo, desiredSpeed, mode);
         }
     }
 
