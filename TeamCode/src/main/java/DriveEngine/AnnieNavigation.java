@@ -1139,8 +1139,8 @@ public class AnnieNavigation extends Thread {
         yPositionController.setSp(0);
         turnController.setSp(0);
 
-        double turnGain = 150;
-        double decel = 30;
+        double turnGain = 60;
+        double decel = 33;
         double accel = 30;
         double velInit = desiredSpeed/2.0;
         double xDist =  targetLocation.getX() - startLocation.getX();
@@ -1163,13 +1163,18 @@ public class AnnieNavigation extends Thread {
             Log.d("Ydist", "" + yDist);
 
 
-            double timeToStop = velocity / decel;
-            double distToStop = 0.5 * velocity * timeToStop - (STOPPING_DISTANCE_TOLERANCE /* ((desiredSpeed > 25)? 2.5:1.0 )*/);
-
+            double timeToStop = desiredSpeed / decel;
+            double distToStop = 0.5 * desiredSpeed * timeToStop - (STOPPING_DISTANCE_TOLERANCE /* ((desiredSpeed > 25)? 2.5:1.0 )*/);
+            Log.d("Time to stop: ", ""+timeToStop);
+            Log.d("Dist to stop: ", ""+distToStop);
+            Log.d("Velocity: ", ""+velocity);
             if (distTravelled >= distToTravel - distToStop) {
                 velocity = velocity - decel * (System.currentTimeMillis() - startTime) / 1000.0;
                 if(velocity > desiredSpeed) velocity = desiredSpeed;
-                if(velocity < 10) velocity = 10; // limit to 10 to allow PID to take over
+                if(velocity < 10) {
+                    velocity = 10; // limit to 5 to allow PID to take over
+                    Log.d("PID being used", "...");
+                }
             } else {
                 velocity = velocity + accel * (System.currentTimeMillis() - startTime) / 1000.0;
                 if(velocity > desiredSpeed) velocity = desiredSpeed;

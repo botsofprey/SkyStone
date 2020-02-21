@@ -64,12 +64,12 @@ public class DriveToPositionTest extends LinearOpMode {
 
         waitForStart();
 
-        Location redQuarryPosition1 = new Location(-33.5, -26.5, heading);
-        Location redFoundationCenterAtStart = new Location(-33.5, 50, heading);
-        Location redBuildSiteNearWall = new Location(-60, 50, heading);
-        Location redQuarryNearWall4 = new Location(-60, -50.5, heading);
-        Location redQuarryPosition4 = new Location(-33.5, -50.5, heading);
-        Location redUnderBridgeCenter = new Location(-47.5, 0.0, heading);
+        Location redQuarryPosition1 = new Location(33.5, -26.5, heading);
+        Location redFoundationCenterAtStart = new Location(33.5, 50, heading);
+        Location redBuildSiteNearWall = new Location(60, 50, heading);
+        Location redQuarryNearWall4 = new Location(60, -50.5, heading);
+        Location redQuarryPosition4 = new Location(33.5, -50.5, heading);
+        Location redUnderBridgeCenter = new Location(47.5, 0.0, heading);
 
         List<Location> locations = new ArrayList<Location>();
         locations.add(redQuarryPosition1);
@@ -84,8 +84,8 @@ public class DriveToPositionTest extends LinearOpMode {
 
         telemetry.addData("Start Location 2", robot.getRobotLocation());
         telemetry.update();
-        robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_LEFT_RED, 45, this);
-//        robot.navigatePathPID(locations.toArray(new Location[0]), 15, this);
+//        robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_LEFT_RED, 15, this);
+        robot.navigatePathPID(locations.toArray(new Location[0]), 15, this);
 
         telemetry.addData("End Location", robot.getRobotLocation());
         telemetry.update();

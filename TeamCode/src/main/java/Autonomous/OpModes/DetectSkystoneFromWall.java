@@ -71,6 +71,7 @@ public class DetectSkystoneFromWall extends LinearOpMode {
         try {
             robot = new AnnieNavigation(hardwareMap, new Location(60, -32, 270), 270, "RobotConfig/AnnieV1.json");
             robot.stopLoggingData();
+            robot.disableSensorLocationTracking();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,7 +116,7 @@ public class DetectSkystoneFromWall extends LinearOpMode {
         // LEFT: .54 m
         // RIGHT: .91 m
 
-        switch (pos) { // TODO: test this separately... it's not working...
+        switch (pos) {
             case SkystoneImageProcessor.CENTER:
                 robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_CENTER_RED, 15, this);
                 break;
@@ -173,6 +174,7 @@ public class DetectSkystoneFromWall extends LinearOpMode {
 //        robot.brake();
 
         sss.grabStoneCenter();
+        robot.driveToLocationPID(ConfigVariables.RED_FOUNDATION_CENTER, 45, this);
 
 //        sleep(750); // wait to grab the stone TODO: grabStoneCenterAndWait() to wait until correct angle reached?
 //        while(opModeIsActive() && back.getDistance(INCH) > 25) robot.driveOnHeadingPID(180, 20, 0, this);
