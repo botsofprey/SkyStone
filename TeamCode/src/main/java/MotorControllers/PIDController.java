@@ -64,7 +64,7 @@ public class PIDController {
             else if(I < 0 && I < -I_CAP) I = -I_CAP;
         }
         Log.d("I","" + I);
-        D = Kd * (prevError - error) / deltaTime;
+        D = Kd * (error - prevError) / deltaTime;
         prevError = error;
         timeAtLastCalculation = System.currentTimeMillis();
         Log.d("D","" + D);

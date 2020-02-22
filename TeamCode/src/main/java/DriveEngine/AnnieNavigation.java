@@ -8,9 +8,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -40,7 +37,7 @@ public class AnnieNavigation extends Thread {
     public static final int FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR = 1;
     public static final int BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR = 2;
     public static final int BACK_LEFT_HOLONOMIC_DRIVE_MOTOR = 3;
-    public static final double LOCATION_DISTANCE_TOLERANCE = 0.75, ROUGH_LOCATION_DISTANCE_TOLERANCE = 1.5, STOPPING_DISTANCE_TOLERANCE = 5.0;
+    public static final double LOCATION_DISTANCE_TOLERANCE = 0.75, ROUGH_LOCATION_DISTANCE_TOLERANCE = 1.5, STOPPING_DISTANCE_FACTOR = 0.2;
     public static final double LIDAR_DISTANCE_TOLERANCE = 2.0;
     public static final long TIME_TOLERANCE = 250;
     public static final long DEFAULT_DELAY_MILLIS = 10;
@@ -1139,10 +1136,10 @@ public class AnnieNavigation extends Thread {
         yPositionController.setSp(0);
         turnController.setSp(0);
 
-        double turnGain = 60;
-        double decel = 33;
-        double accel = 30;
-        double velInit = desiredSpeed/2.0;
+        Location actualStartLocation = new Location(startLocation);
+        double turnGain = 45;
+        double decel = 32;
+        double accel = 40;
         double xDist =  targetLocation.getX() - startLocation.getX();
         double yDist = targetLocation.getY() - startLocation.getY();
         double distToTravel = Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
@@ -1156,7 +1153,7 @@ public class AnnieNavigation extends Thread {
             yDist = targetLocation.getY() - startLocation.getY();
             distToHeading = targetLocation.getHeading() - startLocation.getHeading();
             distToHeading = restrictAngle(distToHeading, 0, mode);
-            distTravelled = Math.sqrt(Math.pow(targetLocation.getX(), 2) + Math.pow(targetLocation.getY(), 2)) - Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
+            distTravelled = startLocation.distanceToLocation(actualStartLocation);
 
 //            This wasn't really logging and I got confused
             Log.d("Xdist", "" + xDist);
@@ -1164,18 +1161,25 @@ public class AnnieNavigation extends Thread {
 
 
             double timeToStop = desiredSpeed / decel;
-            double distToStop = 0.5 * desiredSpeed * timeToStop - (STOPPING_DISTANCE_TOLERANCE /* ((desiredSpeed > 25)? 2.5:1.0 )*/);
+            double distToStop = 0.5 * desiredSpeed * timeToStop;
+            distToStop += distToTravel * STOPPING_DISTANCE_FACTOR;
             Log.d("Time to stop: ", ""+timeToStop);
             Log.d("Dist to stop: ", ""+distToStop);
+            Log.d("Dist to travel: ", ""+distToTravel);
+            Log.d("Dist travelled: ", ""+distTravelled);
             Log.d("Velocity: ", ""+velocity);
+            mode.telemetry.addData("Velocity", velocity);
+            mode.telemetry.update();
             if (distTravelled >= distToTravel - distToStop) {
+                Log.d("Decelerating", "...");
                 velocity = velocity - decel * (System.currentTimeMillis() - startTime) / 1000.0;
                 if(velocity > desiredSpeed) velocity = desiredSpeed;
-                if(velocity < 10) {
-                    velocity = 10; // limit to 5 to allow PID to take over
+                if(velocity < 7.5) {
+                    velocity = 7.5; // limit to 15 to allow PID to take over
                     Log.d("PID being used", "...");
                 }
             } else {
+                Log.d("Accelerating/Constant", "...");
                 velocity = velocity + accel * (System.currentTimeMillis() - startTime) / 1000.0;
                 if(velocity > desiredSpeed) velocity = desiredSpeed;
             }

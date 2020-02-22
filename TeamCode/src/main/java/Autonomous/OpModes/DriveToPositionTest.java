@@ -29,6 +29,8 @@
 
 package Autonomous.OpModes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -46,17 +48,16 @@ public class DriveToPositionTest extends LinearOpMode {
 
     double heading = 270;
     AnnieNavigation robot;
-    DistanceSensor back;
 
     @Override
     public void runOpMode() {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         try {
             robot = new AnnieNavigation(hardwareMap, new Location(60, -32), heading, "RobotConfig/AnnieV1.json");
             robot.disableSensorLocationTracking();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        back = hardwareMap.get(DistanceSensor.class, "back");
 
         telemetry.addData("Start Location", robot.getRobotLocation());
         telemetry.addData("Status", "Initialized");
@@ -84,12 +85,12 @@ public class DriveToPositionTest extends LinearOpMode {
 
         telemetry.addData("Start Location 2", robot.getRobotLocation());
         telemetry.update();
-//        robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_LEFT_RED, 15, this);
-        robot.navigatePathPID(locations.toArray(new Location[0]), 15, this);
+        robot.driveToLocationPID(ConfigVariables.RED_FOUNDATION_CENTER, 45, this);
+//        robot.navigatePathPID(locations.toArray(new Location[0]), 15, this);
 
         telemetry.addData("End Location", robot.getRobotLocation());
         telemetry.update();
-
+        while (opModeIsActive());
         robot.stopNavigation();
 
     }

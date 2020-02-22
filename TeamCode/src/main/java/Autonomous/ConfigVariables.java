@@ -30,8 +30,8 @@ public class ConfigVariables {
     public static Location FIRST_STONE_GROUP_LEFT_RED = new Location(24+9, -50, 270);
     public static Location FIRST_STONE_GROUP_RIGHT_RED = new Location(24+9, -62, 270);
     public static Location SECOND_STONE_GROUP_CENTER_RED = new Location(24+9, -38, 270);
-    public static Location SECOND_STONE_GROUP_LEFT_RED = new Location(24+9, -32, 270);
-    public static Location SECOND_STONE_GROUP_RIGHT_RED = new Location(24+9, -44, 270);
+    public static Location SECOND_STONE_GROUP_RIGHT_RED = new Location(24+9, -32, 270);
+    public static Location SECOND_STONE_GROUP_LEFT_RED = new Location(24+9, -44, 270);
 
     public static Location FIRST_STONE_GROUP_CENTER_BLUE = new Location(-24-9, -38, 90);
     public static Location FIRST_STONE_GROUP_LEFT_BLUE = new Location(-24-9, -32, 90);
@@ -40,6 +40,6 @@ public class ConfigVariables {
     public static Location SECOND_STONE_GROUP_LEFT_BLUE = new Location(-24-9, -50, 90);
     public static Location SECOND_STONE_GROUP_RIGHT_BLUE = new Location(-24-9, -62, 90);
 
-    public static Location RED_FOUNDATION_CENTER = new Location(23.75+9, 49.75, 270);
-    public static Location BLUE_FOUNDATION_CENTER = new Location(-23.75-9, 49.75, 90);
+    public static Location RED_FOUNDATION_CENTER = new Location(24+9, 49.5, 270);
+    public static Location BLUE_FOUNDATION_CENTER = new Location(-24-9, 49.5, 90);
 }
