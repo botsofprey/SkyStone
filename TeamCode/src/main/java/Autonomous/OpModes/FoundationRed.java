@@ -91,7 +91,7 @@ public class FoundationRed extends LinearOpMode {
         robot.driveOnHeadingWithTurning(200,0.5,.2);
         sleep(1750);
         robot.brake();
-        otherActions.grabFoundation();
+        otherActions.releaseFoundation();
         sleep(500);
         robot.driveDistance(36, 0, 20, this);
 

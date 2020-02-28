@@ -49,20 +49,20 @@ public class DoubledSpoolMotor implements ActionHandler {
     public void extend() { motors[MOTOR_1].setInchesPerSecondVelocity(extendSpeedInPerSecond); motors[MOTOR_2].setInchesPerSecondVelocity(extendSpeedInPerSecond); }
     public void retract() { motors[MOTOR_1].setInchesPerSecondVelocity(-retractSpeedInPerSecond); motors[MOTOR_2].setInchesPerSecondVelocity(-retractSpeedInPerSecond);}
     public void extendWithPower() {
-        setMode(MOTOR_1, DcMotor.RunMode.RUN_USING_ENCODER);
-        setMode(MOTOR_2, DcMotor.RunMode.RUN_USING_ENCODER);
+        if(motors[MOTOR_1].getMotorRunMode() != DcMotor.RunMode.RUN_TO_POSITION) setMode(MOTOR_1, DcMotor.RunMode.RUN_USING_ENCODER);
+        if(motors[MOTOR_2].getMotorRunMode() != DcMotor.RunMode.RUN_TO_POSITION) setMode(MOTOR_2, DcMotor.RunMode.RUN_USING_ENCODER);
         motors[MOTOR_1].setMotorPower(1);
         motors[MOTOR_2].setMotorPower(1);
     }
     public void retractWithPower() {
-        setMode(MOTOR_1, DcMotor.RunMode.RUN_USING_ENCODER);
-        setMode(MOTOR_2, DcMotor.RunMode.RUN_USING_ENCODER);
+        if(motors[MOTOR_1].getMotorRunMode() != DcMotor.RunMode.RUN_TO_POSITION) setMode(MOTOR_1, DcMotor.RunMode.RUN_USING_ENCODER);
+        if(motors[MOTOR_2].getMotorRunMode() != DcMotor.RunMode.RUN_TO_POSITION) setMode(MOTOR_2, DcMotor.RunMode.RUN_USING_ENCODER);
         motors[MOTOR_1].setMotorPower(-1);
         motors[MOTOR_2].setMotorPower(-1);
     }
     public void setPower(double power) {
-        setMode(MOTOR_1, DcMotor.RunMode.RUN_USING_ENCODER);
-        setMode(MOTOR_2, DcMotor.RunMode.RUN_USING_ENCODER);
+        if(motors[MOTOR_1].getMotorRunMode() != DcMotor.RunMode.RUN_TO_POSITION) setMode(MOTOR_1, DcMotor.RunMode.RUN_USING_ENCODER);
+        if(motors[MOTOR_2].getMotorRunMode() != DcMotor.RunMode.RUN_TO_POSITION) setMode(MOTOR_2, DcMotor.RunMode.RUN_USING_ENCODER);
         motors[MOTOR_1].setMotorPower(power);
         motors[MOTOR_2].setMotorPower(power);
     }

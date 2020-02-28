@@ -7,10 +7,6 @@ public class LimitSwitch implements Sensor {
     int id;
     String name;
 
-    public LimitSwitch() {
-
-    }
-
     public LimitSwitch(TouchSensor ts, String name) {
         this.name = name;
         sensor = ts;
@@ -50,7 +46,5 @@ public class LimitSwitch implements Sensor {
     }
 
     @Override
-    public void kill() {
-
-    }
+    public void kill() {}
 }

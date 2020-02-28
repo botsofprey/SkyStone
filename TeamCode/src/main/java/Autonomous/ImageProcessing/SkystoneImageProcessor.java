@@ -23,10 +23,12 @@ public class SkystoneImageProcessor {
     public static final int DESIRED_WIDTH = 40;
     public static final double CLOSE_UP_MIN_PERCENT_COLUMN_CHECK = 0.3;
     public static final double FAR_AWAY_MIN_PERCENT_COLUMN_CHECK = 0.1;
+    public static final int RED_TEAM = 0, BLUE_TEAM = 1;
     public static final int LEFT = 0, CENTER = 1, RIGHT = 2;
     public static final int UNKNOWN = -500;
     public enum STONE_COLOR {YELLOW,BLACK};
     STONE_COLOR colorToFind = STONE_COLOR.BLACK;
+    private int team;
 
     /**
      * constructor for this class, you should not use this as you can not set the team's color to look for
@@ -62,6 +64,24 @@ public class SkystoneImageProcessor {
         minimumColumnWidth = minColumnWidth;
     }
 
+    /**
+     *
+     * @param desiredHeight         this is an int of the image that will be processed. It is suggested that this is a rather
+     *                              small number to reduce the required processing time
+     * @param desiredWidth          like suggested above, keep this small to reduce processing time.
+     * @param percentColumnCheck    this is the minimum required percentage of one pixel column that must be the team's color to consider
+     * @param minColumnWidth        this is the minimum required number of columns to be of the required color next to each other before the algorithm concludes the columns to be a cryptobox column
+     * @param color                 This is the team's color, which is also the color cryptobox the algorithm will be looking for
+     * @param team                  This represents the alliance you are part of
+     */
+    public SkystoneImageProcessor(int desiredHeight, int desiredWidth, double percentColumnCheck, int minColumnWidth, STONE_COLOR color, int team){
+        colorToFind = color;
+        imageHeight = desiredHeight;
+        imageWidth = desiredWidth;
+        percentRequiredInColumnToCheck = percentColumnCheck;
+        minimumColumnWidth = minColumnWidth;
+        this.team = team;
+    }
     /**
      * this function sets the required minimum columns that need to be adjacent and of the same color before the algorithm concludes
      * the adjacent columns are part of a cryptobox column
@@ -296,16 +316,18 @@ public class SkystoneImageProcessor {
             int[] frequencyByCol = collapseVerticallyByYellowCount(pixels, width, newHeight);
             ArrayList<Integer> interestingColumns = getColumnsWithRequiredBlackCount(frequencyByCol);
             ArrayList<Integer> colBounds = getColumnBounds(interestingColumns);
-            int stoneWidth = colBounds.get(1) - colBounds.get(0);
-            if(stoneCenters.get(1) - stoneCenters.get(0) > stoneWidth+2) { // if the stones are split with something in between
-                Log.d("Stone based processing:","CENTER");
-                return CENTER;
-            } else if(stoneCenters.get(1) > 2*stoneWidth+4) { // if the right stone is far right and the left stone is in the middle
-                Log.d("Stone based processing:","LEFT");
-                return LEFT;
-            } else if(stoneCenters.get(1) > stoneWidth+2) { // if the right stone is in the middle and the left stone is on the left
-                Log.d("Stone based processing:","RIGHT");
-                return RIGHT;
+            if(colBounds.size() > 1) {
+                int stoneWidth = colBounds.get(1) - colBounds.get(0);
+                if (stoneCenters.get(1) - stoneCenters.get(0) > stoneWidth + 2) { // if the stones are split with something in between
+                    Log.d("Stone based processing:", "CENTER");
+                    return CENTER;
+                } else if (stoneCenters.get(1) > 2 * stoneWidth + 4) { // if the right stone is far right and the left stone is in the middle
+                    Log.d("Stone based processing:", "LEFT");
+                    return LEFT;
+                } else if (stoneCenters.get(1) > stoneWidth + 2) { // if the right stone is in the middle and the left stone is on the left
+                    Log.d("Stone based processing:", "RIGHT");
+                    return RIGHT;
+                }
             }
         }
         return UNKNOWN;
@@ -413,7 +435,7 @@ public class SkystoneImageProcessor {
 
     public boolean checkIfBlack(float [] hsl) {
         if (hsl[0] > 0 && hsl[0] < 360) {
-            if (hsl[2] < 0.45) {
+            if (hsl[2] < 0.35) {
                 return true;
             }
         }

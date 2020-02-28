@@ -42,7 +42,7 @@ import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.VisionHelper;
 
 @Autonomous(name="Save Image Test", group="Testers")
-//@Disabled
+@Disabled
 public class SaveImageTest extends LinearOpMode {
     // create objects and locally global variables here
     VisionHelper vision;

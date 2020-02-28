@@ -29,8 +29,6 @@
 
 package Autonomous.OpModes;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -48,16 +46,17 @@ public class DriveToPositionTest extends LinearOpMode {
 
     double heading = 270;
     AnnieNavigation robot;
+    DistanceSensor back;
 
     @Override
     public void runOpMode() {
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         try {
             robot = new AnnieNavigation(hardwareMap, new Location(60, -32), heading, "RobotConfig/AnnieV1.json");
-            robot.disableSensorLocationTracking();
+//            robot.disableSensorLocationTracking();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        back = hardwareMap.get(DistanceSensor.class, "back");
 
         telemetry.addData("Start Location", robot.getRobotLocation());
         telemetry.addData("Status", "Initialized");
@@ -65,12 +64,12 @@ public class DriveToPositionTest extends LinearOpMode {
 
         waitForStart();
 
-        Location redQuarryPosition1 = new Location(33.5, -26.5, heading);
-        Location redFoundationCenterAtStart = new Location(33.5, 50, heading);
-        Location redBuildSiteNearWall = new Location(60, 50, heading);
-        Location redQuarryNearWall4 = new Location(60, -50.5, heading);
-        Location redQuarryPosition4 = new Location(33.5, -50.5, heading);
-        Location redUnderBridgeCenter = new Location(47.5, 0.0, heading);
+        Location redQuarryPosition1 = new Location(-33.5, -26.5, heading);
+        Location redFoundationCenterAtStart = new Location(-33.5, 50, heading);
+        Location redBuildSiteNearWall = new Location(-60, 50, heading);
+        Location redQuarryNearWall4 = new Location(-60, -50.5, heading);
+        Location redQuarryPosition4 = new Location(-33.5, -50.5, heading);
+        Location redUnderBridgeCenter = new Location(-47.5, 0.0, heading);
 
         List<Location> locations = new ArrayList<Location>();
         locations.add(redQuarryPosition1);
@@ -85,12 +84,22 @@ public class DriveToPositionTest extends LinearOpMode {
 
         telemetry.addData("Start Location 2", robot.getRobotLocation());
         telemetry.update();
-        robot.driveToLocationPID(ConfigVariables.RED_FOUNDATION_CENTER, 45, this);
+        //robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_LEFT_RED, 45, this);
 //        robot.navigatePathPID(locations.toArray(new Location[0]), 15, this);
+
+        Location QUARRY_CENTRAL = new Location(35, 55, heading);
+        Location FOUNDATION_CENTRAL = new Location(35, -55, heading);
+
+        for (int i = 0; i < 10 && opModeIsActive(); ++i) {
+            robot.driveToLocationPID(QUARRY_CENTRAL, 25, 0.5, 30.0, this);
+            sleep(2000);
+            robot.driveToLocationPID(FOUNDATION_CENTRAL, 25, 0.5, 30.0, this);
+            sleep(2000);
+        }
 
         telemetry.addData("End Location", robot.getRobotLocation());
         telemetry.update();
-        while (opModeIsActive());
+
         robot.stopNavigation();
 
     }

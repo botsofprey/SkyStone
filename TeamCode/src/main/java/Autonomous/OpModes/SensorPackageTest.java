@@ -31,15 +31,21 @@ package Autonomous.OpModes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 import SensorHandlers.LIDARSensor;
 import SensorHandlers.LimitSwitch;
+import SensorHandlers.MagneticLimitSwitch;
 import SensorHandlers.SensorPackage;
+import SensorHandlers.UltrasonicIRSensor;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.METER;
@@ -56,7 +62,10 @@ public class SensorPackageTest extends LinearOpMode {
         sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"),"left"),
                 new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"),  "back"),
                 new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"),
-                new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"));
+                /*new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"),*/
+                new UltrasonicIRSensor(hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "ultrasonic"), "ultrasonic"),
+                new MagneticLimitSwitch(hardwareMap.get(DigitalChannel.class, "limit"), "limit")
+                /*new LIDARSensor(hardwareMap.get(DistanceSensor.class, "front"), "front")*/);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -69,7 +78,10 @@ public class SensorPackageTest extends LinearOpMode {
 //            telemetry.addData("Back Sensor", sensors.getSensor(LIDARSensor.class, "back"));
             telemetry.addData("Back Dist", sensors.getSensor(LIDARSensor.class, "back").getDistance());
             telemetry.addData("Right Dist", sensors.getSensor(LIDARSensor.class, "right").getDistance());
-            telemetry.addData("Lift Reset", sensors.getSensor(LimitSwitch.class, "liftReset").isPressed());
+//            telemetry.addData("Lift Reset", sensors.getSensor(LimitSwitch.class, "liftReset").isPressed());
+            telemetry.addData("Ultrasonic Dist", sensors.getSensor(UltrasonicIRSensor.class, "ultrasonic").getDistance());
+            telemetry.addData("Magnetic state", sensors.getSensor(MagneticLimitSwitch.class, "limit").isActivated());
+//            telemetry.addData("Front Dist", sensors.getSensor(LIDARSensor.class, "front").getDistance());
             telemetry.update();
         }
 

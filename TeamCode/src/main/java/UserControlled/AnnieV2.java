@@ -29,24 +29,28 @@
 
 package UserControlled;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import Actions.MiscellaneousActionsV2;
 import Actions.StoneStackingSystemV3;
 import Autonomous.Location;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.HolonomicDriveSystemTesting;
 import SensorHandlers.LIDARSensor;
 import SensorHandlers.LimitSwitch;
+import SensorHandlers.MagneticLimitSwitch;
 import SensorHandlers.SensorPackage;
+import SensorHandlers.UltrasonicIRSensor;
 
 @TeleOp(name="Annie V2", group="Competition")
 //@Disabled
 public class AnnieV2 extends LinearOpMode {
     // create objects and locally global variables here
-    AnnieNavigation robot;
+    HolonomicDriveSystemTesting robot;
     StoneStackingSystemV3 sss;
     MiscellaneousActionsV2 otherActions;
     SensorPackage sensors;
@@ -61,19 +65,13 @@ public class AnnieV2 extends LinearOpMode {
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        try {
-            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
-            robot.stopLoggingData();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        robot = new HolonomicDriveSystemTesting(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+
         sss = new StoneStackingSystemV3(hardwareMap);
         otherActions = new MiscellaneousActionsV2(hardwareMap);
 
-        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
-                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
-                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"),
-                new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"));
+        sensors = new SensorPackage(new MagneticLimitSwitch(hardwareMap.get(DigitalChannel.class, "liftReset"), "liftReset"),
+                new UltrasonicIRSensor(hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front"), "front"));
 
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
         rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
@@ -93,6 +91,10 @@ public class AnnieV2 extends LinearOpMode {
 //                tapeStopped = true;
 //            }
 
+//            telemetry.addData("M0:", sss.getLiftPositionTicks(0));
+//            telemetry.addData("M1:", sss.getLiftPositionTicks(1));
+//            telemetry.update();
+
             updateEStop();
             if(!eStop) {
                 updateEStop();
@@ -110,7 +112,7 @@ public class AnnieV2 extends LinearOpMode {
         }
         // disable/kill/stop objects here
         sss.kill();
-        robot.stopNavigation();
+        robot.kill();
     }
 
     // misc functions here
@@ -161,16 +163,6 @@ public class AnnieV2 extends LinearOpMode {
 
 
             // PLAYER 2
-
-            if(gamepad2.dpad_up && p2DpadUpReleased && !gamepad1.right_bumper && !(gamepad1.right_trigger > 0.1)) {
-                p2DpadUpReleased = false;
-            } else if(!gamepad2.dpad_up && !p2DpadUpReleased) {
-                p2DpadUpReleased = true;
-                stonePosition++;
-                if(stonePosition > 4) stonePosition = 1;
-//                sss.liftToPosition(stonePosition);
-                liftingToPos = true;
-            }
 
             if(gamepad2.right_trigger > 0.1) {
                 sss.liftStones();

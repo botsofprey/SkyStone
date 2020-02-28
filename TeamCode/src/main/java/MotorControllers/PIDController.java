@@ -60,8 +60,8 @@ public class PIDController {
         I += tempI;
         if(Ki == 0) I = 0;
         if(I_CAP != 0) {
-            if(I > 0 && I > I_CAP) I = I_CAP;
-            else if(I < 0 && I < -I_CAP) I = -I_CAP;
+            if (I > 0 && I > I_CAP) I = I_CAP;
+            else if (I < 0 && I < -I_CAP) I = -I_CAP;
         }
         Log.d("I","" + I);
         D = Kd * (error - prevError) / deltaTime;

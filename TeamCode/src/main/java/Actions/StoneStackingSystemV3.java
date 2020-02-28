@@ -20,8 +20,11 @@ public class StoneStackingSystemV3 implements ActionHandler {
     HardwareMap hardwareMap;
     DoubledSpoolMotor lift;
     ServoHandler centralGripper, capstoneDeployer;
-    public static final double CENTRAL_ARM_GRAB = 0, CENTRAL_ARM_RELEASE = 110, CENTRAL_ARM_IN_BOT = 180;
-    public static final double STONE_HEIGHT_1 = 1.74, STONE_HEIGHT_2 = 3.9, STONE_HEIGHT_3 = 5.9, STONE_HEIGHT_4 = 7.75;
+    public static final double CENTRAL_ARM_GRAB = 0, CENTRAL_ARM_RELEASE = 65, CENTRAL_ARM_IN_BOT = 180;
+    public static final int STONE_HEIGHT_RESET = -1, STONE_HEIGHT_1 = 0, STONE_HEIGHT_2 = 1, STONE_HEIGHT_3 = 2, STONE_HEIGHT_4 = 3, STONE_HEIGHT_5 = 4;
+    public static final int MOTOR_1_HEIGHT_0 = 0, MOTOR_1_HEIGHT_1 = 923, MOTOR_1_HEIGHT_2 = 1970, MOTOR_1_HEIGHT_3 = 2785, MOTOR_1_HEIGHT_4 = 3622, MOTOR_1_HEIGHT_5 = 4665;
+    public static final int MOTOR_2_HEIGHT_0 = 0, MOTOR_2_HEIGHT_1 = 1022, MOTOR_2_HEIGHT_2 = 1972, MOTOR_2_HEIGHT_3 = 2733, MOTOR_2_HEIGHT_4 = 3592, MOTOR_2_HEIGHT_5 = 4586;
+
     public StoneStackingSystemV3(HardwareMap hw) {
         hardwareMap = hw;
         lift = new DoubledSpoolMotor(new String[] {"liftMotor1", "liftMotor2"}, "ActionConfig/SSSLift.json", 50, 50, hardwareMap);
@@ -58,31 +61,66 @@ public class StoneStackingSystemV3 implements ActionHandler {
     public void pauseStoneLift() {
         lift.holdPosition();
     }
-//    public void setLiftPosition(double posInInches) {
-//        lift.setPostitionInches(posInInches);
-//        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        lift.setPower(1);
-//    }
-//    public void liftToPosition(int pos) {
-//        switch (pos) {
-//            case 1:
-//                setLiftPosition(STONE_HEIGHT_1);
-//                break;
-//            case 2:
-//                setLiftPosition(STONE_HEIGHT_2);
-//                break;
-//            case 3:
-//                setLiftPosition(STONE_HEIGHT_3);
-//                break;
-//            case 4:
-//                setLiftPosition(STONE_HEIGHT_4);
-//                break;
-//            default:
-//                break;
-//        }
-//    }
-//    public double getLiftPositionInches() { return lift.getPositionInches(); }
-//    public long getLiftPositionTicks() { return lift.getPosition(); }
+    public void setLiftPosition(int posInInches) {
+        // THESE ARE REDUNDANT, USED IN MOTORCONTROLLER CLASS
+        lift.setPower(0);
+        lift.setMode(MOTOR_1, DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setMode(MOTOR_2, DcMotor.RunMode.RUN_TO_POSITION);
+
+        switch (posInInches) {
+            case STONE_HEIGHT_RESET:
+                lift.setPostitionTicks(MOTOR_1, MOTOR_1_HEIGHT_0);
+                lift.setPostitionTicks(MOTOR_2, MOTOR_2_HEIGHT_0);
+                break;
+            case STONE_HEIGHT_1:
+                lift.setPostitionTicks(MOTOR_1, MOTOR_1_HEIGHT_1);
+                lift.setPostitionTicks(MOTOR_2, MOTOR_2_HEIGHT_1);
+                break;
+            case STONE_HEIGHT_2:
+                lift.setPostitionTicks(MOTOR_1, MOTOR_1_HEIGHT_2);
+                lift.setPostitionTicks(MOTOR_2, MOTOR_2_HEIGHT_2);
+                break;
+            case STONE_HEIGHT_3:
+                lift.setPostitionTicks(MOTOR_1, MOTOR_1_HEIGHT_3);
+                lift.setPostitionTicks(MOTOR_2, MOTOR_2_HEIGHT_3);
+                break;
+            case STONE_HEIGHT_4:
+                lift.setPostitionTicks(MOTOR_1, MOTOR_1_HEIGHT_4);
+                lift.setPostitionTicks(MOTOR_2, MOTOR_2_HEIGHT_4);
+                break;
+            case STONE_HEIGHT_5:
+                lift.setPostitionTicks(MOTOR_1, MOTOR_1_HEIGHT_5);
+                lift.setPostitionTicks(MOTOR_2, MOTOR_2_HEIGHT_5);
+                break;
+        }
+        lift.setPower(1);
+    }
+    public void liftToPosition(int pos) {
+        switch (pos) {
+            case 0:
+                setLiftPosition(STONE_HEIGHT_RESET);
+                break;
+            case 1:
+                setLiftPosition(STONE_HEIGHT_1);
+                break;
+            case 2:
+                setLiftPosition(STONE_HEIGHT_2);
+                break;
+            case 3:
+                setLiftPosition(STONE_HEIGHT_3);
+                break;
+            case 4:
+                setLiftPosition(STONE_HEIGHT_4);
+                break;
+            case 5:
+                setLiftPosition(STONE_HEIGHT_5);
+                break;
+            default:
+                break;
+        }
+    }
+    public double getLiftPositionInches(int motor) { return lift.getPositionInches(motor); }
+    public long getLiftPositionTicks(int motor) { return lift.getPosition(motor); }
     public void resetLiftEncoder() {
         lift.setPower(0);
         lift.setMode(MOTOR_1, DcMotor.RunMode.STOP_AND_RESET_ENCODER);

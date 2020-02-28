@@ -10,11 +10,8 @@ public class LIDARSensor implements Sensor {
     int id;
     String name;
     public static final double GOOD_DIST_TOLERANCE = 10;
+    private final double OFFSET = 1;
     double lastDistance = 0, currentDistance = 0;
-
-    public LIDARSensor() {
-
-    }
 
     public LIDARSensor(DistanceSensor ls, String name) {
         this.name = name;
@@ -46,7 +43,7 @@ public class LIDARSensor implements Sensor {
 
     public double getDistance(){
         lastDistance = currentDistance;
-        currentDistance = lidarSensor.getDistance(DistanceUnit.INCH);
+        currentDistance = lidarSensor.getDistance(DistanceUnit.INCH) * OFFSET;
         return currentDistance;
     }
 

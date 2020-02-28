@@ -17,6 +17,7 @@ public abstract class Shape {
         calculateSides();
     }
     public abstract double getArea();
+    public abstract double getPerimeter();
     private void calculateSides() {
         top = y - (int)(height / 2.0 + 0.5);
         bottom = y + (int)(height / 2.0 + 0.5);
