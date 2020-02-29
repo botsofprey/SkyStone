@@ -31,12 +31,12 @@ public class ConfigVariables {
     public static Location UNDER_RED_BRIDGE_BUILDING_ZONE = new Location(40, 10, 0);
     public static Location UNDER_RED_BRIDGE_LOADING_ZONE = new Location(40, -10, 0);
     public static Location BEHIND_RED_QUARRY = new Location(40, -38, 270);
-    public static Location FIRST_STONE_GROUP_CENTER_RED = new Location(24+12, -58.5, 270);
-    public static Location FIRST_STONE_GROUP_LEFT_RED = new Location(24+12, -66.5, 270);
-    public static Location FIRST_STONE_GROUP_RIGHT_RED = new Location(24+12, -50.5, 270);
-    public static Location SECOND_STONE_GROUP_CENTER_RED = new Location(24+12, -34.5, 270);
-    public static Location SECOND_STONE_GROUP_RIGHT_RED = new Location(24+12, -26.5, 270);
-    public static Location SECOND_STONE_GROUP_LEFT_RED = new Location(24+12, -42.5, 270); // should be 34.25, but robot stops too soon
+    public static Location FIRST_STONE_GROUP_CENTER_RED = new Location(24+16, -58.5, 270);
+    public static Location FIRST_STONE_GROUP_LEFT_RED = new Location(24+16, -66.5, 270);
+    public static Location FIRST_STONE_GROUP_RIGHT_RED = new Location(24+16, -50.5, 270);
+    public static Location SECOND_STONE_GROUP_CENTER_RED = new Location(24+16, -34.5, 270);
+    public static Location SECOND_STONE_GROUP_RIGHT_RED = new Location(24+16, -26.5, 270);
+    public static Location SECOND_STONE_GROUP_LEFT_RED = new Location(24+16, -42.5, 270); // should be 34.25, but robot stops too soon
     public static Location RED_CALIBRATE_ZONE_1 = new Location(35, 35, 0);
     public static Location RED_CALIBRATE_ZONE_2 = new Location(35, -35, 0);
 

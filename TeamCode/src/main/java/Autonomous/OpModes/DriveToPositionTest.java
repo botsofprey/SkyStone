@@ -39,6 +39,8 @@ import java.util.List;
 import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
 import Autonomous.ConfigVariables;
+import Autonomous.AutoAlliance;
+import Autonomous.AutonomousRoutines;
 
 @Autonomous(name="Drive to Position", group="Testers")
 //@Disabled
@@ -86,7 +88,7 @@ public class DriveToPositionTest extends LinearOpMode {
         telemetry.update();
         //robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_LEFT_RED, 45, this);
 //        robot.navigatePathPID(locations.toArray(new Location[0]), 15, this);
-
+/*
         Location QUARRY_CENTRAL = new Location(35, 55, heading);
         Location FOUNDATION_CENTRAL = new Location(35, -55, heading);
 
@@ -96,6 +98,24 @@ public class DriveToPositionTest extends LinearOpMode {
             robot.driveToLocationPID(FOUNDATION_CENTRAL, 25, 0.5, 30.0, this);
             sleep(2000);
         }
+*/
+        AutonomousRoutines.runGrabTest(AutoAlliance.RED, this);
+
+//        for (int i = 0; i < 10 && opModeIsActive(); ++i) {
+//            robot.driveToLocationPID(new Location(55, -34.5, 270), 25, 0.5, 30, this);
+//            sleep(2000);
+//            robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_RIGHT_RED, 25, 0.5, 30, this);
+//            sleep(2000);
+//            robot.driveToLocationPID(new Location(55, -34.5, 270), 25, 0.5, 30, this);
+//            sleep(2000);
+//            robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_CENTER_RED, 25, 0.5, 30, this);
+//            sleep(2000);
+//            robot.driveToLocationPID(new Location(55, -34.5, 270), 25, 0.5, 30, this);
+//            sleep(2000);
+//            robot.driveToLocationPID(ConfigVariables.SECOND_STONE_GROUP_LEFT_RED, 25, 0.5, 30, this);
+//            sleep(2000);
+//        }
+
 
         telemetry.addData("End Location", robot.getRobotLocation());
         telemetry.update();

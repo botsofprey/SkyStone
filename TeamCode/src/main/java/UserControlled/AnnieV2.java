@@ -70,7 +70,7 @@ public class AnnieV2 extends LinearOpMode {
         sss = new StoneStackingSystemV3(hardwareMap);
         otherActions = new MiscellaneousActionsV2(hardwareMap);
 
-        sensors = new SensorPackage(new MagneticLimitSwitch(hardwareMap.get(DigitalChannel.class, "liftReset"), "liftReset"),
+        sensors = new SensorPackage(/*new MagneticLimitSwitch(hardwareMap.get(DigitalChannel.class, "liftReset"), "liftReset"),*/
                 new UltrasonicIRSensor(hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front"), "front"));
 
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
@@ -126,6 +126,13 @@ public class AnnieV2 extends LinearOpMode {
     }
 
     void controlDrive() {
+        if(gamepad1.dpad_down) {
+            while (opModeIsActive() && sensors.getSensor(UltrasonicIRSensor.class, "front").getDistance() < 3.25) {
+                robot.driveOnHeadingPID(180, 0.2, robot.orientation.getOrientation());
+            }
+            robot.brake();
+        }
+
         if (startReleased && gamepad1.start) {
             startReleased = false;
             superSlowMode = !superSlowMode;
@@ -168,7 +175,7 @@ public class AnnieV2 extends LinearOpMode {
                 sss.liftStones();
                 liftingToPos = false;
             }
-            else if(gamepad2.right_bumper && !sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()) {
+            else if(gamepad2.right_bumper/* && !sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()*/) {
                 sss.lowerStones();
                 liftingToPos = false;
             }
@@ -185,12 +192,12 @@ public class AnnieV2 extends LinearOpMode {
             else if (gamepad2.y)
                 sss.releaseStoneCenter();
             // check if limit switch is pressed and reset the lift encoder
-            if (sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && limitSwitchReleased) {
-                limitSwitchReleased = false;
-                sss.resetLiftEncoder();
-            } else if (!sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && !limitSwitchReleased) {
-                limitSwitchReleased = true;
-            }
+//            if (sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && limitSwitchReleased) {
+//                limitSwitchReleased = false;
+//                sss.resetLiftEncoder();
+//            } else if (!sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && !limitSwitchReleased) {
+//                limitSwitchReleased = true;
+//            }
         }
     }
 

@@ -233,11 +233,12 @@ public class SkystoneImageProcessor {
         int width = bmp.getWidth(), height = bmp.getHeight();
         int newHeight = (int)((1.0/4.0)*height);
         int[] pixels = new int[width * height];
-        bmp.getPixels(pixels, 0, width, 0, (int)((3.0/4.0)*height), width, newHeight);
+        int x = 0, y = (int)((3.0/4.0)*height), w = width, h = newHeight;
+        bmp.getPixels(pixels, 0, width, x, y, w, h);
         long collapseStart = System.currentTimeMillis();
         int [] frequencyByColumn = null;
-        if (colorToFind == STONE_COLOR.BLACK) frequencyByColumn = collapseVerticallyByBlackCount(pixels,width,newHeight);
-        else if (colorToFind == STONE_COLOR.YELLOW) frequencyByColumn = collapseVerticallyByYellowCount(pixels,width,newHeight);
+        if (colorToFind == STONE_COLOR.BLACK) frequencyByColumn = collapseVerticallyByBlackCount(pixels,w,h);
+        else if (colorToFind == STONE_COLOR.YELLOW) frequencyByColumn = collapseVerticallyByYellowCount(pixels,w,h);
         //Log.d("CF IMG PROC", "Collapse Time: " + (System.currentTimeMillis() - collapseStart));
         ArrayList<Integer> interestingColumns = getColumnsWithRequiredBlackCount(frequencyByColumn);
 

@@ -76,7 +76,7 @@ public class AnnieNavigation extends Thread {
     private double acceleration = 0;
     private HardwareMap hardwareMap;
 
-    public AnnieNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile) throws Exception {
+    public AnnieNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile, boolean ignoreInitialSensorLocation) throws Exception{
         hardwareMap = hw;
         initializeUsingConfigFile(configFile);
         populateHashmaps();
@@ -90,7 +90,7 @@ public class AnnieNavigation extends Thread {
 //        distanceSensors[LEFT_SENSOR].getDistance(); We shouldn't need these because of initSensor in LIDARSensor class
 //        distanceSensors[BACK_SENSOR].getDistance();
 //        distanceSensors[RIGHT_SENSOR].getDistance();
-        getInitialLocation();
+        if(!ignoreInitialSensorLocation) getInitialLocation();
         for(int i = 0; i < wheelVectors.length; i++){
             wheelVectors[i] = new HeadingVector();
         }
@@ -117,7 +117,10 @@ public class AnnieNavigation extends Thread {
                 }
             }
         }).start();
+    }
 
+    public AnnieNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile) throws Exception {
+        this(hw, startLocation, robotOrientationOffset, configFile, false);
     }
 
     private void getInitialLocation() {
@@ -551,6 +554,16 @@ public class AnnieNavigation extends Thread {
 
         applyMotorVelocities(velocities);
         mode.sleep(delayTimeMillis);
+    }
+
+    public void driveDistanceToLocation(Location target, double desiredVelocity, LinearOpMode mode) {
+        double heading = Math.toDegrees(Math.atan2(target.getY() - myLocation.getY(), target.getX() - myLocation.getX())) - 90;
+        heading = (360 - heading) - orientationOffset;
+        heading %= 360;
+        if(heading >= 360) heading -= 360;
+        if(heading < 0) heading += 360;
+        Log.d("Drive Distance Heading", ""+heading);
+        driveDistance(myLocation.distanceToLocation(target), heading, desiredVelocity, mode);
     }
 
     public void driveDistance(double distanceInInches, double heading, double desiredVelocity, LinearOpMode mode) {
@@ -1170,8 +1183,8 @@ public class AnnieNavigation extends Thread {
             Log.d("Xdist", "" + xDist);
             Log.d("Ydist", "" + yDist);
 
-            double timeToStop = desiredSpeed / decel;
-            double distToStop = 0.5 * desiredSpeed * timeToStop;
+            double timeToStop = velocity / decel;
+            double distToStop = 0.5 * velocity * timeToStop;
             distToStop += distToTravel * STOPPING_DISTANCE_FACTOR;
             Log.d("Time to stop: ", ""+timeToStop);
             Log.d("Dist to stop: ", ""+distToStop);
@@ -1281,8 +1294,8 @@ public class AnnieNavigation extends Thread {
             Log.d("Xdist", "" + xDist);
             Log.d("Ydist", "" + yDist);
 
-            double timeToStop = desiredSpeed / decel;
-            double distToStop = 0.5 * desiredSpeed * timeToStop;
+            double timeToStop = velocity / decel;
+            double distToStop = 0.5 * velocity * timeToStop;
             distToStop += distToTravel * STOPPING_DISTANCE_FACTOR;
             Log.d("Time to stop: ", ""+timeToStop);
             Log.d("Dist to stop: ", ""+distToStop);
