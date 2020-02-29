@@ -167,7 +167,7 @@ public class AnnieAutonomous {
         Location targetLocation;
 
         double yOffsetHack = 0.0;
-        switch (position) {
+        switch (position) { // default should be center
             case SKY_STONE_0:
                 targetLocation = ConfigVariables.SECOND_STONE_GROUP_LEFT_RED;
                 break;
@@ -197,22 +197,9 @@ public class AnnieAutonomous {
         Location targetLocation;
 
         switch (position) {
-            case SKY_STONE_0: // wall stone, do something interesting
-//                robot.driveToLocationPID(new Location(35, -63, 270), maxSpeed, mode);
-//                turnToFaceQuarry();
-                sss.liftToPosition(1);
-                sleep(500);
-                double measuredDistance = front.getDistance();
-                sss.liftToPosition(0);
-                sleep(500);
-                robot.turnToHeading(255, 3, mode);
-                robot.driveDistance(measuredDistance, 15, 15, mode);
-                sleep(500);
-                robot.brake();
-                sss.grabStoneCenter();
-                robot.driveDistance(10, 180, maxSpeed, mode);
-                robot.turnToHeading(270, mode);
-                return;
+            case SKY_STONE_0: // wall stone, do something interesting  -- go after stone 1
+                targetLocation = redToBlue(ConfigVariables.FIRST_STONE_GROUP_CENTER_RED);
+                break;
             case SKY_STONE_1:
                 targetLocation = redToBlue(ConfigVariables.FIRST_STONE_GROUP_CENTER_RED);
                 break;
@@ -221,14 +208,14 @@ public class AnnieAutonomous {
                 break;
         }
 
-        robot.driveToLocationPID(new Location(targetLocation.getX(), targetLocation.getY(), 0), maxSpeed, mode);
+        robot.driveToLocationPID(new Location(targetLocation.getX(), targetLocation.getY()+2, 0), maxSpeed, mode);
         robot.turnToHeading(targetLocation.getHeading(), mode);
         approachAndGrabStone();
     }
 
     private void approachAndGrabStone() {
         sss.liftToPosition(1);
-        sleep(250);
+        sleep(300);
 
         // wait for sensor to provide a good reading (or give up after 2 seconds)
         long startTime = System.currentTimeMillis();
@@ -261,7 +248,7 @@ public class AnnieAutonomous {
 //        robot.driveToLocationPID(redToBlue(ConfigVariables.UNDER_RED_BRIDGE), maxSpeed, mode);
         // TODO add on option to driveToLocationPID to eliminate the stop/brake at the end to allow a smooth, at-speed transition to the next way point
         if (continueToLocation != null) {
-            robot.driveToLocationPID(redToBlue(continueToLocation), maxSpeed, mode);
+            robot.driveToLocationPID(redToBlue(continueToLocation), maxSpeed+5, mode);
         }
     }
 

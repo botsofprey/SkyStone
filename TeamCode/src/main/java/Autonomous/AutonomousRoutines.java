@@ -28,11 +28,11 @@ public class AutonomousRoutines {
 
         annie.lowerLift();
 
-//        annie.traverseSkyBridgeForwardNearCenterAndContinueTo(new Location(35, -35, 0));
+//        annie.traverseSkyBridgeForwardNearCenterAndContinueTo(new Location(Math.abs(annie.robot.getRobotLocation().getX()), -35, 0)); // abs of x pos to make sure it is a red position, this location runs through red to blue
 
 //        annie.grabSkyStoneFromWallGroup(skyStonePosition);
 
-//        annie.turnToZero();
+//        annie.traverseSkyBridgeSidewaysNearCenterAndContinueTo(new Location(ConfigVariables.RED_FOUNDATION_CENTER.getX(), ConfigVariables.RED_FOUNDATION_CENTER.getY()-19.25, ConfigVariables.RED_FOUNDATION_CENTER.getHeading()));
 
 //        annie.driveToLocation(new Location(40, 29, 0));
 //        annie.driveToLocation(new Location(50, 39, 0));

@@ -31,7 +31,7 @@ public class DetectSkyStonesTest extends LinearOpMode {
         VuforiaHelper vuforia = new VuforiaHelper(hardwareMap);
         //wait for the op mode to start, this is the time to change teams
         //initialize the image processor 
-        stoneFinder = new SkystoneImageProcessor(SkystoneImageProcessor.DESIRED_HEIGHT, SkystoneImageProcessor.DESIRED_WIDTH,.1,1, SkystoneImageProcessor.STONE_COLOR.BLACK);
+        stoneFinder = new SkystoneImageProcessor(SkystoneImageProcessor.DESIRED_HEIGHT, SkystoneImageProcessor.DESIRED_WIDTH,.1,1, SkystoneImageProcessor.STONE_COLOR.BLACK, SkystoneImageProcessor.BLUE_TEAM);
         telemetry.addData("Status","Initialized");
         telemetry.update();
         waitForStart();
