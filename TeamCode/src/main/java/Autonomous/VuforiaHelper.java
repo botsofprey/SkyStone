@@ -21,8 +21,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static Autonomous.VisionHelper.PHONE_CAMERA;
-import static Autonomous.VisionHelper.WEBCAM;
+import static Autonomous.VisionHelperSkyStone.PHONE_CAMERA;
+import static Autonomous.VisionHelperSkyStone.WEBCAM;
 
 /**
  * Created by robotics on 12/12/17.
@@ -46,9 +46,7 @@ public class VuforiaHelper {
     private final float HORIZONTAL_WITH_CAMERA_TO_LEFT_POST_ROTATE_IN_DEG = 180;
     private final float WEBCAM_POST_ROTATE_IN_DEG = 0;
 
-    public VuforiaHelper(HardwareMap hw){
-        initVuforia(hw);
-    }
+    public VuforiaHelper(HardwareMap hw){ initVuforia(hw); }
 
     public static VuforiaLocalizer initVuforia(HardwareMap hardwareMap) {
         try {
@@ -116,19 +114,19 @@ public class VuforiaHelper {
         returns a Bitmap of what the camera sees
      */
     public Bitmap getImage(int wantedWidth, int wantedHeight) {
-        Image i = null;
+        Image img;
         long timeStart = System.currentTimeMillis();
         try{
             Log.d("Get Image", "taking image");
-            i = takeImage();
+            img = takeImage();
         }catch (Exception e){
             throw new RuntimeException(e);
         }
         Log.d("VH IMG TAKE TIME", "" + (System.currentTimeMillis() - timeStart));
 
-        if(i != null) {
+        if(img != null) {
             long conversionStart = System.currentTimeMillis();
-            Bitmap bmp = convertImageToBmp(i);
+            Bitmap bmp = convertImageToBmp(img);
             Log.d("VH IMG Convert", "" + (System.currentTimeMillis() - conversionStart));
             long copyStart = System.currentTimeMillis();
             Bitmap orig = bmp.copy(Bitmap.Config.ARGB_8888,true);

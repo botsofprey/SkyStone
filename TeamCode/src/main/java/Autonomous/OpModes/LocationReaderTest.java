@@ -38,19 +38,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import java.io.InputStream;
 
 import Autonomous.Location;
-import Autonomous.VisionHelper;
+import VisionHelperSkyStone;
 import DriveEngine.HolonomicDriveSystemTesting;
 import MotorControllers.JsonConfigReader;
 import UserControlled.JoystickHandler;
 
-import static Autonomous.VisionHelper.PHONE_CAMERA;
+import static VisionHelperSkyStone.PHONE_CAMERA;
 
 @Autonomous(name="Location Reader Test", group="Testers")
 @Disabled
 public class LocationReaderTest extends LinearOpMode {
     // create objects and locally global variables here
     JsonConfigReader reader;
-    VisionHelper robotVision;
+    VisionHelperSkyStone robotVision;
     HolonomicDriveSystemTesting navigation;
     JoystickHandler leftStick, rightStick;
 
@@ -67,7 +67,7 @@ public class LocationReaderTest extends LinearOpMode {
             Log.d("Drive Engine Error: ",e.toString());
             throw new RuntimeException("Drive Engine Open Config File Fail: " + e.toString());
         }
-        robotVision = new VisionHelper(PHONE_CAMERA, hardwareMap);
+        robotVision = new VisionHelperSkyStone(PHONE_CAMERA, hardwareMap);
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
         rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
         // initialize objects and variables here

@@ -31,12 +31,11 @@ package Autonomous.OpModes;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
-import Autonomous.VisionHelper;
+import VisionHelperSkyStone;
 
 /**
  *     Created by Ethan Fisher (and I guess Grant Gupton) on 9/19/19
@@ -48,14 +47,14 @@ import Autonomous.VisionHelper;
 public class CameraTest extends LinearOpMode {
     // create objects and locally global variables here
 
-    VisionHelper vision;
+    VisionHelperSkyStone vision;
 
     @Override
     public void runOpMode() {
 
         // initialize objects and variables here
         // also create and initialize function local variables here
-        vision = new VisionHelper(VisionHelper.WEBCAM, hardwareMap);
+        vision = new VisionHelperSkyStone(VisionHelperSkyStone.WEBCAM, hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");

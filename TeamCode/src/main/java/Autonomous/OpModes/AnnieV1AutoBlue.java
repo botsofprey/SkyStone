@@ -39,7 +39,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
-import Autonomous.VisionHelper;
+import VisionHelperSkyStone;
 import DriveEngine.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
@@ -50,7 +50,7 @@ public class AnnieV1AutoBlue extends LinearOpMode {
     // create objects and locally global variables here
     AnnieNavigation robot;
     StoneStackingSystemV2 sss;
-    VisionHelper vision;
+    VisionHelperSkyStone vision;
     DistanceSensor back, right, left;
 
     @Override
@@ -69,7 +69,7 @@ public class AnnieV1AutoBlue extends LinearOpMode {
         sss = new StoneStackingSystemV2(hardwareMap);
 
         // Stone detection
-        vision = new VisionHelper(VisionHelper.WEBCAM, VisionHelper.LOCATION, hardwareMap);
+        vision = new VisionHelperSkyStone(VisionHelperSkyStone.WEBCAM, VisionHelperSkyStone.LOCATION, hardwareMap);
         vision.startDetection();
         vision.startTrackingLocation();
 

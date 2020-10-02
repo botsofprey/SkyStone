@@ -3,7 +3,6 @@ package Autonomous;
 import android.util.Log;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -22,8 +21,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import Actions.HardwareWrappers.ServoHandler;
-
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
@@ -36,7 +33,7 @@ import static org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone.TFOD_MO
  * Created by robotics on 12/18/18.
  */
 
-public class VisionHelper extends Thread {
+public class VisionHelperSkyStone extends Thread {
     public final static int SLEEP_TIME_MILLIS = 200;
     public final static int PHONE_CAMERA = 0;
     public final static int WEBCAM = 1;
@@ -94,9 +91,9 @@ public class VisionHelper extends Thread {
     final int CAMERA_VERTICAL_DISPLACEMENT_FROM_CENTER = (int)(14*mmPerInch);
     final int CAMERA_LEFT_DISPLACEMENT_FROM_CENTER = (int)(-mmPerInch);
 
-    public VisionHelper(int camera, HardwareMap hardwareMap) { this(camera, BOTH, hardwareMap); }
+    public VisionHelperSkyStone(int camera, HardwareMap hardwareMap) { this(camera, BOTH, hardwareMap); }
 
-    public VisionHelper(int camera, int mode, HardwareMap hardwareMap) {
+    public VisionHelperSkyStone(int camera, int mode, HardwareMap hardwareMap) {
         switch (mode) {
             case LOCATION:
                 mode = LOCATION;

@@ -29,28 +29,22 @@
 
 package Autonomous.OpModes;
 
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.util.Log;
-
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import Autonomous.ImageProcessing.SkystoneImageProcessor;
-import Autonomous.VisionHelper;
+import VisionHelperSkyStone;
 
 @Autonomous(name="Save Image Test", group="Testers")
 @Disabled
 public class SaveImageTest extends LinearOpMode {
     // create objects and locally global variables here
-    VisionHelper vision;
+    VisionHelperSkyStone vision;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        vision = new VisionHelper(VisionHelper.WEBCAM, hardwareMap);
+        vision = new VisionHelperSkyStone(VisionHelperSkyStone.WEBCAM, hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");

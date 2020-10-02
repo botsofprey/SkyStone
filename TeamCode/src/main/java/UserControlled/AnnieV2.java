@@ -32,17 +32,11 @@ package UserControlled;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import Actions.MiscellaneousActionsV2;
 import Actions.StoneStackingSystemV3;
 import Autonomous.Location;
 import DriveEngine.HolonomicDriveSystemTesting;
-import SensorHandlers.LIDARSensor;
-import SensorHandlers.LimitSwitch;
-import SensorHandlers.MagneticLimitSwitch;
 import SensorHandlers.SensorPackage;
 import SensorHandlers.UltrasonicIRSensor;
 

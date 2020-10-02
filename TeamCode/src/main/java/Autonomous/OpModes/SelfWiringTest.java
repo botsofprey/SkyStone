@@ -35,11 +35,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
-import Autonomous.VisionHelper;
+import VisionHelperSkyStone;
 import DriveEngine.AnnieNavigation;
 import SensorHandlers.LIDARSensor;
 import SensorHandlers.LimitSwitch;
@@ -57,7 +55,7 @@ public class SelfWiringTest extends LinearOpMode {
     private StoneStackingSystemV2 sss;
     private SensorPackage sensors;
 
-    private VisionHelper robotVision;
+    private VisionHelperSkyStone robotVision;
     private int driveMotorCount[] = {0, 0, 0, 0};
     private int liftMotorCount = 0, leftArmCount = 0, rightArmCount = 0;
     private boolean liftSwitchGood = false, leftLIDARGood = false, rightLIDARGood = false,
@@ -66,7 +64,7 @@ public class SelfWiringTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robotVision = new VisionHelper(VisionHelper.WEBCAM, hardwareMap);
+        robotVision = new VisionHelperSkyStone(VisionHelperSkyStone.WEBCAM, hardwareMap);
         sss = new StoneStackingSystemV2(hardwareMap);
         sensors = new SensorPackage(new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"),
                 new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),

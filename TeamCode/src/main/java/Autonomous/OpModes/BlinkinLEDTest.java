@@ -33,9 +33,7 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-
-import Autonomous.VisionHelper;
+import VisionHelperSkyStone;
 
 /**
  *     Created by Ethan Fisher (and I guess Grant Gupton) on 9/19/19
