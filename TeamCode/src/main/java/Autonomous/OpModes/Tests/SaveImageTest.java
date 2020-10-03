@@ -27,23 +27,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Autonomous.OpModes;
+package Autonomous.OpModes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import Autonomous.*;
+import VisionHelperSkyStone;
 
-@Autonomous(name="Grab Wall Stone Test", group="Competition")
-//@Disabled
-public class GrabWallStoneTest extends LinearOpMode {
+@Autonomous(name="Save Image Test", group="Testers")
+@Disabled
+public class SaveImageTest extends LinearOpMode {
     // create objects and locally global variables here
-    AnnieAutonomous annie;
+    VisionHelperSkyStone vision;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        annie = new AnnieAutonomous(AutoAlliance.RED, this);
+        vision = new VisionHelperSkyStone(VisionHelperSkyStone.WEBCAM, hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -51,9 +52,13 @@ public class GrabWallStoneTest extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
-        annie.grabSkyStoneFromWallGroup(SkyStonePosition.SKY_STONE_0);
+        vision.startDetection();
 
-        while (opModeIsActive());
-        annie.stop();
+        while (opModeIsActive()) {
+            telemetry.addData("saved image", "");
+            telemetry.update();
+        }
+        vision.kill();
     }
+    // misc functions here
 }

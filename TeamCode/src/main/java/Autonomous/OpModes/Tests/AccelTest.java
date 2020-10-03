@@ -27,38 +27,62 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Autonomous.OpModes;
+package Autonomous.OpModes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import VisionHelperSkyStone;
+import Autonomous.Location;
+import DriveEngine.AnnieNavigation;
 
-@Autonomous(name="Save Image Test", group="Testers")
-@Disabled
-public class SaveImageTest extends LinearOpMode {
+@Autonomous(name="AccelTest", group="Testers")
+//@Disabled
+public class AccelTest extends LinearOpMode {
     // create objects and locally global variables here
-    VisionHelperSkyStone vision;
+    AnnieNavigation robot;
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        vision = new VisionHelperSkyStone(VisionHelperSkyStone.WEBCAM, hardwareMap);
+        try {
+            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // nothing goes between the above and below lines
         waitForStart();
+        // should only be used for a time keeper or other small things, avoid using this space when possible
+        if(opModeIsActive()) robot.driveDistanceAccelerationBased(45,0,25,this);
+//        if(opModeIsActive()) robot.driveDistance(15, 90, 25, this);
+//        THIS IS FOR GRABBING FOUNDATION
+//        robot.driveDistance(10, 270, 15, this);
+//        robot.driveDistance(30, 270, 15, this);
+//        if(opModeIsActive())sss.extendRightArm();
+//        sleep();
+//        sss.pauseRightArm();
+//        if(opModeIsActive())sss.extendLeftArm();
+//        if(opModeIsActive())sss.setLeftArmPosition(180);
+//        if(opModeIsActive())sss.setRightArmPosition(180);
+//        robot.driveDistance(38.42, 336, 15, this);
 
-        vision.startDetection();
+        // For future implementation: get stones
+//        int reps = 6;
+//        for (int i = 0; i < reps && opModeIsActive(); i++){
+//            robot.driveDistance(20,0,25,this);
+//            robot.driveDistance(87 + i * 8,90,25,this);
+//            robot.driveDistance(24,180,25,this);
+//            robot.driveDistance(89 + i * 8, 270, 25,this);
+//        }
 
-        while (opModeIsActive()) {
-            telemetry.addData("saved image", "");
-            telemetry.update();
-        }
-        vision.kill();
+        robot.stopNavigation();
+
+        // finish drive code and test
+        // may be a good idea to square self against wall
+
     }
     // misc functions here
 }

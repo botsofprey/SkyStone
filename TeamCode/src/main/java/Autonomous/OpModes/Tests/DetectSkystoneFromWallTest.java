@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Autonomous.OpModes;
+package Autonomous.OpModes.Tests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -49,7 +49,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.I
 
 @Autonomous(name="Detect Skystone From Wall", group="Competition")
 //@Disabled
-public class DetectSkystoneFromWall extends LinearOpMode {
+public class DetectSkystoneFromWallTest extends LinearOpMode {
     // create objects and locally global variables here
     AnnieNavigation robot;
     StoneStackingSystemV3 sss;

@@ -27,42 +27,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Autonomous.OpModes;
+package Autonomous.OpModes.Tests;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import Autonomous.Location;
-import DriveEngine.AnnieNavigation;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
-@Autonomous(name="RotateTest", group="Competition")
+import VisionHelperSkyStone;
+
+/**
+ *     Created by Ethan Fisher (and I guess Grant Gupton) on 9/19/19
+ *     Tests camera recognition of blocks
+ */
+
+@Autonomous(name="Camera Test", group="Testers")
 //@Disabled
-public class RotateTest extends LinearOpMode {
+public class CameraTest extends LinearOpMode {
     // create objects and locally global variables here
-    AnnieNavigation robot;
-    DistanceSensor back, right, left;
 
+    VisionHelperSkyStone vision;
 
     @Override
     public void runOpMode() {
+
         // initialize objects and variables here
         // also create and initialize function local variables here
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        back = hardwareMap.get(DistanceSensor.class, "back");
-        right = hardwareMap.get(DistanceSensor.class, "right");
-        left = hardwareMap.get(DistanceSensor.class, "left");
-
-        try {
-            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Stone detection
-
+        vision = new VisionHelperSkyStone(VisionHelperSkyStone.WEBCAM, hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -70,14 +62,21 @@ public class RotateTest extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
-        robot.turnToHeading(180,5,this);
-        sleep(1000);
-        robot.stopNavigation();
-//        VuforiaHelper.kill(); -- this crashes the app...
+        vision.startDetection();
 
-        // finish drive code and test
-        // may be a good idea to square self against wall
+        while(opModeIsActive()) {
+            Recognition[] recognitions = vision.getStonesInView();
 
+            if (recognitions == null)
+                telemetry.addData("No Blocks","");
+            else
+                for (int i = 0; i < recognitions.length; i++)
+                    telemetry.addData("Block " + i + " (" + recognitions[i].getLabel() + ")", "" + recognitions[i].getLeft());
+            telemetry.update(); // don't forget to update the telemetry to show the new data
+
+            if(gamepad1.a) vision.setLEDMode(RevBlinkinLedDriver.BlinkinPattern.WHITE);
+            else if(gamepad1.b) vision.setLEDMode(RevBlinkinLedDriver.BlinkinPattern.BLACK);
+        }
+        vision.kill(); // ALWAYS kill everything at the end, leads to crashes of the app otherwise
     }
-    // misc functions here
 }

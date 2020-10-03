@@ -27,31 +27,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Autonomous.OpModes;
+package Autonomous.OpModes.Tests;
 
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import VisionHelperSkyStone;
+import Autonomous.*;
 
-/**
- *     Created by Ethan Fisher (and I guess Grant Gupton) on 9/19/19
- *     Tests camera recognition of blocks
- */
-
-@Autonomous(name="LED Test", group="Testers")
+@Autonomous(name="Grab Wall Stone Test", group="Competition")
 //@Disabled
-public class BlinkinLEDTest extends LinearOpMode {
+public class GrabWallStoneTest extends LinearOpMode {
     // create objects and locally global variables here
-    RevBlinkinLedDriver ledController;
-
+    AnnieAutonomous annie;
     @Override
     public void runOpMode() {
-        ledController = hardwareMap.get(RevBlinkinLedDriver.class, "LEDStripController");
-        ledController.resetDeviceConfigurationForOpMode();
         // initialize objects and variables here
         // also create and initialize function local variables here
+        annie = new AnnieAutonomous(AutoAlliance.RED, this);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -59,10 +51,9 @@ public class BlinkinLEDTest extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
-        while(opModeIsActive()) {
-            if(gamepad1.a) ledController.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
-            else if(gamepad1.b) ledController.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
-        }
-        ledController.close();
+        annie.grabSkyStoneFromWallGroup(SkyStonePosition.SKY_STONE_0);
+
+        while (opModeIsActive());
+        annie.stop();
     }
 }

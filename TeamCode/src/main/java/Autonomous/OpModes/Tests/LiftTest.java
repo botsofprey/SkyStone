@@ -27,44 +27,74 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Autonomous.OpModes;
+package Autonomous.OpModes.Tests;
 
+import android.util.Log;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
+import Actions.HardwareWrappers.DoubledSpoolMotor;
+import Actions.StoneStackingSystemV3;
 import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
 
-@Autonomous(name="Drive Distance", group="Testers")
+@Autonomous(name="LiftTest", group="Competition")
 //@Disabled
-public class DriveDistanceTest extends LinearOpMode {
+public class LiftTest extends LinearOpMode {
     // create objects and locally global variables here
-
-    AnnieNavigation robot;
-    DistanceSensor back;
+    DoubledSpoolMotor lift;
+    StoneStackingSystemV3 sss;
 
     @Override
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        try {
-            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        back = hardwareMap.get(DistanceSensor.class, "back");
+//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        sss = new StoneStackingSystemV3(hardwareMap);
+        lift = new DoubledSpoolMotor(new String[] {"liftMotor1", "liftMotor2"}, "ActionConfig/SSSLift.json", 50, 50, hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // nothing goes between the above and below lines
         waitForStart();
-        // should only be used for a time keeper or other small things, avoid using this space when possible
+        int liftPosition = 0;
+        boolean manualMode = false;
+        while(opModeIsActive()){
+            if(manualMode) {
+                if (gamepad1.right_trigger > 0.1) lift.extendWithPower();
+                else if (gamepad1.right_bumper) lift.retractWithPower();
+                else lift.holdPosition();
+            }else {
+                if (gamepad1.a) {
+                    liftPosition++;
+                    while (gamepad1.a) ;
+                    sss.liftToPosition(liftPosition);
+                } else if (gamepad1.b) {
+                    liftPosition--;
+                    while (gamepad1.b) ;
+                    sss.liftToPosition(liftPosition);
+                }
 
-        robot.driveDistanceAccelerationBased(36, 0, 35, this);
+                if (liftPosition > 4) liftPosition = 4;
+                if (liftPosition < 0) liftPosition = 0;
+            }
 
-        robot.stopNavigation();
+            if(gamepad1.x){
+                manualMode = !manualMode;
+                while (gamepad1.x);
+            }
+            telemetry.addData("M0", sss.getLiftPositionTicks(0));
+            telemetry.addData("M1", sss.getLiftPositionTicks(1));
+            telemetry.addData("liftPosition", liftPosition);
+            telemetry.update();
+
+        }
+//        VuforiaHelper.kill(); -- this crashes the app...
 
         // finish drive code and test
         // may be a good idea to square self against wall

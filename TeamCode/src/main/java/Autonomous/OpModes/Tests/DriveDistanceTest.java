@@ -27,19 +27,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Autonomous.OpModes;
+package Autonomous.OpModes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
 
-@Autonomous(name="AccelTest", group="Testers")
+@Autonomous(name="Drive Distance", group="Testers")
 //@Disabled
-public class AccelTest extends LinearOpMode {
+public class DriveDistanceTest extends LinearOpMode {
     // create objects and locally global variables here
+
     AnnieNavigation robot;
+    DistanceSensor back;
+
     @Override
     public void runOpMode() {
         // initialize objects and variables here
@@ -49,6 +53,7 @@ public class AccelTest extends LinearOpMode {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        back = hardwareMap.get(DistanceSensor.class, "back");
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -56,27 +61,8 @@ public class AccelTest extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
-        if(opModeIsActive()) robot.driveDistanceAccelerationBased(45,0,25,this);
-//        if(opModeIsActive()) robot.driveDistance(15, 90, 25, this);
-//        THIS IS FOR GRABBING FOUNDATION
-//        robot.driveDistance(10, 270, 15, this);
-//        robot.driveDistance(30, 270, 15, this);
-//        if(opModeIsActive())sss.extendRightArm();
-//        sleep();
-//        sss.pauseRightArm();
-//        if(opModeIsActive())sss.extendLeftArm();
-//        if(opModeIsActive())sss.setLeftArmPosition(180);
-//        if(opModeIsActive())sss.setRightArmPosition(180);
-//        robot.driveDistance(38.42, 336, 15, this);
 
-        // For future implementation: get stones
-//        int reps = 6;
-//        for (int i = 0; i < reps && opModeIsActive(); i++){
-//            robot.driveDistance(20,0,25,this);
-//            robot.driveDistance(87 + i * 8,90,25,this);
-//            robot.driveDistance(24,180,25,this);
-//            robot.driveDistance(89 + i * 8, 270, 25,this);
-//        }
+        robot.driveDistanceAccelerationBased(36, 0, 35, this);
 
         robot.stopNavigation();
 

@@ -27,13 +27,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Autonomous.OpModes;
+package Autonomous.OpModes.Tests;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 import VisionHelperSkyStone;
 
@@ -42,19 +40,18 @@ import VisionHelperSkyStone;
  *     Tests camera recognition of blocks
  */
 
-@Autonomous(name="Camera Test", group="Testers")
+@Autonomous(name="LED Test", group="Testers")
 //@Disabled
-public class CameraTest extends LinearOpMode {
+public class BlinkinLEDTest extends LinearOpMode {
     // create objects and locally global variables here
-
-    VisionHelperSkyStone vision;
+    RevBlinkinLedDriver ledController;
 
     @Override
     public void runOpMode() {
-
+        ledController = hardwareMap.get(RevBlinkinLedDriver.class, "LEDStripController");
+        ledController.resetDeviceConfigurationForOpMode();
         // initialize objects and variables here
         // also create and initialize function local variables here
-        vision = new VisionHelperSkyStone(VisionHelperSkyStone.WEBCAM, hardwareMap);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -62,21 +59,10 @@ public class CameraTest extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
 
-        vision.startDetection();
-
         while(opModeIsActive()) {
-            Recognition[] recognitions = vision.getStonesInView();
-
-            if (recognitions == null)
-                telemetry.addData("No Blocks","");
-            else
-                for (int i = 0; i < recognitions.length; i++)
-                    telemetry.addData("Block " + i + " (" + recognitions[i].getLabel() + ")", "" + recognitions[i].getLeft());
-            telemetry.update(); // don't forget to update the telemetry to show the new data
-
-            if(gamepad1.a) vision.setLEDMode(RevBlinkinLedDriver.BlinkinPattern.WHITE);
-            else if(gamepad1.b) vision.setLEDMode(RevBlinkinLedDriver.BlinkinPattern.BLACK);
+            if(gamepad1.a) ledController.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
+            else if(gamepad1.b) ledController.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
         }
-        vision.kill(); // ALWAYS kill everything at the end, leads to crashes of the app otherwise
+        ledController.close();
     }
 }
