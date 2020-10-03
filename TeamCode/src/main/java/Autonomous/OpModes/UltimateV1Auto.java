@@ -30,44 +30,31 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package UserControlled;
+package Autonomous.OpModes;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import java.util.ArrayList;
-
 import Autonomous.VuforiaHelper;
+import UserControlled.JoystickHandler;
 
 /*
     An opmode for the User Controlled portion of the game
  */
-@TeleOp(name="Image Capture Test", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@Autonomous(name="UltimateV1Auto", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class VuforiaTest extends LinearOpMode {
-
-    private DcMotor left, right;
-    private JoystickHandler joystick;
+public class UltimateV1Auto extends LinearOpMode {
 
     private VuforiaHelper vuforia;
 
     @Override
     public void runOpMode() {
 
-        left = hardwareMap.get(DcMotor.class, "leftMotor");
-        left.setDirection(DcMotorSimple.Direction.REVERSE);
-        right = hardwareMap.get(DcMotor.class, "rightMotor");
-        right.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        joystick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
-
         vuforia = new VuforiaHelper(hardwareMap);
-        telemetry.addData("Vuforia Working", "Height: " + vuforia.getImage(100, 100).getHeight() + "px");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -78,47 +65,40 @@ public class VuforiaTest extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            updateMotors();
-
-            int[] colors = getAverageImageColor();
-            if (colors != null) {
-                telemetry.addData("Image", "Red: " + colors[0]);
-                telemetry.addData("Image", "Green: " + colors[1]);
-                telemetry.addData("Image", "Blue: " + colors[2]);
-            };
+            numOrangePixels();
 
             telemetry.update();
         }
     }
 
-    private int[] getAverageImageColor() {
+    private void numOrangePixels() {
         Bitmap image = vuforia.getImage(100, 100);
-        if (image == null) return null;
+        if (image == null) return;
 
-//        ArrayList<Color> colors = new ArrayList<>();
+        // RGB for orange = #FFa500
+        // variables for the bounds of the orange allowed for each pixel
+        int redMin = 0xBB;
+        int greenMin = 0x77;
+        int greenMax = 0xB0;
+        int blueMax = 0x33;
+
+        int orangePixels = 0;
+
         for (int i = 0; i < image.getWidth(); i++) {
 
             for (int j = 0; j < image.getHeight(); j++) {
                 int pixel = image.getPixel(i, j);
-                int A = (pixel >> 24) & 0xff; // or color >>> 24
+
+                // convert pixel to a color
+//                int A = (pixel >> 24) & 0xff; // or color >>> 24
                 int R = (pixel >> 16) & 0xff;
                 int G = (pixel >>  8) & 0xff;
                 int B = (pixel      ) & 0xff;
-                return new int[] { R, G, B };
+
+                if (R >= redMin && G >= greenMin && G <= greenMax && B <= blueMax) orangePixels++;
             }
         }
-        return new int[] { 1, 2, 3 };
-    }
 
-    private void updateMotors() {
-        double leftPower, rightPower;
-        leftPower = joystick.y() + joystick.x();
-        rightPower = joystick.y() - joystick.x();
-
-        left.setPower(leftPower);
-        right.setPower(rightPower);
-
-//        telemetry.addData("Drive Power Left", leftPower);
-//        telemetry.addData("Drive Power Right", rightPower);
+        telemetry.addData("Orange Pixels: ", orangePixels);
     }
 }
