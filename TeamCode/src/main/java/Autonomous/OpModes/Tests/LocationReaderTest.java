@@ -38,12 +38,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import java.io.InputStream;
 
 import Autonomous.Location;
-import VisionHelperSkyStone;
+import Autonomous.VisionHelperSkyStone;
 import DriveEngine.HolonomicDriveSystemTesting;
 import MotorControllers.JsonConfigReader;
 import UserControlled.JoystickHandler;
 
-import static VisionHelperSkyStone.PHONE_CAMERA;
+import static Autonomous.VisionHelperSkyStone.PHONE_CAMERA;
 
 @Autonomous(name="Location Reader Test", group="Testers")
 @Disabled

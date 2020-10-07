@@ -33,7 +33,7 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import VisionHelperSkyStone;
+import Autonomous.VisionHelperSkyStone;
 
 /**
  *     Created by Ethan Fisher (and I guess Grant Gupton) on 9/19/19
