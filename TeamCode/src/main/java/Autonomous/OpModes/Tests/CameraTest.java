@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
-import VisionHelperSkyStone;
+import Autonomous.VisionHelperSkyStone;
 
 /**
  *     Created by Ethan Fisher (and I guess Grant Gupton) on 9/19/19

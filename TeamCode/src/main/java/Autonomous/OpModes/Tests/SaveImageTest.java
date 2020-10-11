@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import VisionHelperSkyStone;
+import Autonomous.VisionHelperSkyStone;
 
 @Autonomous(name="Save Image Test", group="Testers")
 @Disabled

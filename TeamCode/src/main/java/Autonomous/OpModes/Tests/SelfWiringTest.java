@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
-import VisionHelperSkyStone;
+import Autonomous.VisionHelperSkyStone;
 import DriveEngine.AnnieNavigation;
 import SensorHandlers.LIDARSensor;
 import SensorHandlers.LimitSwitch;

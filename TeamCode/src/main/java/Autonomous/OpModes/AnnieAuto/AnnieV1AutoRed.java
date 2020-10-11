@@ -39,7 +39,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
-import VisionHelperSkyStone;
+import Autonomous.VisionHelperSkyStone;
 import DriveEngine.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
