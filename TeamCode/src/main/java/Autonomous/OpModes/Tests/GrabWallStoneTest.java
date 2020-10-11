@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Autonomous.*;
+import Autonomous.OpModes.AnnieAuto.AnnieAutonomous;
 
 @Autonomous(name="Grab Wall Stone Test", group="Competition")
 //@Disabled

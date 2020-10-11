@@ -1,4 +1,4 @@
-package Autonomous;
+package Autonomous.OpModes.AnnieAuto;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -10,7 +10,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import Actions.MiscellaneousActionsV2;
 import Actions.StoneStackingSystemV3;
+import Autonomous.AutoAlliance;
+import Autonomous.ConfigVariables;
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
+import Autonomous.Location;
+import Autonomous.SkyStonePosition;
+import Autonomous.VuforiaHelper;
 import DriveEngine.AnnieNavigation;
 import SensorHandlers.UltrasonicIRSensor;
 

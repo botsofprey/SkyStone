@@ -45,6 +45,7 @@ import SensorHandlers.SensorPackage;
 @TeleOp(name="Annie V1", group="Competition")
 //@Disabled
 public class AnnieV1 extends LinearOpMode {
+
     // create objects and locally global variables here
     AnnieNavigation robot;
     StoneStackingSystemV2 sss;
@@ -56,6 +57,7 @@ public class AnnieV1 extends LinearOpMode {
             rightTrigger1Released = true, rightBumper1Released = true,
             p2DpadUpReleased = true, p2DpadRightReleased = true, p2DpadLeftReleased = true;
     int stonePosition = 0, blenderFeetPos = 0;
+
     @Override
     public void runOpMode() {
         // initialize objects and variables here
@@ -130,9 +132,10 @@ public class AnnieV1 extends LinearOpMode {
     }
 
     void controlDrive() {
-        double drivePower = (slowMode)? leftStick.magnitude()/3.0 : leftStick.magnitude();
-        double turnPower = (slowMode)? rightStick.x()/4.0 : rightStick.x();
-        if(!eStop) robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
+        double drivePower = slowMode ? leftStick.magnitude() / 3 : leftStick.magnitude();
+        double turnPower = slowMode ? rightStick.x() / 4 : rightStick.x();
+        if (!eStop)
+            robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
     }
 
     void controlStoneStackingSystem() {

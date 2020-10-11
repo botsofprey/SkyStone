@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Autonomous.AutoAlliance;
-import Autonomous.AutonomousRoutines;
+import Autonomous.OpModes.AnnieAuto.AutonomousRoutines;
 
 
 /**

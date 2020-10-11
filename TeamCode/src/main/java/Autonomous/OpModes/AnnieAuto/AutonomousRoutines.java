@@ -1,6 +1,12 @@
-package Autonomous;
+package Autonomous.OpModes.AnnieAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import Autonomous.AutoAlliance;
+import Autonomous.ConfigVariables;
+import Autonomous.Location;
+import Autonomous.OpModes.AnnieAuto.AnnieAutonomous;
+import Autonomous.SkyStonePosition;
 
 public class AutonomousRoutines {
     public static void runMainRoutine(AutoAlliance alliance, LinearOpMode mode) {

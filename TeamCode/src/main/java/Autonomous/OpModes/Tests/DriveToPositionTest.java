@@ -38,9 +38,8 @@ import java.util.List;
 
 import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
-import Autonomous.ConfigVariables;
 import Autonomous.AutoAlliance;
-import Autonomous.AutonomousRoutines;
+import Autonomous.OpModes.AnnieAuto.AutonomousRoutines;
 
 @Autonomous(name="Drive to Position", group="Testers")
 //@Disabled
