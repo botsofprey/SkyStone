@@ -251,7 +251,6 @@ public class VisionHelperUltimateGoal extends Thread {
     }
 
     public void loadNavigationAssets() {
-        
         targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone"); // NOTE: the asset is titled Skystone not SkyStone... this is why I told you to copy and paste...
         stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
