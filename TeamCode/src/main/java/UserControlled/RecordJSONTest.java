@@ -43,6 +43,8 @@ import org.json.JSONObject;
 public class RecordJSONTest extends LinearOpMode {
     // create objects and locally global variables here
 
+    public static final int TIMES_PER_SECOND = 10;
+
     DcMotor left, right;
     JoystickHandler jLeft, jRight;
     JSONObject object;
@@ -64,7 +66,6 @@ public class RecordJSONTest extends LinearOpMode {
         waitForStart();
 
         // record data 10 times a second (to start)
-        final int TIMES_PER_SECOND = 10;
         long targetTime = 1000000000 / TIMES_PER_SECOND; // this value should be used in nano's
         long elapsedTime;
         long startTime;
