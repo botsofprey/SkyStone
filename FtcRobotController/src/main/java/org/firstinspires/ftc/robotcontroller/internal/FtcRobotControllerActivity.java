@@ -177,6 +177,9 @@ public class FtcRobotControllerActivity extends Activity
 
   private WifiDirectChannelChanger wifiDirectChannelChanger;
 
+  public static SharedPreferences data;
+  public static SharedPreferences.Editor editor;
+
   protected class RobotRestarter implements Restarter {
 
     public void requestRestart() {
@@ -262,6 +265,10 @@ public class FtcRobotControllerActivity extends Activity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    data = getSharedPreferences("data", MODE_PRIVATE);
+    editor = data.edit();
+    editor.apply();
 
     if (enforcePermissionValidator()) {
       return;

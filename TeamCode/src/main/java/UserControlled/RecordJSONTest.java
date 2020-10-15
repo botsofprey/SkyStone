@@ -72,6 +72,9 @@ public class RecordJSONTest extends LinearOpMode {
 
         try {
 
+            // put the target time in the jsonObject since it might change between tests
+            object.put("targetTime", targetTime);
+
             while (opModeIsActive()) {
 
                 startTime = System.nanoTime();

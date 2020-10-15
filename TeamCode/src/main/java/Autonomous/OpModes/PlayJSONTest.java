@@ -80,12 +80,10 @@ public class PlayJSONTest extends LinearOpMode {
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
 
-            final int TIMES_PER_SECOND = RecordJSONTest.TIMES_PER_SECOND;
             // record data 10 times a second (to start)
-            long targetTime = 1000000000 / TIMES_PER_SECOND; // this value should be used in nano's
+            long targetTime = object.getLong("targetTime"); // this value should be used in nano's
             long elapsedTime;
             long startTime;
-
 
             for (int i = 0; i < leftPowers.length; i++) {
                 startTime = System.nanoTime();

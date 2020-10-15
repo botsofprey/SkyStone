@@ -40,6 +40,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
+import Autonomous.VisionHelperSkyStone;
 
 import Autonomous.VisionHelperSkyStone;
 
