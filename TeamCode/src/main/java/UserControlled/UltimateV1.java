@@ -34,8 +34,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import Actions.MiscellaneousActions;
-import Actions.StoneStackingSystemV2;
+import Actions.RingIntakeSystemV1;
+import Actions.ShooterSystemV1;
+import Actions.WobbleGrabberV1;
 import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
 import SensorHandlers.LIDARSensor;
@@ -50,6 +51,11 @@ public class UltimateV1 extends LinearOpMode {
     AnnieNavigation robot;
     SensorPackage sensors;
     JoystickHandler leftStick, rightStick;
+
+    RingIntakeSystemV1 intake;
+    ShooterSystemV1 shooter;
+    WobbleGrabberV1 grabber;
+
     boolean eStop = false, slowMode = false, tapeStopped = true, liftLowered = true, liftingToPos = false;
     boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false,
             rightTrigger1Released = true, rightBumper1Released = true,
@@ -82,14 +88,10 @@ public class UltimateV1 extends LinearOpMode {
         // nothing goes between the above and below lines
         waitForStart();
         // should only be used for a time keeper or other small things, avoid using this space when possible
-        long startTime = System.currentTimeMillis();
+//        long startTime = System.currentTimeMillis();
 //        otherActions.retractTape();
         while (opModeIsActive()) {
             // main code goes here
-//            if(System.currentTimeMillis() - startTime > 3500 && !tapeStopped) {
-//                otherActions.pauseTape();
-//                tapeStopped = true;
-//            }
 
             updateEStop();
             if(!eStop) {
@@ -138,8 +140,16 @@ public class UltimateV1 extends LinearOpMode {
 
             //PLAYER 1
 
-            if (gamepad1.a) {}
-            else if (gamepad1.b) {}
+            if (gamepad1.a) {
+                intake.toggleIntakePower();
+            }
+            else if (gamepad1.b) {
+                intake.toggleIntakeDirection();
+            }
+
+            if (gamepad1.y) {
+                shooter.targetTopGoal();
+            }
 
             if (gamepad1.right_trigger > 0.1 && rightTrigger1Released) {
                 rightTrigger1Released = false;
@@ -152,8 +162,10 @@ public class UltimateV1 extends LinearOpMode {
                 rightBumper1Released = true;
             }
 
-            if(gamepad1.left_trigger > 0.1) {}
-            else if(gamepad1.left_bumper) {}
+            if (gamepad1.left_trigger > 0.1) {
+
+            }
+            else if (gamepad1.left_bumper) {}
 
             // PLAYER 2
 
@@ -164,7 +176,7 @@ public class UltimateV1 extends LinearOpMode {
 //                liftLowered = false;
 //                sss.lowerStones();
 //            }
-            if(!liftLowered && sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()) {
+            if (!liftLowered && sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()) {
             }
 
             if(gamepad2.dpad_up && p2DpadUpReleased && !gamepad1.right_bumper && !(gamepad1.right_trigger > 0.1)) {
@@ -185,8 +197,12 @@ public class UltimateV1 extends LinearOpMode {
                 liftingToPos = false;
             }
 
-            if(gamepad2.left_trigger > 0.1) {}
-            else if(gamepad2.left_bumper) {}
+            if(gamepad2.left_trigger > 0.1) {
+                shooter.raiseHopper();
+            }
+            else if(gamepad2.left_bumper) {
+                shooter.lowerArm();
+            }
             else if(tapeStopped) {}
 
             if(-gamepad2.left_stick_y > 0.1) {}
@@ -195,6 +211,11 @@ public class UltimateV1 extends LinearOpMode {
             if(-gamepad2.right_stick_y > 0.1) {}
             else if(-gamepad2.right_stick_y < -0.1 && !sensors.getSensor(LimitSwitch.class, "rightArmStop").isPressed()) {}
             else {}
+
+            if (gamepad2.right_trigger > 0.1) {
+            } else if (gamepad2.right_bumper) {
+                shooter.raiseArm();
+            }
 
             if(gamepad2.dpad_right && p2DpadRightReleased) {
                 p2DpadRightReleased = false;
@@ -221,14 +242,18 @@ public class UltimateV1 extends LinearOpMode {
 //                    break;
 //            }
 
-            if (gamepad2.a) {}
-            else if (gamepad2.y) {}
-            // check if limit switch is pressed and reset the lift encoder
-            if (sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && limitSwitchReleased) {
-                limitSwitchReleased = false;
-            } else if (!sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && !limitSwitchReleased) {
-                limitSwitchReleased = true;
+            if (gamepad2.a) {
+
             }
+            else if (gamepad2.y) {
+
+            }
+            // check if limit switch is pressed and reset the lift encoder
+//            if (sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && limitSwitchReleased) {
+//                limitSwitchReleased = false;
+//            } else if (!sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && !limitSwitchReleased) {
+//                limitSwitchReleased = true;
+//            }
         }
     }
 
