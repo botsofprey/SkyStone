@@ -31,15 +31,11 @@ package UserControlled;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import Actions.RingIntakeSystemV1;
 import Actions.ShooterSystemV1;
 import Actions.WobbleGrabberV1;
-import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
-import SensorHandlers.LIDARSensor;
 import SensorHandlers.LimitSwitch;
 import SensorHandlers.SensorPackage;
 
