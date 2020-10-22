@@ -34,8 +34,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import Actions.MiscellaneousActions;
-import Actions.StoneStackingSystemV2;
 import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
 import SensorHandlers.LIDARSensor;
