@@ -1,18 +1,27 @@
 package Actions;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 public class RingIntakeSystemV1 {
 
-    private float intakePower;
-    private float intakeDirection;
+    private DcMotor wheelMotor;
+    // private DcMotor armTurner;
 
-    public RingIntakeSystemV1(/* TODO Put some parameters in here */) {
+    private static final double WHEEL_POWER = 1;
+    private static final double SHOOTER_DIRECTION = 45;
 
+    public RingIntakeSystemV1(HardwareMap hardwareMap) {
+        wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
+        // armTurner = hardwareMap.dcMotor.get("armTurner");
     }
 
-    public void toggleIntakePower() {}
+    public void toggleIntakePower() {
+        wheelMotor.setPower(WHEEL_POWER);
+    }
 
     public void toggleIntakeDirection() {
-
+        // TODO
     }
 
 }

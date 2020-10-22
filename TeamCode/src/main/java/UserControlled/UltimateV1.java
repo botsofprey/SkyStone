@@ -43,7 +43,7 @@ import SensorHandlers.LIDARSensor;
 import SensorHandlers.LimitSwitch;
 import SensorHandlers.SensorPackage;
 
-@TeleOp(name="Annie V1", group="Competition")
+@TeleOp(name="Ultimate V1", group="Competition")
 //@Disabled
 public class UltimateV1 extends LinearOpMode {
 
@@ -59,6 +59,7 @@ public class UltimateV1 extends LinearOpMode {
     boolean eStop = false, slowMode = false, tapeStopped = true, liftLowered = true, liftingToPos = false;
     boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false,
             rightTrigger1Released = true, rightBumper1Released = true,
+            aReleased = true, bReleased = true, yReleased = true,
             p2DpadUpReleased = true, p2DpadRightReleased = true, p2DpadLeftReleased = true;
     int stonePosition = 0, blenderFeetPos = 0;
 
@@ -66,18 +67,23 @@ public class UltimateV1 extends LinearOpMode {
     public void runOpMode() {
         // initialize objects and variables here
         // also create and initialize function local variables here
-        try {
-            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
-                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
-                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"),
-                new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"),
-                new LimitSwitch(hardwareMap.get(TouchSensor.class, "leftArmStop"), "leftArmStop"),
-                new LimitSwitch(hardwareMap.get(TouchSensor.class, "rightArmStop"), "rightArmStop"));
+//        try {
+//            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+        intake = new RingIntakeSystemV1(hardwareMap);
+        shooter = new ShooterSystemV1(hardwareMap);
+        grabber = new WobbleGrabberV1(hardwareMap);
+
+//        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
+//                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
+//                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"),
+//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"),
+//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "leftArmStop"), "leftArmStop"),
+//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "rightArmStop"), "rightArmStop"));
 
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
         rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
@@ -85,11 +91,12 @@ public class UltimateV1 extends LinearOpMode {
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
         // nothing goes between the above and below lines
+
         waitForStart();
+
         // should only be used for a time keeper or other small things, avoid using this space when possible
-//        long startTime = System.currentTimeMillis();
-//        otherActions.retractTape();
         while (opModeIsActive()) {
             // main code goes here
 
@@ -106,7 +113,7 @@ public class UltimateV1 extends LinearOpMode {
                 controlDrive();
 
                 updateEStop();
-                controlStoneStackingSystem();
+                controlRobotFunctions();
             }
             if(eStop) {
                 stopActions();
@@ -129,27 +136,38 @@ public class UltimateV1 extends LinearOpMode {
     }
 
     private void controlDrive() {
-        double drivePower = slowMode ? leftStick.magnitude() / 3 : leftStick.magnitude();
-        double turnPower = slowMode ? rightStick.x() / 4 : rightStick.x();
-        if (!eStop)
-            robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
+//        double drivePower = slowMode ? leftStick.magnitude() / 3 : leftStick.magnitude();
+//        double turnPower = slowMode ? rightStick.x() / 4 : rightStick.x();
+//        if (!eStop)
+//            robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
     }
 
-    void controlStoneStackingSystem() {
+    void controlRobotFunctions() {
         if(!eStop) {
 
             //PLAYER 1
 
-            if (gamepad1.a) {
+            if (gamepad1.a && aReleased) {
+                aReleased = false;
                 intake.toggleIntakePower();
-            }
-            else if (gamepad1.b) {
-                intake.toggleIntakeDirection();
-            }
+            } else if (!gamepad1.a)
+                aReleased = true;
 
-            if (gamepad1.y) {
-                shooter.targetTopGoal();
-            }
+
+            if (gamepad1.b && bReleased) {
+                bReleased = false;
+                intake.toggleIntakeDirection();
+            } else if (!gamepad1.b)
+                bReleased = true;
+
+
+            if (gamepad1.y && yReleased) {
+//                shooter.targetTopGoal();
+                yReleased = false;
+                grabber.grabWobbleGoal();
+            } else if (!gamepad1.y)
+                yReleased = true;
+
 
             if (gamepad1.right_trigger > 0.1 && rightTrigger1Released) {
                 rightTrigger1Released = false;
@@ -227,17 +245,6 @@ public class UltimateV1 extends LinearOpMode {
                 blenderFeetPos--;
             }
             blenderFeetPos %= 3;
-//            switch (blenderFeetPos) {
-//                case 0:
-//                    sss.setBlenderFeetDegrees(StoneStackingSystemV2.LEFT_FOOT_STORED, StoneStackingSystemV2.RIGHT_FOOT_STORED);
-//                    break;
-//                case 1:
-//                    sss.releaseStoneWithBlenderFeet();
-//                    break;
-//                case 2:
-//                    sss.grabStoneWithBlenderFeet();
-//                    break;
-//            }
 
             if (gamepad2.a) {
 
@@ -245,12 +252,6 @@ public class UltimateV1 extends LinearOpMode {
             else if (gamepad2.y) {
 
             }
-            // check if limit switch is pressed and reset the lift encoder
-//            if (sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && limitSwitchReleased) {
-//                limitSwitchReleased = false;
-//            } else if (!sensors.getSensor(LimitSwitch.class, "liftReset").isPressed() && !limitSwitchReleased) {
-//                limitSwitchReleased = true;
-//            }
         }
     }
 

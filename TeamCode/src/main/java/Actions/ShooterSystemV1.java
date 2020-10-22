@@ -1,8 +1,10 @@
 package Actions;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 public class ShooterSystemV1 {
 
-    public ShooterSystemV1(/* TODO parameters */) {}
+    public ShooterSystemV1(HardwareMap hardwareMap) {}
 
     public void adjustShootingAngle() {}
 

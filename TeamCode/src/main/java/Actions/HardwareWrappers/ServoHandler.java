@@ -16,21 +16,18 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 
 public class ServoHandler {
+
     private Servo servo;
     private double wantedDegree;
     double degreeRange[] = { 0, 180 };
     final static int RANGE_MAX = 1;
     final static int RANGE_MIN = 0;
 
-    public ServoHandler(Servo s){
-        servo = s;
-    }
+    public ServoHandler(Servo s) { servo = s; }
 
-    public ServoHandler(String name, HardwareMap hw){
-        this(hw.servo.get(name));
-    }
+    public ServoHandler(String name, HardwareMap hw) { this(hw.servo.get(name)); }
 
-    public void setServoRanges(double minDeg, double maxDeg){
+    public void setServoRanges(double minDeg, double maxDeg) {
         if(maxDeg > minDeg){
             degreeRange[RANGE_MAX] = maxDeg;
             degreeRange[RANGE_MIN] = minDeg;
@@ -38,7 +35,7 @@ public class ServoHandler {
         else throw new RuntimeException("Servo Handler Creation error: min degree greater than max");
     }
 
-    public double setPosition(double pos){
+    public double setPosition(double pos) {
         if(pos > degreeRange[RANGE_MAX]/180.0) pos = degreeRange[RANGE_MAX]/180.0;
         if(pos < degreeRange[RANGE_MIN]/180.0) pos = degreeRange[RANGE_MIN]/180.0;
         servo.setPosition(pos);
@@ -46,7 +43,7 @@ public class ServoHandler {
         return wantedDegree/180.0;
     }
 
-    public double setDegree(double deg){
+    public double setDegree(double deg) {
         if(deg > degreeRange[RANGE_MAX]) deg = degreeRange[RANGE_MAX];
         if(deg < degreeRange[RANGE_MIN]) deg = degreeRange[RANGE_MIN];
         wantedDegree = deg;
@@ -54,7 +51,7 @@ public class ServoHandler {
         return wantedDegree;
     }
 
-    public double incrementDegree(double increment){
+    public double incrementDegree(double increment) {
         wantedDegree += increment;
         if(wantedDegree > degreeRange[RANGE_MAX]) wantedDegree = degreeRange[RANGE_MAX];
         if(wantedDegree < degreeRange[RANGE_MIN]) wantedDegree = degreeRange[RANGE_MIN];
