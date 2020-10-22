@@ -167,15 +167,12 @@ public class UltimateV1 extends LinearOpMode {
             }
             else if (gamepad1.left_bumper) {}
 
+
+
             // PLAYER 2
 
-//            if(gamepad2.b) {
-//                sss.releaseStoneCenter();
-//                sleep(200);
-//                robot.driveDistance(5, 180, 50, this);
-//                liftLowered = false;
-//                sss.lowerStones();
-//            }
+
+
             if (!liftLowered && sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()) {
             }
 
