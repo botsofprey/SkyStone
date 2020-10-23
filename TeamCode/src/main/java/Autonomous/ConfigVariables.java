@@ -1,8 +1,8 @@
 package Autonomous;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 
-@Config
+//@Config
 public class ConfigVariables {
     public static double STONE_ONE_LEFT = 36.5;
     public static double STONE_ONE_RIGHT = 30.5;

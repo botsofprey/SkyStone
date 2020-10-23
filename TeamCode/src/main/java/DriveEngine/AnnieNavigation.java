@@ -64,7 +64,7 @@ public class AnnieNavigation extends Thread {
     private volatile Location IMUDistance = new Location(0, 0);
     private LIDARSensor[] distanceSensors;
     public static final int LEFT_SENSOR = 0, BACK_SENSOR = 1, RIGHT_SENSOR = 2, DRIVE_BASE = 3, FRONT_SENSOR = 4;
-    private HashMap<Integer, int[]> updateLocationInformation[] = new HashMap[4]; // structure: {direction, {xSensor, ySensor}}
+    private HashMap<Integer, int[]>[] updateLocationInformation = new HashMap[4]; // structure: {direction, {xSensor, ySensor}}
     public static final int Q1 = 0, Q2 = 1, Q3 = 2, Q4 = 3, NORTH = 0, SOUTH = 180, EAST = 90, WEST = 270;
 
     private final double HEADING_THRESHOLD = 2;

@@ -26,7 +26,7 @@ public class ShooterSystemV1 {
     public void raiseHopper() {}
     public void lowerHopper() {}
 
-//    public void raiseArm() {}
-//    public void lowerArm() {}
+    public void raiseArm() {}
+    public void lowerArm() {}
 
 }
