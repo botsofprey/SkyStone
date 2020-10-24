@@ -8,7 +8,7 @@ public class ShooterSystemV1 {
     private DcMotor wheelMotor;
     // private DcMotor armTurner;
 
-    private static final double WHEEL_POWER = 1;
+    private static final double WHEEL_POWER = -1;
     private static final double SHOOTER_DIRECTION = 45;
 
     public ShooterSystemV1(HardwareMap hardwareMap) {

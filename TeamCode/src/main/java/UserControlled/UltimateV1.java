@@ -36,7 +36,6 @@ import Actions.RingIntakeSystemV1;
 import Actions.ShooterSystemV1;
 import Actions.WobbleGrabberV1;
 import DriveEngine.AnnieNavigation;
-import SensorHandlers.LimitSwitch;
 import SensorHandlers.SensorPackage;
 
 @TeleOp(name="Ultimate V1", group="Competition")
@@ -47,6 +46,7 @@ public class UltimateV1 extends LinearOpMode {
     AnnieNavigation robot;
     SensorPackage sensors;
     JoystickHandler leftStick, rightStick;
+    GamepadController controllerOne, controllerTwo;
 
     RingIntakeSystemV1 intake;
     ShooterSystemV1 shooter;
@@ -55,9 +55,8 @@ public class UltimateV1 extends LinearOpMode {
     boolean eStop = false, slowMode = false, tapeStopped = true, liftLowered = true, liftingToPos = false;
     boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false,
             rightTrigger1Released = true, rightBumper1Released = true,
-            aReleased = true, bReleased = true, yReleased = true,
+            aReleased = true, bReleased = true, yReleased = true, xReleased = true,
             p2DpadUpReleased = true, p2DpadRightReleased = true, p2DpadLeftReleased = true;
-    int stonePosition = 0, blenderFeetPos = 0;
 
     @Override
     public void runOpMode() {
@@ -83,6 +82,9 @@ public class UltimateV1 extends LinearOpMode {
 
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
         rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
+
+        controllerOne = new GamepadController(gamepad1);
+        controllerTwo = new GamepadController(gamepad2);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -138,116 +140,93 @@ public class UltimateV1 extends LinearOpMode {
 //            robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
     }
 
-    void controlRobotFunctions() {
+    private void playerOneFunctions() {
+
+        // a buttons
+        if (gamepad1.a && aReleased) {
+            aReleased = false;
+            intake.toggleIntakePower();
+        } else if (!gamepad1.a)
+            aReleased = true;
+
+        // b buttons
+        if (gamepad1.b && bReleased) {
+            bReleased = false;
+            intake.toggleIntakeDirection();
+        } else if (!gamepad1.b)
+            bReleased = true;
+
+        // y buttons
+        if (gamepad1.y && yReleased) {
+            yReleased = false;
+            grabber.grabWobbleGoal();
+        } else if (!gamepad1.y)
+            yReleased = true;
+
+        // x buttons
+        if (gamepad1.x && xReleased) {
+            xReleased = false;
+            grabber.grabWobbleGoal();
+        } else if (!gamepad1.x)
+            xReleased = true;
+
+        if (gamepad1.right_trigger > 0.1 && rightTrigger1Released) {
+            rightTrigger1Released = false;
+        } else if (!(gamepad1.right_trigger > 0.1)) {
+            rightTrigger1Released = true;
+        }
+        if (gamepad1.right_bumper && rightBumper1Released) {
+            rightBumper1Released = false;
+        } else if (!gamepad1.right_bumper) {
+            rightBumper1Released = true;
+        }
+
+    }
+
+    private void playerTwoFunctions() {
+
+        // d pad up buttons
+        if(gamepad2.dpad_up && p2DpadUpReleased) {
+            p2DpadUpReleased = false;
+        } else if(!gamepad2.dpad_up) {
+            p2DpadUpReleased = true;
+        }
+
+        if(gamepad2.right_trigger > 0.1) {
+        } else if(gamepad2.right_bumper) {
+        }
+
+        // left trigger and bumper
+        if(gamepad2.left_trigger > 0.1) {
+            shooter.raiseHopper();
+        }
+        if(gamepad2.left_bumper) {
+            shooter.lowerArm();
+        }
+
+        // right trigger and bumper
+        if (gamepad2.right_trigger > 0.1) {
+        } else if (gamepad2.right_bumper) {
+            shooter.raiseArm();
+        }
+
+        // y directions for the left stick
+        if(-gamepad2.left_stick_y > 0.1) {}
+        else if(-gamepad2.left_stick_y < -0.1) {}
+
+        // y directions for the left stick
+        if(-gamepad2.right_stick_y > 0.1) {}
+        else if(-gamepad2.right_stick_y < -0.1) {}
+
+    }
+
+    private void controlRobotFunctions() {
         if(!eStop) {
+            controllerOne.update();
+            controllerTwo.update();
 
-            //PLAYER 1
-
-            if (gamepad1.a && aReleased) {
-                aReleased = false;
-                intake.toggleIntakePower();
-            } else if (!gamepad1.a)
-                aReleased = true;
-
-
-            if (gamepad1.b && bReleased) {
-                bReleased = false;
-                intake.toggleIntakeDirection();
-            } else if (!gamepad1.b)
-                bReleased = true;
-
-
-            if (gamepad1.y && yReleased) {
-//                shooter.targetTopGoal();
-                yReleased = false;
-                grabber.grabWobbleGoal();
-            } else if (!gamepad1.y)
-                yReleased = true;
-
-
-            if (gamepad1.right_trigger > 0.1 && rightTrigger1Released) {
-                rightTrigger1Released = false;
-            } else if (!(gamepad1.right_trigger > 0.1) && !rightTrigger1Released) {
-                rightTrigger1Released = true;
-            }
-            if (gamepad1.right_bumper && rightBumper1Released) {
-                rightBumper1Released = false;
-            } else if (!gamepad1.right_bumper && !rightBumper1Released) {
-                rightBumper1Released = true;
-            }
-
-            if (gamepad1.left_trigger > 0.1) {
-
-            }
-            else if (gamepad1.left_bumper) {}
-
-
-
-            // PLAYER 2
-
-
-
-            if (!liftLowered && sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()) {
-            }
-
-            if(gamepad2.dpad_up && p2DpadUpReleased && !gamepad1.right_bumper && !(gamepad1.right_trigger > 0.1)) {
-                p2DpadUpReleased = false;
-            } else if(!gamepad2.dpad_up && !p2DpadUpReleased) {
-                p2DpadUpReleased = true;
-            }
-//            if(gamepad2.dpad_down && !gamepad1.right_bumper && !(gamepad1.right_trigger > 0.1)) {
-//                liftLowered = false;
-//                sss.lowerStones();
-//                liftingToPos = true;
-//                stonePosition = 0;
-//            }
-            if(gamepad2.right_trigger > 0.1) {
-                liftingToPos = false;
-            }
-            else if(gamepad2.right_bumper && !sensors.getSensor(LimitSwitch.class, "liftReset").isPressed()) {
-                liftingToPos = false;
-            }
-
-            if(gamepad2.left_trigger > 0.1) {
-                shooter.raiseHopper();
-            }
-            else if(gamepad2.left_bumper) {
-                shooter.lowerArm();
-            }
-            else if(tapeStopped) {}
-
-            if(-gamepad2.left_stick_y > 0.1) {}
-            else if(-gamepad2.left_stick_y < -0.1 && !sensors.getSensor(LimitSwitch.class, "leftArmStop").isPressed()) {}
-
-            if(-gamepad2.right_stick_y > 0.1) {}
-            else if(-gamepad2.right_stick_y < -0.1 && !sensors.getSensor(LimitSwitch.class, "rightArmStop").isPressed()) {}
-            else {}
-
-            if (gamepad2.right_trigger > 0.1) {
-            } else if (gamepad2.right_bumper) {
-                shooter.raiseArm();
-            }
-
-            if(gamepad2.dpad_right && p2DpadRightReleased) {
-                p2DpadRightReleased = false;
-            } else if(!gamepad2.dpad_right && !p2DpadRightReleased) {
-                p2DpadRightReleased = true;
-                blenderFeetPos++;
-            }
-            if(gamepad2.dpad_left && p2DpadLeftReleased) {
-                p2DpadLeftReleased = false;
-            } else if(!gamepad2.dpad_left && !p2DpadLeftReleased) {
-                p2DpadLeftReleased = true;
-                blenderFeetPos--;
-            }
-            blenderFeetPos %= 3;
-
-            if (gamepad2.a) {
-
-            }
-            else if (gamepad2.y) {
-
-            }
+            playerOneFunctions();
+            playerTwoFunctions();
         }
     }
 
