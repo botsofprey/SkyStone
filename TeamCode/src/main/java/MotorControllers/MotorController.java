@@ -79,6 +79,7 @@ public class MotorController extends Thread {
         logTag = debugTag;
     }
 
+    public MotorController(String motorName, HardwareMap hardwareMap) { motor = hardwareMap.dcMotor.get(motorName); }
 
     public DcMotor.RunMode getMotorRunMode() { return motor.getMode(); }
 
@@ -130,7 +131,7 @@ public class MotorController extends Thread {
         curTickLocation = motor.getCurrentPosition();
     }
 
-    private int readConfig(String fileLoc){
+    private int readConfig(String fileLoc) {
         InputStream stream = null;
         try {
             stream = hardwareMap.appContext.getAssets().open(fileLoc);
@@ -181,8 +182,7 @@ public class MotorController extends Thread {
     }
 
     public double getDegree() {
-        double angleInDeg = getCurrentTick()/ticksPerDegree + initialDegree;
-        return angleInDeg;
+        return getCurrentTick() / ticksPerDegree + initialDegree;
     }
 
     public void setTicksPerSecondVelocity(long ticksPerSec) {

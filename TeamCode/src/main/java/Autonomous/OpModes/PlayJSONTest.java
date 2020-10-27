@@ -60,6 +60,8 @@ public class PlayJSONTest extends LinearOpMode {
     // filename for the current file being replayed
     public static final String PATH = "jsonFile.json";
 
+    public String jsonString = "{\"left\": [1, 0.2, 0.1],\"right\": [0.1, 0.3, 0.5]}";
+
     double[] leftPowers, rightPowers;
 
     DcMotor left, right;
@@ -67,42 +69,45 @@ public class PlayJSONTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        JSONObject object = null;
         try {
-            Scanner input = new Scanner(new File("TeamCode/src/main/java/Autonomous/OpModes/JSONFiles/" + PATH));
-            JSONObject object = new JSONObject(input.nextLine());
+            object = new JSONObject(jsonString);
 
             leftPowers = (double[]) object.get("left");
             rightPowers = (double[]) object.get("right");
 
-            telemetry.addData("Status", "Initialized");
-            telemetry.update();
-
-            // Wait for the game to start (driver presses PLAY)
-            waitForStart();
-
-            // record data 10 times a second (to start)
-            long targetTime = object.getLong("targetTime"); // this value should be used in nano's
-            long elapsedTime;
-            long startTime;
-
-            for (int i = 0; i < leftPowers.length; i++) {
-                startTime = System.nanoTime();
-
-                double leftPower = leftPowers[i];
-                double rightPower = rightPowers[i];
-
-                left.setPower(leftPower);
-                right.setPower(rightPower);
-
-                // convert time to milliseconds and sleep for the leftover time
-                elapsedTime = startTime - System.nanoTime();
-                sleep((targetTime - elapsedTime) / 1000000);
-
-            }
-
         } catch(Exception e) {
             Log.d("Error", e.toString());
         }
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+
+        if (object == null) return;
+
+        // record data 10 times a second (to start)
+        long targetTime = 1000000000 / RecordJSONTest.TIMES_PER_SECOND; // this value should be used in nano's
+        long elapsedTime;
+        long startTime;
+
+        for (int i = 0; i < leftPowers.length; i++) {
+            startTime = System.nanoTime();
+
+            double leftPower = leftPowers[i];
+            double rightPower = rightPowers[i];
+
+            left.setPower(leftPower);
+            right.setPower(rightPower);
+
+            // convert time to milliseconds and sleep for the leftover time
+            elapsedTime = startTime - System.nanoTime();
+            sleep((targetTime - elapsedTime) / 1000000);
+
+        }
+
     }
 
 }

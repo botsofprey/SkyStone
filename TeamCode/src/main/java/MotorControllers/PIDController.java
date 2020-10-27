@@ -51,7 +51,7 @@ public class PIDController {
 //          "TURN_Kd":"0.0",
 
     public double calculatePID(double pointValue) {
-        double deltaTime = (System.currentTimeMillis() - timeAtLastCalculation)/1000.0;
+        double deltaTime = (System.currentTimeMillis() - timeAtLastCalculation) / 1000.0;
         error = setPoint - pointValue;
         Log.d("PID Error","" + error);
         P = Kp * error;

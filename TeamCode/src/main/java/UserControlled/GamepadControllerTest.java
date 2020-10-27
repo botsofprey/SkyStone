@@ -32,7 +32,7 @@ package UserControlled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="Basic: Linear OpMode", group="Testers")
+@TeleOp(name="Gamepad Controller Test", group="Testers")
 //@Disabled
 public class GamepadControllerTest extends LinearOpMode {
     // create objects and locally global variables here
@@ -54,12 +54,20 @@ public class GamepadControllerTest extends LinearOpMode {
 
         waitForStart();
 
+        int timesPressed = 0;
+        int timesHeld = 0;
+
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
 
-            telemetry.addData("A Pressed", controller.aPressed());
-            telemetry.addData("A Held", controller.aHeld());
+            controller.update();
+
+            if (controller.aPressed()) timesPressed++;
+            if (controller.aHeld()) timesHeld++;
+
+            telemetry.addData("Times Pressed", timesPressed);
+            telemetry.addData("Times Held", timesHeld);
 
             // telemetry and logging data goes here
             telemetry.update();

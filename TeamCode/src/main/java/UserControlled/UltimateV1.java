@@ -44,7 +44,6 @@ public class UltimateV1 extends LinearOpMode {
 
     // create objects and locally global variables here
     AnnieNavigation robot;
-    SensorPackage sensors;
     JoystickHandler leftStick, rightStick;
     GamepadController controllerOne, controllerTwo;
 
@@ -52,11 +51,7 @@ public class UltimateV1 extends LinearOpMode {
     ShooterSystemV1 shooter;
     WobbleGrabberV1 grabber;
 
-    boolean eStop = false, slowMode = false, tapeStopped = true, liftLowered = true, liftingToPos = false;
-    boolean startReleased = true, eStopButtonsReleased = true, limitSwitchReleased = false,
-            rightTrigger1Released = true, rightBumper1Released = true,
-            aReleased = true, bReleased = true, yReleased = true, xReleased = true,
-            p2DpadUpReleased = true, p2DpadRightReleased = true, p2DpadLeftReleased = true;
+    boolean eStop = false, slowMode = false;
 
     @Override
     public void runOpMode() {
@@ -80,6 +75,7 @@ public class UltimateV1 extends LinearOpMode {
 //                new LimitSwitch(hardwareMap.get(TouchSensor.class, "leftArmStop"), "leftArmStop"),
 //                new LimitSwitch(hardwareMap.get(TouchSensor.class, "rightArmStop"), "rightArmStop"));
 
+        // initialize joysticks and gamepad controllers
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
         rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
 
@@ -99,13 +95,11 @@ public class UltimateV1 extends LinearOpMode {
             // main code goes here
 
             updateEStop();
-            if(!eStop) {
-                if (startReleased && gamepad1.start) {
-                    startReleased = false;
+            if (!eStop) {
+
+                // start button controls slow mode
+                if (controllerOne.startPressed())
                     slowMode = !slowMode;
-                } else if (!gamepad1.start) {
-                    startReleased = true;
-                }
 
                 updateEStop();
                 controlDrive();
@@ -113,24 +107,22 @@ public class UltimateV1 extends LinearOpMode {
                 updateEStop();
                 controlRobotFunctions();
             }
-            if(eStop) {
+
+            if (eStop)
                 stopActions();
-            }
+
             // telemetry and logging data goes here
             telemetry.update();
         }
+
         // disable/kill/stop objects here
         robot.stopNavigation();
     }
 
     // misc functions here
     private void updateEStop() {
-        if(eStopButtonsReleased && ((gamepad1.dpad_down && gamepad1.back) || (gamepad2.dpad_down && gamepad2.back))) {
-            eStopButtonsReleased = false;
+        if ((gamepad1.dpad_down && gamepad1.back) || (gamepad2.dpad_down && gamepad2.back))
             eStop = !eStop;
-        } else if(!((gamepad1.dpad_down && gamepad1.back) || (gamepad2.dpad_down && gamepad2.back))) {
-            eStopButtonsReleased = true;
-        }
     }
 
     private void controlDrive() {
@@ -142,86 +134,38 @@ public class UltimateV1 extends LinearOpMode {
 
     private void playerOneFunctions() {
 
-        // a buttons
-        if (gamepad1.a && aReleased) {
-            aReleased = false;
+        // a toggles intake power
+        if (controllerOne.aPressed())
             intake.toggleIntakePower();
-        } else if (!gamepad1.a)
-            aReleased = true;
 
-        // b buttons
-        if (gamepad1.b && bReleased) {
-            bReleased = false;
+        // b toggles intake direction (setting it up or down)
+        if (controllerOne.bPressed())
             intake.toggleIntakeDirection();
-        } else if (!gamepad1.b)
-            bReleased = true;
 
-        // y buttons
-        if (gamepad1.y && yReleased) {
-            yReleased = false;
+        // y grabs the wobble goal
+        if (controllerOne.yPressed())
             grabber.grabWobbleGoal();
-        } else if (!gamepad1.y)
-            yReleased = true;
-
-        // x buttons
-        if (gamepad1.x && xReleased) {
-            xReleased = false;
-            grabber.grabWobbleGoal();
-        } else if (!gamepad1.x)
-            xReleased = true;
-
-        if (gamepad1.right_trigger > 0.1 && rightTrigger1Released) {
-            rightTrigger1Released = false;
-        } else if (!(gamepad1.right_trigger > 0.1)) {
-            rightTrigger1Released = true;
-        }
-        if (gamepad1.right_bumper && rightBumper1Released) {
-            rightBumper1Released = false;
-        } else if (!gamepad1.right_bumper) {
-            rightBumper1Released = true;
-        }
 
     }
 
     private void playerTwoFunctions() {
 
-        // d pad up buttons
-        if(gamepad2.dpad_up && p2DpadUpReleased) {
-            p2DpadUpReleased = false;
-        } else if(!gamepad2.dpad_up) {
-            p2DpadUpReleased = true;
-        }
-
-        if(gamepad2.right_trigger > 0.1) {
-        } else if(gamepad2.right_bumper) {
-        }
-
-        // left trigger and bumper
-        if(gamepad2.left_trigger > 0.1) {
+        // left trigger raises the hopper
+        if(gamepad2.left_trigger > 0.1)
             shooter.raiseHopper();
-        }
-        if(gamepad2.left_bumper) {
+
+        // left bumper lowers the arm
+        if(controllerTwo.leftBumperPressed())
             shooter.lowerArm();
-        }
 
         // right trigger and bumper
-        if (gamepad2.right_trigger > 0.1) {
-        } else if (gamepad2.right_bumper) {
+        if (controllerTwo.rightBumperPressed())
             shooter.raiseArm();
-        }
-
-        // y directions for the left stick
-        if(-gamepad2.left_stick_y > 0.1) {}
-        else if(-gamepad2.left_stick_y < -0.1) {}
-
-        // y directions for the left stick
-        if(-gamepad2.right_stick_y > 0.1) {}
-        else if(-gamepad2.right_stick_y < -0.1) {}
 
     }
 
     private void controlRobotFunctions() {
-        if(!eStop) {
+        if (!eStop) {
             controllerOne.update();
             controllerTwo.update();
 
