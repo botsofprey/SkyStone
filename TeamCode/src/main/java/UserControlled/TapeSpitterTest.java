@@ -32,8 +32,7 @@ package UserControlled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import Actions.MiscellaneousActions;
-import Actions.StoneStackingSystemV2;
+import Actions.Annie.MiscellaneousActions;
 
 @TeleOp(name="Tape Spitter Test", group="Testers")
 //@Disabled

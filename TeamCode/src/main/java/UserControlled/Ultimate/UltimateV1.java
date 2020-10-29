@@ -27,23 +27,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package UserControlled;
+package UserControlled.Ultimate;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import Actions.RingIntakeSystemV1;
-import Actions.ShooterSystemV1;
-import Actions.WobbleGrabberV1;
+import Actions.Ultimate.RingIntakeSystemV1;
+import Actions.Ultimate.ShooterSystemV1;
+import Actions.Ultimate.WobbleGrabberV1;
+import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
-import SensorHandlers.SensorPackage;
+import DriveEngine.UltimateNavigation;
+import UserControlled.GamepadController;
+import UserControlled.JoystickHandler;
 
 @TeleOp(name="Ultimate V1", group="Competition")
 //@Disabled
 public class UltimateV1 extends LinearOpMode {
 
     // create objects and locally global variables here
-    AnnieNavigation robot;
+    UltimateNavigation robot;
     JoystickHandler leftStick, rightStick;
     GamepadController controllerOne, controllerTwo;
 
@@ -58,12 +61,14 @@ public class UltimateV1 extends LinearOpMode {
         // initialize objects and variables here
         // also create and initialize function local variables here
 
-//        try {
-//            robot = new AnnieNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        // intialize robot
+        try {
+            robot = new UltimateNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        // intitialize systems
         intake = new RingIntakeSystemV1(hardwareMap);
         shooter = new ShooterSystemV1(hardwareMap);
         grabber = new WobbleGrabberV1(hardwareMap);
@@ -79,6 +84,7 @@ public class UltimateV1 extends LinearOpMode {
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
         rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
 
+        // initialize controllers
         controllerOne = new GamepadController(gamepad1);
         controllerTwo = new GamepadController(gamepad2);
 

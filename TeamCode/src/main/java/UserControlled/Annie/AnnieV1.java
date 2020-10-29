@@ -27,20 +27,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package UserControlled;
+package UserControlled.Annie;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import Actions.MiscellaneousActions;
-import Actions.StoneStackingSystemV2;
+import Actions.Annie.MiscellaneousActions;
+import Actions.Annie.StoneStackingSystemV2;
 import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
 import SensorHandlers.LIDARSensor;
 import SensorHandlers.LimitSwitch;
 import SensorHandlers.SensorPackage;
+import UserControlled.JoystickHandler;
 
 @TeleOp(name="Annie V1", group="Competition")
 //@Disabled

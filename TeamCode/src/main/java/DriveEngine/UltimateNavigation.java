@@ -84,7 +84,9 @@ public class UltimateNavigation extends Thread {
     private double acceleration = 0;
     private HardwareMap hardwareMap;
 
-    public UltimateNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile, boolean ignoreInitialSensorLocation) throws Exception{
+    // TODO fix this class
+
+    public UltimateNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile, boolean ignoreInitialSensorLocation) {
         hardwareMap = hw;
         initializeUsingConfigFile(configFile);
         populateHashmaps();

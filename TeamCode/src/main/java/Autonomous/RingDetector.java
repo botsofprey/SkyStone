@@ -2,8 +2,6 @@ package Autonomous;
 
 import android.graphics.Bitmap;
 
-import Autonomous.OpModes.UltimateV1Auto;
-
 /**
  * Author: Ethan Fisher
  * Date: 10/26
@@ -33,7 +31,7 @@ public class RingDetector {
     }
 
 
-    public NumRings getNumRingsFound() {
+    private NumRings getNumRingsFound() {
 
         // number of rings
         int numZero = 0;

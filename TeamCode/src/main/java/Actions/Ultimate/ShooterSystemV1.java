@@ -1,13 +1,20 @@
-package Actions;
+package Actions.Ultimate;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+/**
+ * Author: Ethan Fisher
+ * Date: 10/21/2020
+ *
+ * Used for shooting rings
+ */
 public class ShooterSystemV1 {
 
     private DcMotor wheelMotor;
     private Servo hopperTurner;
+    private Servo pinballServo;
     // private DcMotor armTurner;
 
     private static final double WHEEL_POWER = -1;
@@ -19,6 +26,7 @@ public class ShooterSystemV1 {
     public ShooterSystemV1(HardwareMap hardwareMap) {
         wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
         hopperTurner = hardwareMap.servo.get("hopperTurner");
+        pinballServo = hardwareMap.servo.get("pinballServer");
     }
 
     public void beginShooting() { wheelMotor.setPower(WHEEL_POWER); }

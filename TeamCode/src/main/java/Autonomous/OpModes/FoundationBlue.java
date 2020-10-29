@@ -35,8 +35,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import Actions.MiscellaneousActionsV2;
-import Actions.StoneStackingSystemV3;
+import Actions.Annie.MiscellaneousActionsV2;
+import Actions.Annie.StoneStackingSystemV3;
 import Autonomous.Location;
 import DriveEngine.AnnieNavigation;
 

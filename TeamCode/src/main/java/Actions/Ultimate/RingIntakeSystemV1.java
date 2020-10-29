@@ -1,16 +1,16 @@
-package Actions;
+package Actions.Ultimate;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import MotorControllers.MotorController;
-
+/**
+ * Author: Ethan Fisher
+ * Date: 10/21/2020
+ *
+ * Used for picking up rings
+ */
 public class RingIntakeSystemV1 {
 
-    MotorController motor;
-
     public RingIntakeSystemV1(HardwareMap hardwareMap) {
-        motor = new MotorController();
 
     }
 
