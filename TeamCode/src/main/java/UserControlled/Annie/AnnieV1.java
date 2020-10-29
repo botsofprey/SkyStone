@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import Actions.Annie.MiscellaneousActions;
 import Actions.Annie.StoneStackingSystemV2;
 import Autonomous.Location;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.Annie.AnnieNavigation;
 import SensorHandlers.LIDARSensor;
 import SensorHandlers.LimitSwitch;
 import SensorHandlers.SensorPackage;

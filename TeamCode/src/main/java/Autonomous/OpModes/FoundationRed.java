@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import Actions.Annie.MiscellaneousActionsV2;
 import Actions.Annie.StoneStackingSystemV3;
 import Autonomous.Location;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.Annie.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 

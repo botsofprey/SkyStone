@@ -2,69 +2,51 @@ package Autonomous;
 
 /**
  * Created by root on 8/22/17.
- */
-
-/*
-    A class for a location object
+ * A class for a location object
  */
 public class Location {
-    double x;
-    double y;
-    double heading;
+    private double x;
+    private double y;
+    private double heading;
 
-    public Location(double x1, double y1){
-        x = x1;
-        y = y1;
+    public Location(double x, double y) {
+        this.x = x;
+        this.y = y;
     }
-    public Location(double x1, double y1, double h1){
-        x = x1;
-        y = y1;
-        heading = h1;
+
+    public Location(double x, double y, double heading){
+        this.x = x;
+        this.y = y;
+        this.heading = heading;
     }
+
     public Location(Location target) {
         x = target.getX();
         y = target.getY();
         heading = target.getHeading();
     }
 
-    public double getX(){
-        return x;
+    public double getX(){ return x; }
+    public double getY(){ return y; }
+    public double getHeading() { return heading; }
+    public void setX(double x) { this.x = x; }
+    public void setY(double y){ this.y = y; }
+    public void setHeading(double heading) { this.heading = heading; }
+
+    public void updateXY(double x, double y){
+        this.x = x;
+        this.y = y;
     }
-    public double getY(){
-        return y;
-    }
-    public double getHeading() {
-        return heading;
-    }
-    public void setX(double nX){
-        x= nX;
-    }
-    public void setY(double nY){
-        y= nY;
-    }
-    public void setHeading(double nH) {
-        heading = nH;
+    public void updateXYH(double x, double y, double heading) {
+        this.x = x;
+        this.y = y;
+        this.heading = heading;
     }
 
-    public void updateXY(double x1, double y1){
-        x = x1;
-        y = y1;
-    }
-    public void updateXYH(double x1, double y1, double h1) {
-        x = x1;
-        y = y1;
-        heading = h1;
-    }
+    public void addX(double dx){ x += dx; }
+    public void addY(double dy) { y += dy; }
 
-    public void addX(double dx){
-        x += dx;
-    }
-
-    public void addY(double dy){
-        y += dy;
-    }
-
-    public void addXY(double dx, double dy){
+    public void addXY(double dx, double dy) {
         x += dx;
         y += dy;
     }
