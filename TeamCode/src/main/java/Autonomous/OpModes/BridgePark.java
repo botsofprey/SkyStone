@@ -33,9 +33,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import Actions.MiscellaneousActionsV2;
+import Actions.Annie.MiscellaneousActionsV2;
 import Autonomous.Location;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.Annie.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 

@@ -30,43 +30,31 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package Autonomous.OpModes;
+package Autonomous.OpModes.UltimateAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import Actions.RingIntakeSystemV1;
-import Actions.ShooterSystemV1;
-import Actions.WobbleGrabberV1;
-import Autonomous.VuforiaHelper;
-import Autonomous.RingDetector;
+import Autonomous.AutoAlliance;
 
 /*
-    An opmode for the User Controlled portion of the game
+    Author: Ethan Fisher
+    Date: 10/29/2020
+
+    An opmode for the Ultimate Goal Autonomous
  */
 @Autonomous(name="UltimateV1Auto", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class UltimateV1Auto extends LinearOpMode {
-
-    private VuforiaHelper vuforia;
-
-    private int numRings;
-    private RingDetector ringDetector;
-
-    private WobbleGrabberV1 wobbleGrabber;
-    private ShooterSystemV1 shooter;
-    private RingIntakeSystemV1 intake;
+public class UltimateV1AutoRed extends LinearOpMode {
 
     @Override
     public void runOpMode() {
 
-        vuforia = new VuforiaHelper(hardwareMap);
+        // initialize robot
+        UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, this);
 
-        ringDetector = new RingDetector(vuforia);
-        numRings = ringDetector.getNumRings();
-
-        wobbleGrabber = new WobbleGrabberV1(hardwareMap);
-
+        // get number of rings and log them
+        int numRings = robot.getRingDetector().getNumRings();
         telemetry.addData("Rings Found", numRings);
 
         telemetry.addData("Status", "Initialized");
@@ -76,52 +64,28 @@ public class UltimateV1Auto extends LinearOpMode {
         waitForStart();
 
         // drive to the wobble goal
-        driveToWobbleGoal();
+        robot.driveToWobbleGoal();
 
         // grab the wobble goal
-        wobbleGrabber.grabWobbleGoal();
+        robot.getWobbleGrabber().grabWobbleGoal();
 
         // move to the zone with the wobble goal
-        moveToZone(numRings);
+        robot.moveToZone(numRings);
 
         // release the wobble goal
-        wobbleGrabber.releaseWobbleGoal();
+        robot.getWobbleGrabber().releaseWobbleGoal();
 
         // move behind shot line and shoot powershots
-        moveBehindShootLine();
-        shootPowerShots();
+        robot.moveBehindShootLine();
+        robot.shootPowerShots();
 
         // ??? Maybe grab three rings at the end ???
-        grabStartingPileRings();
+        robot.grabStartingPileRings();
 
         // park on the line
-        park();
+        robot.park();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive());
-    }
-
-    private void driveToWobbleGoal() {
-
-    }
-
-    private void moveToZone(int numRings) {
-
-    }
-
-    private void moveBehindShootLine() {
-
-    }
-
-    private void shootPowerShots() {
-
-    }
-
-    private void grabStartingPileRings() {
-
-    }
-
-    private void park() {
-
     }
 }

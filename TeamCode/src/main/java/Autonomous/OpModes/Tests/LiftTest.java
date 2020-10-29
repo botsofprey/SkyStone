@@ -29,18 +29,11 @@
 
 package Autonomous.OpModes.Tests;
 
-import android.util.Log;
-
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import Actions.HardwareWrappers.DoubledSpoolMotor;
-import Actions.StoneStackingSystemV3;
-import Autonomous.Location;
-import DriveEngine.AnnieNavigation;
+import Actions.Annie.StoneStackingSystemV3;
 
 @Autonomous(name="LiftTest", group="Competition")
 //@Disabled

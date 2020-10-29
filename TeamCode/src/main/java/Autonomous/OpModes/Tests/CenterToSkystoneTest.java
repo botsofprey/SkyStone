@@ -40,7 +40,7 @@ import java.util.ArrayList;
 
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.VuforiaHelper;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.Annie.AnnieNavigation;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 

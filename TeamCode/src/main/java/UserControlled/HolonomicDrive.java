@@ -33,15 +33,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-
-import Actions.StoneStackingSystemV2;
-import DriveEngine.HolonomicDriveSystemTesting;
-import SensorHandlers.LIDARSensor;
-import SensorHandlers.LimitSwitch;
-import SensorHandlers.SensorPackage;
 
 @TeleOp(name="Annie V1", group="Competition")
 @Disabled
@@ -49,7 +40,6 @@ public class HolonomicDrive extends LinearOpMode {
     // create objects and locally global variables here
 
     DcMotor frontLeft, frontRight, backLeft, backRight;
-
 
     @Override
     public void runOpMode() {

@@ -254,7 +254,7 @@
 10-06 14:40:48.906  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar: Autonomous.Location
 10-06 14:40:48.906  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 14:40:48.906  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 14:40:48.906  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 14:40:48.906  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:40:48.906  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar: Autonomous.Rectangle
 10-06 14:40:48.906  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar: Autonomous.Shape
 10-06 14:40:48.906  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -271,7 +271,7 @@
 10-06 14:40:48.914  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 14:40:48.915  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 14:40:48.915  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 14:40:48.916  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 14:40:48.916  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:40:48.916  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 14:40:48.917  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.40.47-296419536/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 14:40:48.917  1018  1647 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -406,7 +406,7 @@
 10-06 14:42:12.644  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar: Autonomous.Location
 10-06 14:42:12.644  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 14:42:12.644  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 14:42:12.644  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 14:42:12.644  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:42:12.644  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar: Autonomous.Rectangle
 10-06 14:42:12.644  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar: Autonomous.Shape
 10-06 14:42:12.644  1018  1647 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -423,7 +423,7 @@
 10-06 14:42:12.656  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 14:42:12.656  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 14:42:12.657  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 14:42:12.657  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 14:42:12.657  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:42:12.657  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 14:42:12.658  1018  1647 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.42.11--1841389694/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 14:42:12.658  1018  1647 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -1580,7 +1580,7 @@
 10-06 14:43:23.721  1018  1683 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar: Autonomous.Location
 10-06 14:43:23.721  1018  1683 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 14:43:23.721  1018  1683 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 14:43:23.721  1018  1683 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 14:43:23.721  1018  1683 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:43:23.721  1018  1683 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar: Autonomous.Rectangle
 10-06 14:43:23.721  1018  1683 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar: Autonomous.Shape
 10-06 14:43:23.721  1018  1683 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -1597,7 +1597,7 @@
 10-06 14:43:23.730  1018  1683 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 14:43:23.731  1018  1683 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 14:43:23.731  1018  1683 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 14:43:23.731  1018  1683 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 14:43:23.731  1018  1683 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:43:23.731  1018  1683 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 14:43:23.732  1018  1683 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.22-114407160/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 14:43:23.732  1018  1683 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -2742,7 +2742,7 @@
 10-06 14:43:50.855  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar: Autonomous.Location
 10-06 14:43:50.855  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 14:43:50.855  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 14:43:50.855  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 14:43:50.855  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:43:50.855  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar: Autonomous.Rectangle
 10-06 14:43:50.855  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar: Autonomous.Shape
 10-06 14:43:50.855  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -2759,7 +2759,7 @@
 10-06 14:43:50.865  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 14:43:50.865  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 14:43:50.865  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 14:43:50.866  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 14:43:50.866  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:43:50.866  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 14:43:50.866  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.43.44--966674876/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 14:43:50.866  1018  1714 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -2913,7 +2913,7 @@
 10-06 14:44:50.356  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar: Autonomous.Location
 10-06 14:44:50.356  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 14:44:50.356  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 14:44:50.356  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 14:44:50.356  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:44:50.356  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar: Autonomous.Rectangle
 10-06 14:44:50.356  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar: Autonomous.Shape
 10-06 14:44:50.356  1018  1714 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -2930,7 +2930,7 @@
 10-06 14:44:50.364  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 14:44:50.364  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 14:44:50.364  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 14:44:50.364  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 14:44:50.364  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:44:50.365  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 14:44:50.365  1018  1714 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.44.49--1589154076/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 14:44:50.365  1018  1714 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -4141,7 +4141,7 @@
 10-06 14:46:23.410  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar: Autonomous.Location
 10-06 14:46:23.410  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 14:46:23.410  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 14:46:23.410  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 14:46:23.410  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:46:23.410  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar: Autonomous.Rectangle
 10-06 14:46:23.410  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar: Autonomous.Shape
 10-06 14:46:23.410  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -4158,7 +4158,7 @@
 10-06 14:46:23.424  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 14:46:23.425  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 14:46:23.425  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 14:46:23.425  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 14:46:23.425  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:46:23.425  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 14:46:23.426  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.46.22-1020339338/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 14:46:23.426  1018  1759 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -4336,7 +4336,7 @@
 10-06 14:47:21.930  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar: Autonomous.Location
 10-06 14:47:21.930  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 14:47:21.930  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 14:47:21.930  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 14:47:21.930  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:47:21.930  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar: Autonomous.Rectangle
 10-06 14:47:21.930  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar: Autonomous.Shape
 10-06 14:47:21.930  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -4353,7 +4353,7 @@
 10-06 14:47:21.939  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 14:47:21.940  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 14:47:21.940  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 14:47:21.940  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 14:47:21.940  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:47:21.941  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 14:47:21.941  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.47.21-1378078171/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 14:47:21.941  1018  1759 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -4494,7 +4494,7 @@
 10-06 14:49:51.364  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar: Autonomous.Location
 10-06 14:49:51.364  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 14:49:51.364  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 14:49:51.364  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 14:49:51.364  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:49:51.364  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar: Autonomous.Rectangle
 10-06 14:49:51.364  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar: Autonomous.Shape
 10-06 14:49:51.364  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -4511,7 +4511,7 @@
 10-06 14:49:51.372  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 14:49:51.372  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 14:49:51.372  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 14:49:51.372  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 14:49:51.372  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:49:51.373  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 14:49:51.373  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.49.50--1424371494/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 14:49:51.373  1018  1759 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -4652,7 +4652,7 @@
 10-06 14:52:34.921  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar: Autonomous.Location
 10-06 14:52:34.921  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 14:52:34.921  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 14:52:34.921  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 14:52:34.921  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:52:34.922  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar: Autonomous.Rectangle
 10-06 14:52:34.922  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar: Autonomous.Shape
 10-06 14:52:34.922  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -4669,7 +4669,7 @@
 10-06 14:52:34.930  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 14:52:34.931  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 14:52:34.931  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 14:52:34.931  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 14:52:34.931  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:52:34.931  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 14:52:34.931  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.52.34--1644026268/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 14:52:34.932  1018  1759 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -4851,7 +4851,7 @@
 10-06 14:53:40.839  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.Location
 10-06 14:53:40.839  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 14:53:40.839  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 14:53:40.839  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 14:53:40.839  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:53:40.839  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.Rectangle
 10-06 14:53:40.840  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.Shape
 10-06 14:53:40.840  1018  1759 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -4868,7 +4868,7 @@
 10-06 14:53:40.848  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 14:53:40.849  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 14:53:40.849  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 14:53:40.850  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 14:53:40.850  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 14:53:40.850  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 14:53:40.851  1018  1759 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 14:53:40.851  1018  1759 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -5074,7 +5074,7 @@
 12-31 19:00:14.811  1004  1004 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.Location
 12-31 19:00:14.811  1004  1004 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 12-31 19:00:14.811  1004  1004 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-12-31 19:00:14.811  1004  1004 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+12-31 19:00:14.811  1004  1004 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 12-31 19:00:14.811  1004  1004 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.Rectangle
 12-31 19:00:14.811  1004  1004 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.Shape
 12-31 19:00:14.811  1004  1004 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -5091,7 +5091,7 @@
 12-31 19:00:15.327  1004  1004 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 12-31 19:00:15.328  1004  1004 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 12-31 19:00:15.328  1004  1004 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-12-31 19:00:15.328  1004  1004 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+12-31 19:00:15.328  1004  1004 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 12-31 19:00:15.329  1004  1004 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: UserControlled.TankDrive
 12-31 19:00:15.329  1004  1004 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+14.53.40--76973287/OnBotJava.jar loaded: Autonomous.Rectangle
 12-31 19:00:15.602  1004  1004 V OnBotJavaDeterminer: isOnBotJava: class=AdafruitBNO055IMU loader=PathClassLoader: false
@@ -5464,7 +5464,7 @@
 10-06 18:39:11.762  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar: Autonomous.Location
 10-06 18:39:11.762  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 18:39:11.762  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 18:39:11.762  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 18:39:11.762  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:39:11.762  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar: Autonomous.Rectangle
 10-06 18:39:11.762  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar: Autonomous.Shape
 10-06 18:39:11.762  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -5481,7 +5481,7 @@
 10-06 18:39:11.773  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 18:39:11.774  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 18:39:11.774  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 18:39:11.775  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 18:39:11.775  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:39:11.775  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 18:39:11.776  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.39.08--1082935695/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 18:39:11.776  1004  1158 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -5695,7 +5695,7 @@
 10-06 18:40:02.368  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar: Autonomous.Location
 10-06 18:40:02.368  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 18:40:02.368  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 18:40:02.368  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 18:40:02.368  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:40:02.368  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar: Autonomous.Rectangle
 10-06 18:40:02.368  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar: Autonomous.Shape
 10-06 18:40:02.368  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -5712,7 +5712,7 @@
 10-06 18:40:02.379  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 18:40:02.379  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 18:40:02.380  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 18:40:02.380  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 18:40:02.380  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:40:02.381  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 18:40:02.381  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.00-1722917119/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 18:40:02.382  1004  1158 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -5854,7 +5854,7 @@
 10-06 18:40:19.434  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar: Autonomous.Location
 10-06 18:40:19.434  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 18:40:19.434  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 18:40:19.434  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 18:40:19.434  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:40:19.434  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar: Autonomous.Rectangle
 10-06 18:40:19.434  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar: Autonomous.Shape
 10-06 18:40:19.435  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -5871,7 +5871,7 @@
 10-06 18:40:19.445  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 18:40:19.446  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 18:40:19.446  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 18:40:19.447  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 18:40:19.447  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:40:19.448  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 18:40:19.448  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.18--1113045954/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 18:40:19.449  1004  1158 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -6010,7 +6010,7 @@
 10-06 18:40:31.225  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar: Autonomous.Location
 10-06 18:40:31.225  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 18:40:31.225  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 18:40:31.225  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 18:40:31.225  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:40:31.225  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar: Autonomous.Rectangle
 10-06 18:40:31.225  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar: Autonomous.Shape
 10-06 18:40:31.225  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -6027,7 +6027,7 @@
 10-06 18:40:31.235  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 18:40:31.236  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 18:40:31.236  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 18:40:31.237  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 18:40:31.237  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:40:31.238  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 18:40:31.238  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.30--1260571676/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 18:40:31.238  1004  1158 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -6168,7 +6168,7 @@
 10-06 18:40:53.599  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar: Autonomous.Location
 10-06 18:40:53.599  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 18:40:53.599  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 18:40:53.599  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 18:40:53.599  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:40:53.599  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar: Autonomous.Rectangle
 10-06 18:40:53.599  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar: Autonomous.Shape
 10-06 18:40:53.599  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -6185,7 +6185,7 @@
 10-06 18:40:53.609  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 18:40:53.609  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 18:40:53.610  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 18:40:53.610  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 18:40:53.610  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:40:53.610  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 18:40:53.611  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.40.52-47771317/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 18:40:53.611  1004  1158 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -6327,7 +6327,7 @@
 10-06 18:41:20.411  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar: Autonomous.Location
 10-06 18:41:20.411  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 18:41:20.411  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 18:41:20.411  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 18:41:20.411  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:41:20.411  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar: Autonomous.Rectangle
 10-06 18:41:20.411  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar: Autonomous.Shape
 10-06 18:41:20.412  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -6344,7 +6344,7 @@
 10-06 18:41:20.421  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 18:41:20.422  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 18:41:20.422  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 18:41:20.422  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 18:41:20.422  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:41:20.423  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 18:41:20.423  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.41.19--1043866752/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 18:41:20.423  1004  1158 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -6484,7 +6484,7 @@
 10-06 18:42:10.163  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar: Autonomous.Location
 10-06 18:42:10.163  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
 10-06 18:42:10.163  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar: Autonomous.OpModes.RecordJSONTest
-10-06 18:42:10.163  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 18:42:10.163  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:42:10.163  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar: Autonomous.Rectangle
 10-06 18:42:10.163  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar: Autonomous.Shape
 10-06 18:42:10.163  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -6501,7 +6501,7 @@
 10-06 18:42:10.173  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar loaded: Autonomous.OpModes.RecordJSONTest
 10-06 18:42:10.174  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 18:42:10.174  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 18:42:10.174  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 18:42:10.174  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:42:10.175  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 18:42:10.175  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.09--445186766/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 18:42:10.176  1004  1158 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -6640,7 +6640,7 @@
 10-06 18:42:39.618  1360  1360 I dex2oat : dex2oat took 90.106ms (threads: 4) arena alloc=854KB (875400B) java alloc=79KB (81504B) native alloc=497KB (509944B) free=2MB (2111496B)
 10-06 18:42:39.624  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar: Autonomous.Location
 10-06 18:42:39.624  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
-10-06 18:42:39.624  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 18:42:39.624  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:42:39.624  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar: Autonomous.RecordJSONTest
 10-06 18:42:39.624  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar: Autonomous.Rectangle
 10-06 18:42:39.624  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar: Autonomous.Shape
@@ -6658,7 +6658,7 @@
 10-06 18:42:39.635  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar loaded: Autonomous.Shape
 10-06 18:42:39.635  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 18:42:39.636  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 18:42:39.636  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 18:42:39.636  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:42:39.636  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 18:42:39.636  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.38-1114590732/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 18:42:39.637  1004  1158 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -6796,7 +6796,7 @@
 10-06 18:42:51.896  1374  1374 I dex2oat : dex2oat took 81.223ms (threads: 4) arena alloc=1095KB (1121808B) java alloc=79KB (81504B) native alloc=498KB (510072B) free=2MB (2111368B)
 10-06 18:42:51.901  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.Location
 10-06 18:42:51.901  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
-10-06 18:42:51.901  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-06 18:42:51.901  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:42:51.901  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.RecordJSONTest
 10-06 18:42:51.901  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.Rectangle
 10-06 18:42:51.901  1004  1158 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.Shape
@@ -6814,7 +6814,7 @@
 10-06 18:42:51.910  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.Shape
 10-06 18:42:51.911  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-06 18:42:51.911  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-06 18:42:51.911  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-06 18:42:51.911  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-06 18:42:51.912  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: UserControlled.TankDrive
 10-06 18:42:51.912  1004  1158 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.Rectangle
 10-06 18:42:51.912  1004  1158 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -7029,7 +7029,7 @@
 12-31 19:00:15.252  1133  1133 I dex2oat : dex2oat took 88.596ms (threads: 4) arena alloc=1095KB (1121808B) java alloc=75KB (77536B) native alloc=498KB (510000B) free=2MB (2111440B)
 12-31 19:00:15.257  1015  1015 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.Location
 12-31 19:00:15.257  1015  1015 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
-12-31 19:00:15.257  1015  1015 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+12-31 19:00:15.257  1015  1015 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 12-31 19:00:15.257  1015  1015 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.RecordJSONTest
 12-31 19:00:15.257  1015  1015 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.Rectangle
 12-31 19:00:15.257  1015  1015 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar: Autonomous.Shape
@@ -7047,7 +7047,7 @@
 12-31 19:00:15.923  1015  1015 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.Shape
 12-31 19:00:15.924  1015  1015 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 12-31 19:00:15.924  1015  1015 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-12-31 19:00:15.924  1015  1015 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+12-31 19:00:15.924  1015  1015 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 12-31 19:00:15.925  1015  1015 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: UserControlled.TankDrive
 12-31 19:00:15.925  1015  1015 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-06+18.42.50-1518697841/OnBotJava.jar loaded: Autonomous.Rectangle
 12-31 19:00:16.241  1015  1015 V OnBotJavaDeterminer: isOnBotJava: class=AdafruitBNO055IMU loader=PathClassLoader: false
@@ -7354,7 +7354,7 @@
 10-07 11:30:17.369  1213  1213 I dex2oat : dex2oat took 80.829ms (threads: 4) arena alloc=982KB (1006384B) java alloc=63KB (65264B) native alloc=499KB (511888B) free=2MB (2109552B)
 10-07 11:30:17.375  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar: Autonomous.Location
 10-07 11:30:17.375  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
-10-07 11:30:17.375  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-07 11:30:17.375  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-07 11:30:17.375  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar: Autonomous.Rectangle
 10-07 11:30:17.375  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar: Autonomous.Shape
 10-07 11:30:17.375  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -7372,7 +7372,7 @@
 10-07 11:30:17.386  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar loaded: Autonomous.Shape
 10-07 11:30:17.387  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-07 11:30:17.387  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-07 11:30:17.388  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-07 11:30:17.388  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-07 11:30:17.389  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar loaded: UserControlled.TankDrive
 10-07 11:30:17.389  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.30.14-1688680905/OnBotJava.jar loaded: Autonomous.Rectangle
 10-07 11:30:17.389  1015  1163 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -7528,7 +7528,7 @@
 10-07 11:31:37.209  1251  1251 I dex2oat : dex2oat took 92.104ms (threads: 4) arena alloc=1095KB (1121872B) java alloc=71KB (73208B) native alloc=499KB (511936B) free=2MB (2109504B)
 10-07 11:31:37.215  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar: Autonomous.Location
 10-07 11:31:37.215  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
-10-07 11:31:37.215  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-07 11:31:37.215  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-07 11:31:37.215  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar: Autonomous.Rectangle
 10-07 11:31:37.215  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar: Autonomous.Shape
 10-07 11:31:37.215  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -7546,7 +7546,7 @@
 10-07 11:31:37.224  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar loaded: Autonomous.Shape
 10-07 11:31:37.225  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-07 11:31:37.225  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-07 11:31:37.226  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-07 11:31:37.226  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-07 11:31:37.226  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar loaded: UserControlled.TankDrive
 10-07 11:31:37.227  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.31.35--740943532/OnBotJava.jar loaded: Autonomous.Rectangle
 10-07 11:31:37.227  1015  1163 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -7772,7 +7772,7 @@
 10-07 11:32:33.835  1288  1288 I dex2oat : dex2oat took 102.242ms (threads: 4) arena alloc=1223KB (1252936B) java alloc=59KB (61296B) native alloc=499KB (511864B) free=2MB (2109576B)
 10-07 11:32:33.841  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar: Autonomous.Location
 10-07 11:32:33.841  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
-10-07 11:32:33.841  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-07 11:32:33.841  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-07 11:32:33.841  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar: Autonomous.Rectangle
 10-07 11:32:33.841  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar: Autonomous.Shape
 10-07 11:32:33.841  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -7790,7 +7790,7 @@
 10-07 11:32:33.853  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar loaded: Autonomous.Shape
 10-07 11:32:33.854  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-07 11:32:33.854  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-07 11:32:33.855  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-07 11:32:33.855  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-07 11:32:33.855  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar loaded: UserControlled.TankDrive
 10-07 11:32:33.856  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.32.32-1494504068/OnBotJava.jar loaded: Autonomous.Rectangle
 10-07 11:32:33.857  1015  1163 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true
@@ -7940,7 +7940,7 @@
 10-07 11:33:09.506  1314  1314 I dex2oat : dex2oat took 73.079ms (threads: 4) arena alloc=982KB (1006376B) java alloc=71KB (73208B) native alloc=499KB (511936B) free=2MB (2109504B)
 10-07 11:33:09.511  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar: Autonomous.Location
 10-07 11:33:09.511  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar: Autonomous.OpModes.PlayJSONTest
-10-07 11:33:09.511  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar: Autonomous.OpModes.UltimateV1Auto
+10-07 11:33:09.511  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-07 11:33:09.511  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar: Autonomous.Rectangle
 10-07 11:33:09.511  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar: Autonomous.Shape
 10-07 11:33:09.511  1015  1163 I OnBotJavaHelperImpl: /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar: Autonomous.VisionHelperSkyStone$1
@@ -7958,7 +7958,7 @@
 10-07 11:33:09.521  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar loaded: Autonomous.Shape
 10-07 11:33:09.521  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar loaded: Autonomous.VisionHelperSkyStone$1
 10-07 11:33:09.522  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar loaded: Autonomous.VuforiaHelper
-10-07 11:33:09.522  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar loaded: Autonomous.OpModes.UltimateV1Auto
+10-07 11:33:09.522  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar loaded: Autonomous.OpModes.UltimateAuto.UltimateV1AutoRed
 10-07 11:33:09.523  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar loaded: UserControlled.TankDrive
 10-07 11:33:09.523  1015  1163 V OnBotJava:ClassLoader: From /storage/emulated/0/FIRST/java/build/jars/onBotJavaJar-2020-10-07+11.33.08-1905882810/OnBotJava.jar loaded: Autonomous.Rectangle
 10-07 11:33:09.523  1015  1163 V OnBotJavaDeterminer: isOnBotJava: class=JoystickHandler loader=OnBotJavaClassLoader: true

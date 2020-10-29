@@ -1,9 +1,15 @@
-package Actions;
+package Actions.Ultimate;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+/**
+ * Author: Ethan Fisher
+ * Date: 10/21/2020
+ *
+ * Used for grabbing and releasing the wobble goal
+ */
 public class WobbleGrabberV1 {
 
     private Servo claw;

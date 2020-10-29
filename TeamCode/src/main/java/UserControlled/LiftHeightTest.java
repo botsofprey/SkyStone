@@ -29,11 +29,10 @@
 
 package UserControlled;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import Actions.StoneStackingSystemV2;
+import Actions.Annie.StoneStackingSystemV2;
 
 @TeleOp(name="Lift Height Test", group="Testers")
 //@Disabled

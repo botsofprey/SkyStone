@@ -36,16 +36,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import Actions.MiscellaneousActionsV2;
-import Actions.StoneStackingSystemV3;
+import Actions.Annie.MiscellaneousActionsV2;
+import Actions.Annie.StoneStackingSystemV3;
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
 import Autonomous.VuforiaHelper;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.Annie.AnnieNavigation;
 import Autonomous.ConfigVariables;
 import SensorHandlers.UltrasonicIRSensor;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 
 @Autonomous(name="Detect Skystone From Wall", group="Competition")
 //@Disabled
