@@ -12,12 +12,13 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  */
 public class GamepadController {
 
-    // TODO finish this up
-
-    private boolean aPressed, aHeld, bPressed, bHeld, xPressed, xHeld, yPressed, yHeld,
-        rightTriggerPressed, rightTriggerHeld, leftTriggerPressed, leftTriggerHeld,
-        dpadUpPressed, dpadUpHeld, dpadRightPressed, dpadRightHeld, dpadDownPressed,
-        dpadDownHeld, dpadLeftPressed, dpadLeftHeld;
+    private boolean aPressed = false, aHeld = false, bPressed = false, bHeld = false,
+            xPressed = false, xHeld = false, yPressed = false, yHeld = false,
+            rightBumperPressed = false, rightBumperHeld = false, leftBumperPressed = false,
+            leftBumperHeld = false, dpadUpPressed = false, dpadUpHeld = false,
+            dpadRightPressed = false, dpadRightHeld = false, dpadDownPressed = false,
+            dpadDownHeld = false, dpadLeftPressed = false, dpadLeftHeld = false,
+            startPressed = false, startHeld = false;
 
     private Gamepad gamepad;
 
@@ -29,23 +30,94 @@ public class GamepadController {
     public void update() {
 
         // update a
-        if (gamepad.a)
-            aHeld = true;
-        if (gamepad.a && !aPressed)
-            aPressed = true;
-        else if (!gamepad.a) {
-            aHeld = false;
-            aPressed = false;
-        }
+        boolean prevAHeld = aHeld;
+        aHeld = gamepad.a;
+        if (prevAHeld) aPressed = false;
+        if (!prevAHeld && aHeld) aPressed = true;
 
         // update b
+        boolean prevBHeld = bHeld;
+        bHeld = gamepad.b;
+        if (prevBHeld) bPressed = false;
+        if (!prevBHeld && bHeld) bPressed = true;
 
         // update x
+        boolean prevXHeld = xHeld;
+        xHeld = gamepad.x;
+        if (prevXHeld) xPressed = false;
+        if (!prevXHeld && xHeld) xPressed = true;
 
         // update y
+        boolean prevYHeld = yHeld;
+        yHeld = gamepad.y;
+        if (prevYHeld) yPressed = false;
+        if (!prevYHeld && yHeld) yPressed = true;
+
+        // update right trigger
+        boolean prevRightBumperHeld = rightBumperHeld;
+        rightBumperHeld = gamepad.right_bumper;
+        if (prevRightBumperHeld) rightBumperPressed = false;
+        if (!prevRightBumperHeld && rightBumperHeld) rightBumperPressed = true;
+
+        // update left trigger
+        boolean prevLeftBumperHeld = leftBumperHeld;
+        leftBumperHeld = gamepad.left_bumper;
+        if (prevLeftBumperHeld) leftBumperPressed = false;
+        if (!prevLeftBumperHeld && leftBumperHeld) leftBumperPressed = true;
+
+        // update d pad up
+        boolean prevDPadUpHeld = dpadUpHeld;
+        dpadUpHeld = gamepad.dpad_up;
+        if (prevDPadUpHeld) dpadUpPressed = false;
+        if (!prevDPadUpHeld && dpadUpHeld) dpadUpPressed = true;
+
+        // update d pad right
+        boolean prevDPadRightHeld = dpadRightHeld;
+        dpadRightHeld = gamepad.dpad_right;
+        if (prevDPadRightHeld) dpadRightPressed = false;
+        if (!prevDPadRightHeld && dpadRightHeld) dpadRightPressed = true;
+
+        // update d pad down
+        boolean prevDPadDownHeld = dpadDownHeld;
+        dpadDownHeld = gamepad.dpad_down;
+        if (prevDPadDownHeld) dpadDownPressed = false;
+        if (!prevDPadDownHeld && dpadDownHeld) dpadDownPressed = true;
+
+        // update d pad left
+        boolean prevDPadLeftHeld = dpadLeftHeld;
+        dpadLeftHeld = gamepad.dpad_left;
+        if (prevDPadLeftHeld) dpadLeftPressed = false;
+        if (!prevDPadLeftHeld && dpadLeftHeld) dpadLeftPressed = true;
+
+        // update start button
+        boolean prevStartHeld = startHeld;
+        startHeld = gamepad.start;
+        if (prevStartHeld) startPressed = false;
+        if (!prevStartHeld && startHeld) startPressed = true;
     }
 
+    // getters for all of the "pressed" and "held" values
     public boolean aPressed() { return aPressed; }
     public boolean aHeld() { return aHeld; }
+    public boolean bPressed() { return bPressed; }
+    public boolean bHeld() { return bHeld; }
+    public boolean xPressed() { return xPressed; }
+    public boolean xHeld() { return xHeld; }
+    public boolean yPressed() { return yPressed; }
+    public boolean yHeld() { return yHeld; }
+    public boolean rightBumperPressed() { return rightBumperPressed; }
+    public boolean rightBumperHeld() { return rightBumperHeld; }
+    public boolean leftBumperPressed() { return leftBumperPressed; }
+    public boolean leftBumperHeld() { return leftBumperHeld; }
+    public boolean dpadUpPressed() { return dpadUpPressed; }
+    public boolean dpadUpHeld() { return dpadUpHeld; }
+    public boolean dpadRightPressed() { return dpadRightPressed; }
+    public boolean dpadRightHeld() { return dpadRightHeld; }
+    public boolean dpadDownPressed() { return dpadDownPressed; }
+    public boolean dpadDownHeld() { return dpadDownHeld; }
+    public boolean dpadLeftPressed() { return dpadLeftPressed; }
+    public boolean dpadLeftHeld() { return dpadLeftHeld; }
+    public boolean startPressed() { return startPressed; }
+    public boolean startHeld() { return startHeld; }
 
 }

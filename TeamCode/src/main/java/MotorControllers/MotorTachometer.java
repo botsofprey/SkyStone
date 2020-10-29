@@ -23,7 +23,7 @@ public class MotorTachometer {
     private FiFoBuffer timeBuffer;
     private FiFoBuffer tickBuffer;
     private int bufferLength = 5;
-    public static enum RPS_SMOOTHER {
+    public enum RPS_SMOOTHER {
         NONE, COMPLIMENTARY_FILTER, AVERAGE_VELOCITY, FIFO_BUFFER
     }
     private RPS_SMOOTHER smootherMode = RPS_SMOOTHER.NONE;

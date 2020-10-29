@@ -30,55 +30,28 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package Autonomous.OpModes;
-
-import android.graphics.Bitmap;
-import android.util.Log;
+package Autonomous.OpModes.UltimateAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import Autonomous.AutoAlliance;
 
-import java.io.File;
-import java.util.Scanner;
-
-import UserControlled.RecordJSONTest;
-
-/**
-    Author: Ethan Fisher
-    Date: 10/12/2020
-
-    Replays a JSON file in the JSONFiles folder
+/*
+    An opmode for the User Controlled portion of the game
  */
-@Autonomous(name="Replay JSON Test", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@Autonomous(name="UltimateV1Auto", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class PlayJSONTest extends LinearOpMode {
-
-    // filename for the current file being replayed
-    public static final String PATH = "jsonFile.json";
-
-    public String jsonString = "{\"left\": [1, 0.2, 0.1],\"right\": [0.1, 0.3, 0.5]}";
-
-    double[] leftPowers, rightPowers;
-
-    DcMotor left, right;
+public class UltimateV1AutoRed extends LinearOpMode {
 
     @Override
     public void runOpMode() {
 
-        JSONObject object = null;
-        try {
-            object = new JSONObject(jsonString);
+        // intitialize robot
+        UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, this);
 
-            leftPowers = (double[]) object.get("left");
-            rightPowers = (double[]) object.get("right");
-
-        } catch(Exception e) {
-            Log.d("Error", e.toString());
-        }
+        int numRings = robot.getRingDetector().getNumRings();
+        telemetry.addData("Rings Found", numRings);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -86,28 +59,29 @@ public class PlayJSONTest extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        if (object == null) return;
+        // drive to the wobble goal
+        robot.driveToWobbleGoal();
 
-        // record data 10 times a second (to start)
-        long targetTime = 1000000000 / RecordJSONTest.TIMES_PER_SECOND; // this value should be used in nano's
-        long elapsedTime;
-        long startTime;
+        // grab the wobble goal
+        robot.getWobbleGrabber().grabWobbleGoal();
 
-        for (int i = 0; i < leftPowers.length; i++) {
-            startTime = System.nanoTime();
+        // move to the zone with the wobble goal
+        robot.moveToZone(numRings);
 
-            double leftPower = leftPowers[i];
-            double rightPower = rightPowers[i];
+        // release the wobble goal
+        robot.getWobbleGrabber().releaseWobbleGoal();
 
-            left.setPower(leftPower);
-            right.setPower(rightPower);
+        // move behind shot line and shoot powershots
+        robot.moveBehindShootLine();
+        robot.shootPowerShots();
 
-            // convert time to milliseconds and sleep for the leftover time
-            elapsedTime = startTime - System.nanoTime();
-            sleep((targetTime - elapsedTime) / 1000000);
+        // ??? Maybe grab three rings at the end ???
+        robot.grabStartingPileRings();
 
-        }
+        // park on the line
+        robot.park();
 
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive());
     }
-
 }

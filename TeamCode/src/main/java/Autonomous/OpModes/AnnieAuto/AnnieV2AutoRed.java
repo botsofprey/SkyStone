@@ -39,8 +39,8 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import java.util.ArrayList;
 
-import Actions.MiscellaneousActionsV2;
-import Actions.StoneStackingSystemV3;
+import Actions.Annie.MiscellaneousActionsV2;
+import Actions.Annie.StoneStackingSystemV3;
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
 import Autonomous.VuforiaHelper;

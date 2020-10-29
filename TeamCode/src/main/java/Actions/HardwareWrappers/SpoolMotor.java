@@ -51,8 +51,7 @@ public class SpoolMotor implements ActionHandler {
         return motor.getMotorRunMode();
     }
 
-    public void pause()
-    {
+    public void pause() {
 //        if(motor.getMotorControllerMode() != MotorController.MotorControllerMode.SPEED_CONTROLLER) motor.setMotorControllerMode(MotorController.MotorControllerMode.SPEED_CONTROLLER);
         motor.setInchesPerSecondVelocity(0);
     }
