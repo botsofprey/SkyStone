@@ -346,7 +346,7 @@ public class AnnieNavigation extends Thread {
         try {
             stream = hardwareMap.appContext.getAssets().open(file);
         }
-        catch(Exception e){
+        catch(Exception e) {
             Log.d("Drive Engine Error: ",e.toString());
             throw new RuntimeException("Drive Engine Open Config File Fail: " + e.toString());
         }
