@@ -2,7 +2,6 @@ package DriveEngine;
 
 import android.util.Log;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -22,7 +21,6 @@ import MotorControllers.MotorController;
 import MotorControllers.PIDController;
 import SensorHandlers.ImuHandler;
 import SensorHandlers.LIDARSensor;
-import SensorHandlers.UltrasonicIRSensor;
 
 
 /**
@@ -32,7 +30,7 @@ import SensorHandlers.UltrasonicIRSensor;
 /*
     The base class for every opmode --- it sets up our drive system and contains all it's funcitons
  */
-public class AnnieNavigation extends Thread {
+public class UltimateNavigation extends Thread {
 
     public static final Rectangle NO_GO_ZONE = new Rectangle(0, 0, 144, 48);
 
@@ -86,7 +84,9 @@ public class AnnieNavigation extends Thread {
     private double acceleration = 0;
     private HardwareMap hardwareMap;
 
-    public AnnieNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile, boolean ignoreInitialSensorLocation) throws Exception{
+    // TODO fix this class
+
+    public UltimateNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile, boolean ignoreInitialSensorLocation) {
         hardwareMap = hw;
         initializeUsingConfigFile(configFile);
         populateHashmaps();
@@ -130,7 +130,7 @@ public class AnnieNavigation extends Thread {
         }).start();
     }
 
-    public AnnieNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile) throws Exception {
+    public UltimateNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile) throws Exception {
         this(hw, startLocation, robotOrientationOffset, configFile, false);
     }
 

@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import Actions.MiscellaneousActionsV2;
-import Actions.StoneStackingSystemV3;
+import Actions.Annie.MiscellaneousActionsV2;
+import Actions.Annie.StoneStackingSystemV3;
 import Autonomous.AutoAlliance;
 import Autonomous.ConfigVariables;
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
