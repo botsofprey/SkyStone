@@ -1,11 +1,7 @@
 package Autonomous.OpModes.UltimateAuto;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import Actions.Ultimate.RingIntakeSystemV1;
 import Actions.Ultimate.ShooterSystemV1;
@@ -14,8 +10,14 @@ import Autonomous.AutoAlliance;
 import Autonomous.Location;
 import Autonomous.RingDetector;
 import Autonomous.VuforiaHelper;
-import DriveEngine.UltimateNavigation;
+import DriveEngine.Ultimate.UltimateNavigation;
 
+/**
+ * Author: Ethan Fisher
+ * Date: 10/29/2020
+ *
+ * Autonomous for Ultimate Goal
+ */
 public class UltimateAutonomous {
 
     private final AutoAlliance alliance;

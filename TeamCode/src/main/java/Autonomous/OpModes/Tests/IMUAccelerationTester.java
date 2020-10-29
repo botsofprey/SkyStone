@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Autonomous.Location;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.Annie.AnnieNavigation;
 import UserControlled.JoystickHandler;
 
 @Autonomous(name="Accelerometer Tester", group="Testers")

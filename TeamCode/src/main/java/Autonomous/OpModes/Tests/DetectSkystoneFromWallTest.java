@@ -41,7 +41,7 @@ import Actions.Annie.StoneStackingSystemV3;
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
 import Autonomous.VuforiaHelper;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.Annie.AnnieNavigation;
 import Autonomous.ConfigVariables;
 import SensorHandlers.UltrasonicIRSensor;
 
