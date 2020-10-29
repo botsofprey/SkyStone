@@ -35,6 +35,8 @@ package Autonomous.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import Actions.RingIntakeSystemV1;
+import Actions.ShooterSystemV1;
 import Actions.WobbleGrabberV1;
 import Autonomous.VuforiaHelper;
 import Autonomous.RingDetector;
@@ -52,6 +54,8 @@ public class UltimateV1Auto extends LinearOpMode {
     private RingDetector ringDetector;
 
     private WobbleGrabberV1 wobbleGrabber;
+    private ShooterSystemV1 shooter;
+    private RingIntakeSystemV1 intake;
 
     @Override
     public void runOpMode() {
@@ -71,11 +75,53 @@ public class UltimateV1Auto extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // grab the wobble goal (or we might have to turn first)
+        // drive to the wobble goal
+        driveToWobbleGoal();
+
+        // grab the wobble goal
         wobbleGrabber.grabWobbleGoal();
-        // TODO drive to specific spots based off of numRings
+
+        // move to the zone with the wobble goal
+        moveToZone(numRings);
+
+        // release the wobble goal
+        wobbleGrabber.releaseWobbleGoal();
+
+        // move behind shot line and shoot powershots
+        moveBehindShootLine();
+        shootPowerShots();
+
+        // ??? Maybe grab three rings at the end ???
+        grabStartingPileRings();
+
+        // park on the line
+        park();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive());
+    }
+
+    private void driveToWobbleGoal() {
+
+    }
+
+    private void moveToZone(int numRings) {
+
+    }
+
+    private void moveBehindShootLine() {
+
+    }
+
+    private void shootPowerShots() {
+
+    }
+
+    private void grabStartingPileRings() {
+
+    }
+
+    private void park() {
+
     }
 }

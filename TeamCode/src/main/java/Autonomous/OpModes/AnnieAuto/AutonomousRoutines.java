@@ -62,44 +62,43 @@ public class AutonomousRoutines {
     }
 
     public static void runGrabTest(AutoAlliance alliance, LinearOpMode mode) {
-        {
-            AnnieAutonomous annie = new AnnieAutonomous(alliance, mode);
 
-            annie.reportLocation().updateTelemetry();
+        AnnieAutonomous annie = new AnnieAutonomous(alliance, mode);
 
-            mode.waitForStart();
+        annie.reportLocation().updateTelemetry();
 
-            annie.startRun();
+        mode.waitForStart();
 
-            annie.grabSkyStoneFromCenterGroup(SkyStonePosition.SKY_STONE_0);
-            annie.reportLocation().updateTelemetry();
-            annie.sleep(2000);
-            annie.driveToLocation(new Location(55, -55, 270));
-            annie.reportLocation().updateTelemetry();
-            annie.sleep(2000);
-            annie.releaseStone();
-            annie.driveToLocation(new Location(55, -34.5, 270));
-            annie.reportLocation().updateTelemetry();
-            annie.sleep(2000);
-            annie.grabSkyStoneFromCenterGroup(SkyStonePosition.SKY_STONE_2);
-            annie.reportLocation().updateTelemetry();
-            annie.sleep(2000);
-            annie.driveToLocation(new Location(55, -18, 270));
-            annie.reportLocation().updateTelemetry();
-            annie.sleep(2000);
-            annie.releaseStone();
-            annie.driveToLocation(new Location(55, -34.5, 270));
-            annie.reportLocation().updateTelemetry();
-            annie.sleep(2000);
-            annie.grabSkyStoneFromCenterGroup(SkyStonePosition.SKY_STONE_1);
-            annie.reportLocation().updateTelemetry();
-            annie.sleep(2000);
-            annie.driveToLocation(new Location(55, -34.5, 270));
-            annie.reportLocation().updateTelemetry();
+        annie.startRun();
 
-            while (annie.opModeIsActive());
+        annie.grabSkyStoneFromCenterGroup(SkyStonePosition.SKY_STONE_0);
+        annie.reportLocation().updateTelemetry();
+        annie.sleep(2000);
+        annie.driveToLocation(new Location(55, -55, 270));
+        annie.reportLocation().updateTelemetry();
+        annie.sleep(2000);
+        annie.releaseStone();
+        annie.driveToLocation(new Location(55, -34.5, 270));
+        annie.reportLocation().updateTelemetry();
+        annie.sleep(2000);
+        annie.grabSkyStoneFromCenterGroup(SkyStonePosition.SKY_STONE_2);
+        annie.reportLocation().updateTelemetry();
+        annie.sleep(2000);
+        annie.driveToLocation(new Location(55, -18, 270));
+        annie.reportLocation().updateTelemetry();
+        annie.sleep(2000);
+        annie.releaseStone();
+        annie.driveToLocation(new Location(55, -34.5, 270));
+        annie.reportLocation().updateTelemetry();
+        annie.sleep(2000);
+        annie.grabSkyStoneFromCenterGroup(SkyStonePosition.SKY_STONE_1);
+        annie.reportLocation().updateTelemetry();
+        annie.sleep(2000);
+        annie.driveToLocation(new Location(55, -34.5, 270));
+        annie.reportLocation().updateTelemetry();
 
-            annie.stop();
-        }
+        while (annie.opModeIsActive());
+
+        annie.stop();
     }
 }

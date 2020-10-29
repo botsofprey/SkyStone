@@ -121,7 +121,7 @@ public class UltimateV1 extends LinearOpMode {
 
     // misc functions here
     private void updateEStop() {
-        if ((gamepad1.dpad_down && gamepad1.back) || (gamepad2.dpad_down && gamepad2.back))
+        if ((controllerOne.dpadDownHeld() && gamepad1.back) || (controllerTwo.dpadDownHeld() && gamepad2.back))
             eStop = !eStop;
     }
 

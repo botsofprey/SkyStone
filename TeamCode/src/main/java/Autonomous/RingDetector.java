@@ -53,14 +53,12 @@ public class RingDetector {
                 numFour++;
         }
 
-        NumRings numRingsFound;
         if (numZero >= PERCENT_NUM_RINGS_REQUIRED)
-            numRingsFound = NumRings.ZERO;
+            return NumRings.ZERO;
         else if (numOne >= PERCENT_NUM_RINGS_REQUIRED)
-            numRingsFound = NumRings.ONE;
+            return NumRings.ONE;
         else
-            numRingsFound = NumRings.FOUR;
-        return numRingsFound;
+            return NumRings.FOUR;
     }
 
     private NumRings findNumRings() {
