@@ -59,23 +59,13 @@ public class ServoHandler {
         return wantedDegree;
     }
 
-    public double getActualPosition(){
-        return servo.getPosition();
-    }
+    public double getActualPosition() {return servo.getPosition();}
 
-    public double getPosition(){
-        return wantedDegree/180.0;
-    }
+    public double getPosition(){ return wantedDegree/180.0; }
 
-    public double getActualDegree(){
-        return  getActualPosition()*180.0;
-    }
+    public double getActualDegree(){ return getActualPosition()*180.0; }
 
-    public double getDegree(){
-        return wantedDegree;
-    }
+    public double getDegree(){ return wantedDegree; }
 
-    public void setDirection(Servo.Direction dir){
-        servo.setDirection(dir);
-    }
+    public void setDirection(Servo.Direction dir){ servo.setDirection(dir); }
 }
