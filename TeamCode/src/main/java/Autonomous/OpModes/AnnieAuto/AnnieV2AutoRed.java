@@ -44,7 +44,7 @@ import Actions.Annie.StoneStackingSystemV3;
 import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
 import Autonomous.VuforiaHelper;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.Annie.AnnieNavigation;
 
 import static Autonomous.ConfigVariables.*;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
@@ -115,7 +115,7 @@ public class AnnieV2AutoRed extends LinearOpMode {
 //                telemetry.addData("Skystone", "" + blockCenters.get(0));
                     skystoneFound = true;
                     if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 3, 30,this)) break; //Get left-most skystone
-                }else skystoneFound = false;
+                } else skystoneFound = false;
             }
         }
         robot.brake();

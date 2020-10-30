@@ -36,8 +36,7 @@ import Actions.Ultimate.RingIntakeSystemV1;
 import Actions.Ultimate.ShooterSystemV1;
 import Actions.Ultimate.WobbleGrabberV1;
 import Autonomous.Location;
-import DriveEngine.AnnieNavigation;
-import DriveEngine.UltimateNavigation;
+import DriveEngine.Ultimate.UltimateNavigation;
 import UserControlled.GamepadController;
 import UserControlled.JoystickHandler;
 
@@ -63,7 +62,7 @@ public class UltimateV1 extends LinearOpMode {
 
         // intialize robot
         try {
-            robot = new UltimateNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/AnnieV1.json");
+            robot = new UltimateNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }

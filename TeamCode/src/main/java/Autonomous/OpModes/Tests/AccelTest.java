@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Autonomous.Location;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.Annie.AnnieNavigation;
 
 @Autonomous(name="AccelTest", group="Testers")
 //@Disabled

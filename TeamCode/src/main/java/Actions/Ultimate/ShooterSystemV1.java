@@ -19,11 +19,10 @@ public class ShooterSystemV1 {
 
     private static final double WHEEL_POWER = -1;
 
-    private static final double SHOOTER_DIRECTION = 45;
     // TODO put a variable here for the pinball's angle when it is shot
 
-    private static final double HOPPER_UP = 30;
-    private static final double HOPPER_DOWN = 0;
+    private static final double HOPPER_UP_ANGLE = 30;
+    private static final double HOPPER_DOWN_ANGLE = 0;
 
     public ShooterSystemV1(HardwareMap hardwareMap) {
         wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
@@ -35,18 +34,20 @@ public class ShooterSystemV1 {
         // TODO rotate pinball servo
     }
 
+    // TODO
     public void adjustShootingAngle() {}
 
+    // TODO
     public void targetTopGoal() {}
 
     public void raiseHopper() {
-        hopperTurner.setPosition(HOPPER_UP);
+        hopperTurner.setPosition(HOPPER_UP_ANGLE);
 
         // also, start the wheel motor
         wheelMotor.setPower(WHEEL_POWER);
     }
     public void lowerHopper() {
-        hopperTurner.setPosition(HOPPER_DOWN);
+        hopperTurner.setPosition(HOPPER_DOWN_ANGLE);
 
         // also, stop the wheel motor
         wheelMotor.setPower(0);

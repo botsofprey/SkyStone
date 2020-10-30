@@ -1,4 +1,4 @@
-package DriveEngine;
+package DriveEngine.Annie;
 
 import android.util.Log;
 
@@ -23,7 +23,6 @@ import MotorControllers.PIDController;
 import SensorHandlers.ImuHandler;
 import SensorHandlers.LIDARSensor;
 import SensorHandlers.UltrasonicIRSensor;
-
 
 /**
  * Created by Jeremy on 8/23/2017.
@@ -347,7 +346,7 @@ public class AnnieNavigation extends Thread {
         try {
             stream = hardwareMap.appContext.getAssets().open(file);
         }
-        catch(Exception e){
+        catch(Exception e) {
             Log.d("Drive Engine Error: ",e.toString());
             throw new RuntimeException("Drive Engine Open Config File Fail: " + e.toString());
         }

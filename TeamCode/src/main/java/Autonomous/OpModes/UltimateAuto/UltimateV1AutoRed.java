@@ -38,7 +38,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import Autonomous.AutoAlliance;
 
 /*
-    An opmode for the User Controlled portion of the game
+    Author: Ethan Fisher
+    Date: 10/29/2020
+
+    An opmode for the Ultimate Goal Autonomous
  */
 @Autonomous(name="UltimateV1Auto", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
@@ -47,9 +50,10 @@ public class UltimateV1AutoRed extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // intitialize robot
+        // initialize robot
         UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, this);
 
+        // get number of rings and log them
         int numRings = robot.getRingDetector().getNumRings();
         telemetry.addData("Rings Found", numRings);
 

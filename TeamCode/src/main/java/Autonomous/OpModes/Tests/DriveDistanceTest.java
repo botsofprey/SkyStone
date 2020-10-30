@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import Autonomous.Location;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.Annie.AnnieNavigation;
 
 @Autonomous(name="Drive Distance", group="Testers")
 //@Disabled

@@ -16,7 +16,7 @@ import Autonomous.ImageProcessing.SkystoneImageProcessor;
 import Autonomous.Location;
 import Autonomous.SkyStonePosition;
 import Autonomous.VuforiaHelper;
-import DriveEngine.AnnieNavigation;
+import DriveEngine.Annie.AnnieNavigation;
 import SensorHandlers.UltrasonicIRSensor;
 
 public class AnnieAutonomous {

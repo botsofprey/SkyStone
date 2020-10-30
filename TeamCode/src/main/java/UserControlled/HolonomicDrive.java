@@ -41,7 +41,6 @@ public class HolonomicDrive extends LinearOpMode {
 
     DcMotor frontLeft, frontRight, backLeft, backRight;
 
-
     @Override
     public void runOpMode() {
         // initialize objects and variables here
