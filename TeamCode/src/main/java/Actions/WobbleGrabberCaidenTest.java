@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class WobbleGrabberV1 {
+public class WobbleGrabberCaidenTest {
 
     private Servo claw;
     private DcMotor arm;
@@ -14,15 +14,16 @@ public class WobbleGrabberV1 {
     private static final int CLAW_OPEN_ANGLE = 75; //105
     private static final int CLAW_CLOSE_ANGLE = 105; //75
 
-    public WobbleGrabberV1(HardwareMap hardwareMap) {
+    public WobbleGrabberCaidenTest(HardwareMap hardwareMap) {
         claw = hardwareMap.servo.get("wobbleGrabberClaw");
         arm = hardwareMap.dcMotor.get("wobbleGrabberArm");
-        arm.setMode(DcMotor.RunMode.RUN_WITH_ENCODER);
+
     }
 
     public void grabWobbleGoal() {
         // set position of arm to ARM GRAB ANGLE
         // grab with the claw
+        arm.setMode(DcMotor.RunMode.RUN_WITH_ENCODER);
         arm.setTargetPosition(ARM_GRAB_ANGLE);
         arm.setPower(.3);
         claw.setAngle(CLAW_OPEN_ANGLE);
@@ -33,6 +34,7 @@ public class WobbleGrabberV1 {
     public void releaseWobbleGoal() {
         // release with claw
         // move arm to ARM RELEASE ANGLE
+        arm.setMode(DcMotor.RunMode.RUN_WITH_ENCODER);
         arm.setTargetPosition(ARM_RELEASE_ANGLE);
         arm.setPower(.3);
         while (opModeIsActive() && leftMotor.isBusy()) {idle();}
