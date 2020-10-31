@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import Actions.Ultimate.RingIntakeSystemV1;
 import Actions.Ultimate.ShooterSystemV1;
 import Actions.Ultimate.WobbleGrabberV1;
+import Actions.WobbleGrabberCaidenTest;
 import Autonomous.Location;
 import DriveEngine.Ultimate.UltimateNavigation;
 import UserControlled.GamepadController;
@@ -70,7 +71,8 @@ public class UltimateV1 extends LinearOpMode {
         // intitialize systems
         intake = new RingIntakeSystemV1(hardwareMap);
         shooter = new ShooterSystemV1(hardwareMap);
-        grabber = new WobbleGrabberV1(hardwareMap);
+//        grabber = new WobbleGrabberV1(hardwareMap);
+        grabber = new WobbleGrabberCaidenTest(hardwareMap);
 
 //        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
 //                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
