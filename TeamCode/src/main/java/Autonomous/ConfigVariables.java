@@ -53,6 +53,10 @@ public class ConfigVariables {
     public static Location RED_FOUNDATION_STACK_LEFT = new Location(20+9+4, 37.5, 270);
     public static Location BLUE_FOUNDATION_CENTER = new Location(-24-10-5, 49.5, 90);
 
+    public static Location RED_ZONE_ONE = new Location(91, 0, 0);
+    public static Location RED_ZONE_TWO = new Location(30, 61, 0);
+    public static Location RED_ZONE_THREE = new Location(91, 122, 0);
+
     public static Rectangle VALID_Y_SENSOR_READ_AREA_1_RED = new Rectangle(34, 48, 12, 48);
     public static Rectangle VALID_Y_SENSOR_READ_AREA_2_RED = new Rectangle(34, -48, 12, 48);
     public static Rectangle VALID_X_SENSOR_READ_AREA_1_RED = new Rectangle(48, 34, 48, 12);
