@@ -11,6 +11,11 @@ import Autonomous.Location;
 import Autonomous.RingDetector;
 import Autonomous.VuforiaHelper;
 import DriveEngine.Ultimate.UltimateNavigation;
+import Autonomous.ConfigVariables;
+
+import static Autonomous.ConfigVariables.RED_ZONE_ONE;
+import static Autonomous.ConfigVariables.RED_ZONE_THREE;
+import static Autonomous.ConfigVariables.RED_ZONE_TWO;
 
 /**
  * Author: Ethan Fisher
@@ -101,7 +106,16 @@ public class UltimateAutonomous {
     }
 
     public void moveToZone(int numRings) {
-        // TODO
+        // TODO (Check location measurements, assumed to be in cm)
+        if(numRings == 0) {
+            driveToLocation(RED_ZONE_ONE);
+        }
+        else if(numRings == 1) {
+            driveToLocation(RED_ZONE_TWO);
+        }
+        else if(numRings == 4) {
+            driveToLocation(RED_ZONE_THREE);
+        }
     }
 
     public void moveBehindShootLine() {
