@@ -5,13 +5,12 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import Autonomous.ConfigVariables;
 import Autonomous.HeadingVector;
 import Autonomous.Location;
 import Autonomous.Rectangle;
@@ -19,7 +18,6 @@ import MotorControllers.JsonConfigReader;
 import MotorControllers.MotorController;
 import MotorControllers.PIDController;
 import SensorHandlers.ImuHandler;
-import SensorHandlers.LIDARSensor;
 
 /**
  * Created by Jeremy on 8/23/2017.
@@ -86,7 +84,7 @@ public class UltimateNavigation extends Thread {
 
     // TODO fix this class
 
-    public UltimateNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile, boolean ignoreInitialSensorLocation) {
+    public UltimateNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile, boolean ignoreInitialSensorLocation) throws Exception {
         hardwareMap = hw;
         initializeUsingConfigFile(configFile);
         populateHashmaps();
@@ -131,7 +129,7 @@ public class UltimateNavigation extends Thread {
         }).start();
     }
 
-    public UltimateNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile) {
+    public UltimateNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile) throws Exception {
         this(hw, startLocation, robotOrientationOffset, configFile, false);
     }
 
@@ -332,7 +330,6 @@ public class UltimateNavigation extends Thread {
         while (System.currentTimeMillis() - start < time && shouldRun);
     }
 
-    // Reads the config file and sets everything anyone could every think of
     public void initializeUsingConfigFile(String file) {
         InputStream stream = null;
         try {
@@ -351,12 +348,12 @@ public class UltimateNavigation extends Thread {
             for (int i = 0; i < driveMotors.length; i++) {
                 driveMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-            if(reader.getString("DRIVE_MOTOR_BRAKING_MODE").equals("BRAKE")){
+            if(reader.getString("DRIVE_MOTOR_BRAKING_MODE").equals("BRAKE")) {
                 for (int i = 0; i < driveMotors.length; i++) {
                     driveMotors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 }
             }
-            else if(reader.getString("DRIVE_MOTOR_BRAKING_MODE").equals("FLOAT")){
+            else if(reader.getString("DRIVE_MOTOR_BRAKING_MODE").equals("FLOAT")) {
                 for (int i = 0; i < driveMotors.length; i++) {
                     driveMotors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 }
