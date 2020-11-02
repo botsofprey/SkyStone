@@ -52,7 +52,7 @@ public class UltimateV1 extends LinearOpMode {
 
     RingIntakeSystemV1 intake;
     ShooterSystemV1 shooter;
-    WobbleGrabberV1 grabber;
+    WobbleGrabberCaidenTest grabber;
 
     boolean eStop = false, slowMode = false;
 
@@ -61,9 +61,9 @@ public class UltimateV1 extends LinearOpMode {
         // initialize objects and variables here
         // also create and initialize function local variables here
 
-        // intialize robot
+        // initialize robot
         try {
-            robot = new UltimateNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/UltimateV1.json");
+            robot = new UltimateNavigation(hardwareMap, new Location(0, 0), "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -133,6 +133,7 @@ public class UltimateV1 extends LinearOpMode {
     }
 
     private void controlDrive() {
+        // TODO uncomment this if the robot is working. Right now, I want you to focus on the intake, shooter, and wobble grabber
 //        double drivePower = slowMode ? leftStick.magnitude() / 3 : leftStick.magnitude();
 //        double turnPower = slowMode ? rightStick.x() / 4 : rightStick.x();
 //        if (!eStop)
