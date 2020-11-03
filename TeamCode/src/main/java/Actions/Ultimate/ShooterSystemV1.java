@@ -1,4 +1,4 @@
-package Actions.Ultimate;
+ package Actions.Ultimate;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -19,7 +19,8 @@ public class ShooterSystemV1 {
 
     private static final double WHEEL_POWER = -1;
 
-    // TODO put a variable here for the pinball's angle when it is shot
+    private static final double PINBALL_REST_ANGLE = 0;
+    private static final double PINBALL_SHOOT_ANGLE = 90;
 
     private static final double HOPPER_UP_ANGLE = 30;
     private static final double HOPPER_DOWN_ANGLE = 0;
@@ -31,7 +32,8 @@ public class ShooterSystemV1 {
     }
 
     public void shoot() {
-        // TODO rotate pinball servo
+        pinballServo.setPosition(PINBALL_SHOOT_ANGLE);
+        pinballServo.setPosition(PINBALL_REST_ANGLE);
     }
 
     // TODO

@@ -154,6 +154,11 @@ public class UltimateV1 extends LinearOpMode {
         if (controllerOne.yPressed())
             grabber.grabWobbleGoal();
 
+        // right trigger shoots a ring
+        if (controllerOne.rightTriggerPressed()) {
+            shooter.shoot();
+            telemetry.addData("Shooter has shot.", "");
+        }
     }
 
     private void playerTwoFunctions() {

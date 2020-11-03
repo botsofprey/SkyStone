@@ -60,14 +60,16 @@ public class UltimateV1AutoRed extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        // *Starting on left start line*
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // drive to the wobble goal
-        robot.driveToWobbleGoal();
+        // detect ring stack #
+        robot.getRingDetector().getNumRings();
 
-        // grab the wobble goal
-        robot.getWobbleGrabber().grabWobbleGoal();
+        // move behind shot line and shoot power shots
+        robot.moveBehindShootLine();
+        robot.shootPowerShots();
 
         // move to the zone with the wobble goal
         robot.moveToZone(numRings);
@@ -75,12 +77,24 @@ public class UltimateV1AutoRed extends LinearOpMode {
         // release the wobble goal
         robot.getWobbleGrabber().releaseWobbleGoal();
 
-        // move behind shot line and shoot powershots
-        robot.moveBehindShootLine();
-        robot.shootPowerShots();
+        // move to and grab second wobble goal
+        robot.driveToWobbleGoal(2);
+        robot.getWobbleGrabber().grabWobbleGoal();
 
-        // ??? Maybe grab three rings at the end ???
+        // move back to the zone with second wobble goal
+        robot.moveToZone(numRings);
+
+        // release second wobble goal
+        robot.getWobbleGrabber().releaseWobbleGoal();
+
+        // grab three starting rings
         robot.grabStartingPileRings();
+
+        // return to shot line
+        robot.moveBehindShootLine();
+
+        // shoot rings into tower goal
+        robot.shootTowerGoal();
 
         // park on the line
         robot.park();

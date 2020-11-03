@@ -12,13 +12,16 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  */
 public class GamepadController {
 
+    private static final double TRIGGER_THRESHOLD = 0.1;
+
     private boolean aPressed = false, aHeld = false, bPressed = false, bHeld = false,
             xPressed = false, xHeld = false, yPressed = false, yHeld = false,
             rightBumperPressed = false, rightBumperHeld = false, leftBumperPressed = false,
-            leftBumperHeld = false, dpadUpPressed = false, dpadUpHeld = false,
-            dpadRightPressed = false, dpadRightHeld = false, dpadDownPressed = false,
-            dpadDownHeld = false, dpadLeftPressed = false, dpadLeftHeld = false,
-            startPressed = false, startHeld = false;
+            leftBumperHeld = false, rightTriggerPressed = false, rightTriggerHeld = false,
+            leftTriggerPressed = false, leftTriggerHeld = false, dpadUpPressed = false,
+            dpadUpHeld = false, dpadRightPressed = false, dpadRightHeld = false,
+            dpadDownPressed = false, dpadDownHeld = false, dpadLeftPressed = false,
+            dpadLeftHeld = false, startPressed = false, startHeld = false;
 
     private Gamepad gamepad;
 
@@ -53,17 +56,29 @@ public class GamepadController {
         if (prevYHeld) yPressed = false;
         if (!prevYHeld && yHeld) yPressed = true;
 
-        // update right trigger
+        // update right bumper
         boolean prevRightBumperHeld = rightBumperHeld;
         rightBumperHeld = gamepad.right_bumper;
         if (prevRightBumperHeld) rightBumperPressed = false;
         if (!prevRightBumperHeld && rightBumperHeld) rightBumperPressed = true;
 
-        // update left trigger
+        // update left bumper
         boolean prevLeftBumperHeld = leftBumperHeld;
         leftBumperHeld = gamepad.left_bumper;
         if (prevLeftBumperHeld) leftBumperPressed = false;
         if (!prevLeftBumperHeld && leftBumperHeld) leftBumperPressed = true;
+
+        //update right trigger
+        boolean prevRightTriggerHeld = rightTriggerHeld;
+        rightTriggerHeld = isTriggerHeld(gamepad.right_trigger);
+        if (prevRightTriggerHeld) rightTriggerPressed = false;
+        if (!prevRightTriggerHeld && rightTriggerHeld) rightTriggerPressed = true;
+
+        //update left trigger
+        boolean prevLeftTriggerHeld = leftTriggerHeld;
+        leftTriggerHeld = isTriggerHeld(gamepad.left_trigger);
+        if (prevLeftTriggerHeld) leftTriggerPressed = false;
+        if (!prevLeftTriggerHeld && leftTriggerHeld) leftTriggerPressed = true;
 
         // update d pad up
         boolean prevDPadUpHeld = dpadUpHeld;
@@ -109,6 +124,10 @@ public class GamepadController {
     public boolean rightBumperHeld() { return rightBumperHeld; }
     public boolean leftBumperPressed() { return leftBumperPressed; }
     public boolean leftBumperHeld() { return leftBumperHeld; }
+    public boolean rightTriggerPressed() { return rightTriggerPressed; }
+    public boolean rightTriggerHeld() { return rightTriggerHeld; }
+    public boolean leftTriggerPressed() { return leftTriggerPressed; }
+    public boolean leftTriggerHeld() { return leftTriggerHeld; }
     public boolean dpadUpPressed() { return dpadUpPressed; }
     public boolean dpadUpHeld() { return dpadUpHeld; }
     public boolean dpadRightPressed() { return dpadRightPressed; }
@@ -120,4 +139,9 @@ public class GamepadController {
     public boolean startPressed() { return startPressed; }
     public boolean startHeld() { return startHeld; }
 
+    private boolean isTriggerHeld(double trigger) {
+        if (trigger > TRIGGER_THRESHOLD)
+            return true;
+        return false;
+    }
 }

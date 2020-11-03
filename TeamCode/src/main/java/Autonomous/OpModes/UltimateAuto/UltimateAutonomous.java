@@ -97,12 +97,12 @@ public class UltimateAutonomous {
     public void sleep(long milliseconds) { mode.sleep(milliseconds); }
 
     public void park() {
-        // TODO spit tape after turning robot
+        // TODO, spit tape after turning robot
         sleep(800);
     }
 
-    public void driveToWobbleGoal() {
-        // TODO
+    public void driveToWobbleGoal(int goalNum) {
+        // TODO, for picking up second wobble goal use color sensor to detect
     }
 
     public void moveToZone(int numRings) {
@@ -123,10 +123,14 @@ public class UltimateAutonomous {
     }
 
     public void shootPowerShots() {
-        // TODO
+        // TODO, the plan is to move left after each shot
     }
 
     public void grabStartingPileRings() {
+        // TODO, requires returning to the front of the field and maneuvering around 4th ring because it cannot be intaked
+    }
+
+    public void shootTowerGoal() {
         // TODO
     }
 
