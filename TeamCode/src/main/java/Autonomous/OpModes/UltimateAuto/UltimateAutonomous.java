@@ -16,6 +16,7 @@ import Autonomous.ConfigVariables;
 import static Autonomous.ConfigVariables.RED_ZONE_ONE;
 import static Autonomous.ConfigVariables.RED_ZONE_THREE;
 import static Autonomous.ConfigVariables.RED_ZONE_TWO;
+import static Autonomous.ConfigVariables.SHOOT_LINE;
 
 /**
  * Author: Ethan Fisher
@@ -98,6 +99,7 @@ public class UltimateAutonomous {
 
     public void park() {
         // TODO spit tape after turning robot
+        driveToLocation(SHOOT_LINE);
         sleep(800);
     }
 
