@@ -32,10 +32,24 @@ public class WobbleGrabberCaidenTest {
         // move arm to down position
         // move claw to closed position
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        claw.setPosition(OPEN_POSITION);
         arm.setTargetPosition(DOWN_POSITION);
         arm.setPower(.3);
-        claw.setPosition(OPEN_POSITION);
         claw.setPosition(CLOSE_POSITION);
+        arm.setTargetPosition(UP_POSITION);
+        /*
+        grab:
+        open
+        down
+        close
+        up
+
+        ungrab:
+        down
+        open
+        up
+        close
+         */
     }
 
     public void releaseWobbleGoal() {
@@ -45,5 +59,7 @@ public class WobbleGrabberCaidenTest {
         arm.setTargetPosition(DOWN_POSITION);
         arm.setPower(.3);
         claw.setPosition(OPEN_POSITION);
+        arm.setTargetPosition(UP_POSITION);
+        claw.setPosition(CLOSE_POSITION);
     }
 }

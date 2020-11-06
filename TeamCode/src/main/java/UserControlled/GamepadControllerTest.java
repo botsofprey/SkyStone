@@ -45,13 +45,13 @@ public class GamepadControllerTest extends LinearOpMode {
         // initialize objects and variables here
         // also create and initialize function local variables here
 
-        telemetry.addData("faskjd;lfsad", "fskaldfsfd");
+        telemetry.addData("Test", "1");
 
         controller = new GamepadController(gamepad1);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("fasdfasdfsafasdfsdafdd", "");
+        telemetry.addData("Another test", "2");
         telemetry.update();
 
         // nothing goes between the above and below lines

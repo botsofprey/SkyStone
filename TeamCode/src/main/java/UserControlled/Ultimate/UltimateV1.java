@@ -72,7 +72,7 @@ public class UltimateV1 extends LinearOpMode {
         intake = new RingIntakeSystemV1(hardwareMap);
         shooter = new ShooterSystemV1(hardwareMap);
 //        grabber = new WobbleGrabberV1(hardwareMap);
-        grabber = new WobbleGrabberCaidenTest(hardwareMap);
+        //grabber = new WobbleGrabberCaidenTest(hardwareMap);
 
 //        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
 //                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
