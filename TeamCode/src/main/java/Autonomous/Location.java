@@ -15,7 +15,7 @@ public class Location {
         this.y = y;
     }
 
-    public Location(double x, double y, double heading){
+    public Location(double x, double y, double heading) {
         this.x = x;
         this.y = y;
         this.heading = heading;

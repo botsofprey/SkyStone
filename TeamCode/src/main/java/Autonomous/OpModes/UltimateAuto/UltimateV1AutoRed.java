@@ -75,15 +75,20 @@ public class UltimateV1AutoRed extends LinearOpMode {
         // release the wobble goal
         robot.getWobbleGrabber().releaseWobbleGoal();
 
-        // move behind shot line and shoot powershots
+        // move behind shot line, rotate towards powershots,  and shoot them
         robot.moveBehindShootLine();
+        robot.turnToZero();
         robot.shootPowerShots();
+
+        // drive back to the starting rings
+        robot.driveToStartingRings();
 
         // ??? Maybe grab three rings at the end ???
         robot.grabStartingPileRings();
 
-        // park on the line
+        // park on the line and stop
         robot.park();
+        robot.stop();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive());

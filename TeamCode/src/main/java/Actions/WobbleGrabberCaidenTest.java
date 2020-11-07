@@ -16,10 +16,10 @@ public class WobbleGrabberCaidenTest {
     private static final int CLAW_OPEN_ANGLE = 75; //105
     private static final int CLAW_CLOSE_ANGLE = 105; //75
 
-    private static final int UP_POSITION = ARM_HOLD_ANGLE / 180;
-    private static final int DOWN_POSITION = ARM_RELEASE_ANGLE / 180;
-    private static final int OPEN_POSITION = CLAW_OPEN_ANGLE / 180;
-    private static final int CLOSE_POSITION = CLAW_CLOSE_ANGLE / 180;
+//    private static final int UP_POSITION = ARM_HOLD_ANGLE / 180;
+//    private static final int DOWN_POSITION = ARM_RELEASE_ANGLE / 180;
+//    private static final int OPEN_POSITION = CLAW_OPEN_ANGLE / 180;
+//    private static final int CLOSE_POSITION = CLAW_CLOSE_ANGLE / 180;
 
     public WobbleGrabberCaidenTest(HardwareMap hwm) {
         hardwareMap = hwm;
@@ -32,11 +32,11 @@ public class WobbleGrabberCaidenTest {
         // move arm to down position
         // move claw to closed position
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        claw.setPosition(OPEN_POSITION);
-        arm.setTargetPosition(DOWN_POSITION);
-        arm.setPower(.3);
-        claw.setPosition(CLOSE_POSITION);
-        arm.setTargetPosition(UP_POSITION);
+//        claw.setPosition(OPEN_POSITION);
+//        arm.setTargetPosition(DOWN_POSITION);
+//        arm.setPower(.3);
+//        claw.setPosition(CLOSE_POSITION);
+//        arm.setTargetPosition(UP_POSITION);
         /*
         grab:
         open
@@ -56,10 +56,10 @@ public class WobbleGrabberCaidenTest {
         // move arm to down position
         // move claw to open position
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm.setTargetPosition(DOWN_POSITION);
-        arm.setPower(.3);
-        claw.setPosition(OPEN_POSITION);
-        arm.setTargetPosition(UP_POSITION);
-        claw.setPosition(CLOSE_POSITION);
+//        arm.setTargetPosition(DOWN_POSITION);
+//        arm.setPower(.3);
+//        claw.setPosition(OPEN_POSITION);
+//        arm.setTargetPosition(UP_POSITION);
+//        claw.setPosition(CLOSE_POSITION);
     }
 }

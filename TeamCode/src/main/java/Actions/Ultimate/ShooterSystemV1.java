@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 public class ShooterSystemV1 {
 
-    private DcMotor armTurner;
+    private DcMotor aimMotor;
     private int armPosition;
     private static final int TOP_GOAL_POSITION = 30;
     private static final int POWER_SHOT_POSITION = 20;
@@ -25,7 +25,7 @@ public class ShooterSystemV1 {
 
     private Servo hopperTurner;
     private double hopperAngle;
-    private static final double HOPPER_UP_ANGLE = 0.05;
+    private static final double HOPPER_UP_ANGLE = 1;
     private static final double HOPPER_DOWN_ANGLE = 0;
 
     private Servo pinballServo;
@@ -35,7 +35,7 @@ public class ShooterSystemV1 {
 
     public ShooterSystemV1(HardwareMap hardwareMap) {
         wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
-        armTurner = hardwareMap.dcMotor.get("armTurner");
+        aimMotor = hardwareMap.dcMotor.get("aimMotor");
         hopperTurner = hardwareMap.servo.get("hopperTurner");
         pinballServo = hardwareMap.servo.get("pinballServo");
 
@@ -50,6 +50,16 @@ public class ShooterSystemV1 {
         wheelMotor.setPower(wheelSpinning ? SHOOTER_ON_POWER : SHOOTER_OFF_POWER);
     }
 
+    public void turnOnShooterWheel() {
+        wheelSpinning = true;
+        wheelMotor.setPower(SHOOTER_ON_POWER);
+    }
+
+    public void turnOffShooterWheel() {
+        wheelSpinning = false;
+        wheelMotor.setPower(SHOOTER_OFF_POWER);
+    }
+
     // moves the pinball servo
     public void shoot() {
         if (pinballAngle == PINBALL_TURNED) pinballAngle = PINBALL_REST;
@@ -59,11 +69,11 @@ public class ShooterSystemV1 {
     }
 
     public void adjustShootingAngle() {
-        armPosition = armPosition++ % 3;
+        if (armPosition == TOP_GOAL_POSITION) armPosition = POWER_SHOT_POSITION;
+        else if (armPosition == POWER_SHOT_POSITION) armPosition = LOWERED_POSITION;
+        else armPosition = TOP_GOAL_POSITION;
 
-        // TODO finish
-        armTurner.setPower(armTurner.getPower() > 0.1f ? 0 : 1);
-        armTurner.setTargetPosition(armPosition);
+        aimMotor.setPower(0.3);
     }
 
     public void adjustHopperAngle() {
@@ -71,6 +81,19 @@ public class ShooterSystemV1 {
         else hopperAngle = HOPPER_UP_ANGLE;
 
         hopperTurner.setPosition(hopperAngle);
+    }
+
+    public void shootWithAdjustedAngle(double distanceFromTarget, double targetHeight) {
+        // targets: top goal, powershots
+        double heightToShoot = targetHeight - 0; // height of shooter
+    }
+
+    public double calculateMotorPower(double distance) {
+        return 0;
+    }
+
+    public double calculateShootingAngle(double motorPower, double distance) {
+        return 0;
     }
 
 }

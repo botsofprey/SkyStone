@@ -13,6 +13,7 @@ import java.util.HashMap;
 import Autonomous.ConfigVariables;
 import Autonomous.HeadingVector;
 import Autonomous.Location;
+import Autonomous.Line;
 import Autonomous.Rectangle;
 import MotorControllers.JsonConfigReader;
 import MotorControllers.MotorController;
@@ -565,6 +566,10 @@ public class UltimateNavigation extends Thread {
         driveDistance(myLocation.distanceToLocation(target), heading, desiredVelocity, mode);
     }
 
+    public void driveDistance(double distanceInInches, double desiredVelocity, LinearOpMode mode) {
+        driveDistance(distanceInInches, myLocation.getHeading(), desiredVelocity, mode);
+    }
+
     public void driveDistance(double distanceInInches, double heading, double desiredVelocity, LinearOpMode mode) {
 //        for(MotorController m : driveMotors) {
 //            m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -1008,7 +1013,7 @@ public class UltimateNavigation extends Thread {
 
     }
 
-    public void setDrivePower(double power){
+    public void setDrivePower(double power) {
         double[] powers = new double[4];
         for(int i = 0; i < 4; i++){
             powers[i] = power;
@@ -1016,27 +1021,27 @@ public class UltimateNavigation extends Thread {
         applyMotorPowers(powers);
     }
 
-    public void applyMotorVelocities(double [] velocities){
-        for(MotorController m : driveMotors) {
-            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+    public void applyMotorVelocities(double [] velocities) {
+        for (MotorController motor : driveMotors)
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
     }
 
-    public void applyMotorPowers(double [] powers){
-        for(MotorController m : driveMotors) {
-            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+    public void applyMotorPowers(double [] powers) {
+        for (MotorController motor : driveMotors)
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].setMotorPower(powers[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].setMotorPower(powers[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].setMotorPower(powers[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].setMotorPower(powers[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
     }
 
-    public void brake() { applyMotorVelocities(new double []{ 0, 0, 0, 0 }); }
+    public void brake() { applyMotorVelocities(new double [] { 0, 0, 0, 0 }); }
 
     public void stopNavigation() {
         shouldRun = false;
@@ -1355,8 +1360,13 @@ public class UltimateNavigation extends Thread {
         driveToLocation(myLocation, targetLocation, desiredSpeed, secToQuit, mode);
     }
 
+    // TODO check this
+    public void driveToLine(Line line, double desiredSpeed, LinearOpMode mode) {
+        Location closestLocation = line.getClosestLocationOnLine(myLocation);
+        driveToLocation(closestLocation, desiredSpeed, mode);
+    }
+
     public double getDistanceFrom(Location location) {
-        // TODO
 //        This is called the distance formula, Jordan. Remember the song?
         return myLocation.distanceToLocation(location);
     }
@@ -1380,16 +1390,16 @@ public class UltimateNavigation extends Thread {
             driveToLocationPID(toTravelTo, desiredSpeed, mode);
     }
 
-    public HeadingVector[] getWheelVectors(){
+    public HeadingVector[] getWheelVectors() {
         double[] deltaWheelPositions = { 0, 0, 0, 0 };
-        for(int i = 0; i < driveMotors.length; i ++){
+        for (int i = 0; i < driveMotors.length; i++) {
             double a = driveMotors[i].getInchesFromStart();
             Log.d("Last Motor Pos Inches:", lastMotorPositionsInInches[i] + "");
             deltaWheelPositions[i] = a - lastMotorPositionsInInches[i];
             lastMotorPositionsInInches[i] = a;
         }
         //updateLastMotorPositionsInInches();
-        HeadingVector [] vectors = new HeadingVector[4];
+        HeadingVector[] vectors = new HeadingVector[4];
         for (int i = 0; i < vectors.length; i++)
             vectors[i] = new HeadingVector();
         
