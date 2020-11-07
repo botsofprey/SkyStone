@@ -21,8 +21,8 @@ public class WobbleGrabberCaidenTest {
     private static final int OPEN_POSITION = CLAW_OPEN_ANGLE / 180;
     private static final int CLOSE_POSITION = CLAW_CLOSE_ANGLE / 180;
 
-    public WobbleGrabberCaidenTest(HardwareMap hw) {
-        hardwareMap = hw;
+    public WobbleGrabberCaidenTest(HardwareMap hwm) {
+        hardwareMap = hwm;
         claw = hardwareMap.servo.get("wobbleGrabberClaw");
         arm = hardwareMap.dcMotor.get("wobbleGrabberArm");
 

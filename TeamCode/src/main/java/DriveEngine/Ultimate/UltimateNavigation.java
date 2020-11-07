@@ -738,7 +738,7 @@ public class UltimateNavigation extends Thread {
         return  positions;
     }
 
-    public double[] getMotorPositionsInches(){
+    public double[] getMotorPositionsInches() {
         double[] inches = new double [4];
         long[] ticks = getMotorPositionsTicks();
         inches[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = Math.abs(driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].convertTicksToInches(ticks[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]));
@@ -764,12 +764,13 @@ public class UltimateNavigation extends Thread {
     }
 
     public void driveOnHeadingWithTurning(double heading, double movementPower, double turnPower){
-        double [] movementPowers = calculatePowersToDriveOnHeading(heading, movementPower);
-        double [] turningPowers = calculatePowersToTurn(turnPower);
-        double [] total = new double[4];
-        for (int i = 0; i < movementPowers.length; i ++) {
+        double[] movementPowers = calculatePowersToDriveOnHeading(heading, movementPower);
+        double[] turningPowers = calculatePowersToTurn(turnPower);
+        double[] total = new double[4];
+
+        for (int i = 0; i < movementPowers.length; i ++)
             total[i] = movementPowers[i] + turningPowers[i];
-        }
+
         normalizePowers(total);
         applyMotorPowers(total);
     }

@@ -16,7 +16,6 @@ import Autonomous.ConfigVariables;
 import static Autonomous.ConfigVariables.RED_ZONE_ONE;
 import static Autonomous.ConfigVariables.RED_ZONE_THREE;
 import static Autonomous.ConfigVariables.RED_ZONE_TWO;
-import static Autonomous.ConfigVariables.SHOOT_LINE;
 
 /**
  * Author: Ethan Fisher
@@ -29,7 +28,7 @@ public class UltimateAutonomous {
     private final AutoAlliance alliance;
     private final LinearOpMode mode;
     private final HardwareMap hardwareMap;
-    private double maxSpeed = 25.0;  // inches / second
+    private static double MAX_SPEED = 25.0;  // inches / second
 
     private UltimateNavigation robot;
     private VuforiaHelper vuforia;
@@ -90,7 +89,7 @@ public class UltimateAutonomous {
     }
 
     public void driveToLocation(Location location) {
-        robot.driveToLocationPID(redToBlue(location), maxSpeed, mode);
+        robot.driveToLocationPID(redToBlue(location), MAX_SPEED, mode);
     }
 
     public void stop() { robot.stopNavigation(); }
@@ -99,7 +98,6 @@ public class UltimateAutonomous {
 
     public void park() {
         // TODO spit tape after turning robot
-        robot.driveToLocation(SHOOT_LINE, 25, mode);
         sleep(800);
     }
 
