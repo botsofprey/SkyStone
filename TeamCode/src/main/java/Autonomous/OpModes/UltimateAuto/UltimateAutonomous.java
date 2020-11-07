@@ -16,6 +16,7 @@ import Autonomous.ConfigVariables;
 import static Autonomous.ConfigVariables.RED_ZONE_ONE;
 import static Autonomous.ConfigVariables.RED_ZONE_THREE;
 import static Autonomous.ConfigVariables.RED_ZONE_TWO;
+import static Autonomous.ConfigVariables.SHOOT_LINE;
 
 /**
  * Author: Ethan Fisher
@@ -59,7 +60,7 @@ public class UltimateAutonomous {
     private void initNavigationSystem() {
         try {
             Location startLocation = redToBlue(new Location(62, -26.5, 270.0));
-            robot = new UltimateNavigation(hardwareMap, startLocation, startLocation.getHeading(), "RobotConfig/AnnieV1.json");
+            robot = new UltimateNavigation(hardwareMap, startLocation, "RobotConfig/AnnieV1.json");
             robot.stopLoggingData();
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,6 +99,7 @@ public class UltimateAutonomous {
 
     public void park() {
         // TODO spit tape after turning robot
+        robot.driveToLocation(SHOOT_LINE, 25, mode);
         sleep(800);
     }
 
