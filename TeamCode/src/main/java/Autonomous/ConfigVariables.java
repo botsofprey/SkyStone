@@ -1,9 +1,10 @@
 package Autonomous;
 
-//import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.config.Config;
 
-//@Config
+@Config
 public class ConfigVariables {
+
     public static double STONE_ONE_LEFT = 36.5;
     public static double STONE_ONE_RIGHT = 30.5;
     public static double STONE_TWO_LEFT = 26.5;
@@ -56,7 +57,7 @@ public class ConfigVariables {
     public static Location RED_ZONE_ONE = new Location(91, 0, 0);
     public static Location RED_ZONE_TWO = new Location(30, 61, 0);
     public static Location RED_ZONE_THREE = new Location(91, 122, 0);
-    public static Location SHOOT_LINE = new Location(0,31,0);
+    public static Location SHOOT_LINE = new Location(0, 31, 0);
 
     public static Rectangle VALID_Y_SENSOR_READ_AREA_1_RED = new Rectangle(34, 48, 12, 48);
     public static Rectangle VALID_Y_SENSOR_READ_AREA_2_RED = new Rectangle(34, -48, 12, 48);

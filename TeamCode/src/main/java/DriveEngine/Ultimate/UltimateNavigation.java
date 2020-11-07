@@ -5,10 +5,8 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -740,7 +738,7 @@ public class UltimateNavigation extends Thread {
         return  positions;
     }
 
-    public double[] getMotorPositionsInches(){
+    public double[] getMotorPositionsInches() {
         double[] inches = new double [4];
         long[] ticks = getMotorPositionsTicks();
         inches[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = Math.abs(driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].convertTicksToInches(ticks[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]));
@@ -766,12 +764,13 @@ public class UltimateNavigation extends Thread {
     }
 
     public void driveOnHeadingWithTurning(double heading, double movementPower, double turnPower){
-        double [] movementPowers = calculatePowersToDriveOnHeading(heading, movementPower);
-        double [] turningPowers = calculatePowersToTurn(turnPower);
-        double [] total = new double[4];
-        for (int i = 0; i < movementPowers.length; i ++) {
+        double[] movementPowers = calculatePowersToDriveOnHeading(heading, movementPower);
+        double[] turningPowers = calculatePowersToTurn(turnPower);
+        double[] total = new double[4];
+
+        for (int i = 0; i < movementPowers.length; i ++)
             total[i] = movementPowers[i] + turningPowers[i];
-        }
+
         normalizePowers(total);
         applyMotorPowers(total);
     }

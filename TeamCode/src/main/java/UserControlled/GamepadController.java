@@ -20,14 +20,9 @@ public class GamepadController {
             dpadDownHeld = false, dpadLeftPressed = false, dpadLeftHeld = false,
             startPressed = false, startHeld = false;
 
-    private Gamepad gamepad;
+    public GamepadController(Gamepad gamepad) { update(gamepad); }
 
-    public GamepadController(Gamepad gamepad) {
-        this.gamepad = gamepad;
-        update();
-    }
-
-    public void update() {
+    public void update(Gamepad gamepad) {
 
         // update a
         boolean prevAHeld = aHeld;

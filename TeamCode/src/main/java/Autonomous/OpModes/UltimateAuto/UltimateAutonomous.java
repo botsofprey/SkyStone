@@ -29,7 +29,7 @@ public class UltimateAutonomous {
     private final AutoAlliance alliance;
     private final LinearOpMode mode;
     private final HardwareMap hardwareMap;
-    private double maxSpeed = 25.0;  // inches / second
+    private static double MAX_SPEED = 25.0;  // inches / second
 
     private UltimateNavigation robot;
     private VuforiaHelper vuforia;
@@ -60,7 +60,7 @@ public class UltimateAutonomous {
     private void initNavigationSystem() {
         try {
             Location startLocation = redToBlue(new Location(62, -26.5, 270.0));
-            robot = new UltimateNavigation(hardwareMap, startLocation, startLocation.getHeading(), "RobotConfig/AnnieV1.json");
+            robot = new UltimateNavigation(hardwareMap, startLocation, "RobotConfig/AnnieV1.json");
             robot.stopLoggingData();
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,7 +90,7 @@ public class UltimateAutonomous {
     }
 
     public void driveToLocation(Location location) {
-        robot.driveToLocationPID(redToBlue(location), maxSpeed, mode);
+        robot.driveToLocationPID(redToBlue(location), MAX_SPEED, mode);
     }
 
     public void stop() { robot.stopNavigation(); }

@@ -49,7 +49,7 @@ public class HolonomicDriveBaseTest extends LinearOpMode {
         // also create and initialize function local variables here
 
         try {
-            robot = new UltimateNavigation(hardwareMap, new Location(0, 0), 0, "RobotConfig/UltimateV1.json");
+            robot = new UltimateNavigation(hardwareMap, new Location(0, 0), "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
             telemetry.addData("Error", "Must've been the file I guess..." + e.toString());
         }
