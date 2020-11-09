@@ -5,6 +5,7 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.io.InputStream;
@@ -51,7 +52,7 @@ public class UltimateNavigation extends Thread {
 
     private volatile long threadDelayMillis = 10;
 
-    private volatile double [] lastMotorPositionsInInches = {0,0,0,0};
+    private volatile double [] lastMotorPositionsInInches = { 0, 0, 0, 0 };
 
     public PIDController headingController, turnController, cameraTranslationYController,
             cameraTranslationXController, cameraOrientationController, xPositionController, yPositionController;
@@ -65,6 +66,7 @@ public class UltimateNavigation extends Thread {
     private volatile boolean shouldRun = true, loggingData = true, usingSensors = true;
     private volatile long startTime = System.nanoTime();
     private volatile HeadingVector IMUTravelVector = new HeadingVector();
+    public static double MAX_SPEED = 25.0;  // inches / second
 
     private volatile Location IMUDistance = new Location(0, 0);
 
@@ -94,14 +96,12 @@ public class UltimateNavigation extends Thread {
         orientation = new ImuHandler("imu", orientationOffset, hardwareMap);
         myLocation = startLocation;
 
-        // TODO uncomment anything dealing with location when possible
+        distanceSensors = new LIDARSensor[3];
+        distanceSensors[LEFT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), LEFT_SENSOR, "left");
+        distanceSensors[BACK_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), BACK_SENSOR, "back");
+        distanceSensors[RIGHT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), RIGHT_SENSOR, "right");
 
-//        distanceSensors = new LIDARSensor[3];
-//        distanceSensors[LEFT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), LEFT_SENSOR, "left");
-//        distanceSensors[BACK_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), BACK_SENSOR, "back");
-//        distanceSensors[RIGHT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), RIGHT_SENSOR, "right");
-
-//        if (!ignoreInitialSensorLocation) getInitialLocation();
+        if (!ignoreInitialSensorLocation) getInitialLocation();
 
         wheelVectors = new HeadingVector[4];
         for (int i = 0; i < wheelVectors.length; i++)
@@ -1402,7 +1402,7 @@ public class UltimateNavigation extends Thread {
         HeadingVector[] vectors = new HeadingVector[4];
         for (int i = 0; i < vectors.length; i++)
             vectors[i] = new HeadingVector();
-        
+
         vectors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].calculateVector(FL_WHEEL_HEADING_OFFSET, deltaWheelPositions[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]);
         vectors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].calculateVector(FR_WHEEL_HEADING_OFFSET, deltaWheelPositions[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
         vectors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].calculateVector(BL_WHEEL_HEADING_OFFSET, deltaWheelPositions[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR]);
