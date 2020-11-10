@@ -15,7 +15,7 @@ public class Location {
         this.y = y;
     }
 
-    public Location(double x, double y, double heading){
+    public Location(double x, double y, double heading) {
         this.x = x;
         this.y = y;
         this.heading = heading;
@@ -25,6 +25,10 @@ public class Location {
         x = target.getX();
         y = target.getY();
         heading = target.getHeading();
+    }
+
+    public Location(Location location, double heading) {
+        this(location.x, location.y, heading);
     }
 
     public double getX() { return x; }

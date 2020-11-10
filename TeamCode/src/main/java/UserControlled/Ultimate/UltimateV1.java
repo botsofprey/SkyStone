@@ -65,7 +65,7 @@ public class UltimateV1 extends LinearOpMode {
 
     RingIntakeSystemV1 intake;
     ShooterSystemV1 shooter;
-//    WobbleGrabberV1 grabber;
+    WobbleGrabberV1 grabber;
 
     boolean eStop = false, slowMode = false;
 
@@ -88,8 +88,7 @@ public class UltimateV1 extends LinearOpMode {
         // initialize systems
         intake = new RingIntakeSystemV1(hardwareMap);
         shooter = new ShooterSystemV1(hardwareMap);
-//        grabber = new WobbleGrabberV1(hardwareMap);
-//        grabber = new WobbleGrabberCaidenTest(hardwareMap);
+        grabber = new WobbleGrabberV1(hardwareMap);
 
 //        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
 //                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
@@ -165,27 +164,58 @@ public class UltimateV1 extends LinearOpMode {
 
     private void playerOneFunctions() {
 
-        if (controllerOne.aPressed())
+        if (controllerOne.aPressed()) {
+            telemetry.addData("A", "pressed");
             shooter.shoot();
+        }
 
         // b toggles intake direction (setting it up or down)
-        if (controllerOne.bPressed())
+        if (controllerOne.bPressed()) {
+            telemetry.addData("B", "pressed");
             intake.toggleIntakeDirection();
+        }
+
+        if (controllerOne.yPressed()) {
+            telemetry.addData("Y", "pressed");
+            intake.toggleIntakePower();
+        }
 
         // y grabs the wobble goal
 //        if (controllerOne.yPressed())
 //            grabber.grabWobbleGoal();
+        // left trigger raises the hopper
+
+        if (controllerOne.leftBumperPressed()) {
+            telemetry.addData("Left bumper", "pressed");
+            shooter.adjustHopperAngle();
+        }
+
+        // left bumper lowers the arm
+        if (controllerOne.rightBumperPressed()) {
+            telemetry.addData("Right bumper", "pressed");
+            shooter.adjustShootingAngle();
+        }
+
+        if (controllerOne.dpadRightPressed()) {
+            telemetry.addData("Wobble Grabbed", "pressed");
+            grabber.grabWobbleGoal();
+        }
+
+        if (controllerOne.dpadLeftPressed()) {
+            telemetry.addData("Wobble Released", "pressed");
+            grabber.releaseWobbleGoal();
+        }
 
     }
 
     private void playerTwoFunctions() {
 
         // left trigger raises the hopper
-        if(gamepad2.left_trigger > 0.1)
+        if (gamepad2.left_trigger > 0.1)
             shooter.adjustHopperAngle();
 
         // left bumper lowers the arm
-        if(controllerTwo.leftBumperPressed())
+        if (controllerTwo.leftBumperPressed())
             shooter.adjustShootingAngle();
 
         // right trigger and bumper

@@ -1,5 +1,3 @@
 package Autonomous;
 
-public enum AutoAlliance {
-    RED, BLUE
-}
+public enum AutoAlliance { RED, BLUE }

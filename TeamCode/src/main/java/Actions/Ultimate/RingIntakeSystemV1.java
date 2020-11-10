@@ -5,15 +5,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class RingIntakeSystemV1 {
 
-//    private DcMotor intakeMotor;
+    private DcMotor intakeMotor;
     private boolean intakeOn;
     private boolean intakeReversed;
 
-    private static final int MOTOR_OFF_POWER = 0;
-    private static final int MOTOR_ON_POWER = 1;
+    private static final int MOTOR_POWER = 1;
 
     public RingIntakeSystemV1(HardwareMap hardwareMap) {
-//        intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
+        intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
         intakeOn = false;
         intakeReversed = false;
     }
@@ -21,13 +20,35 @@ public class RingIntakeSystemV1 {
     public void toggleIntakePower() {
         // Turn intake motor on or off
         intakeOn = !intakeOn;
-//        intakeMotor.setPower(intakeOn ? MOTOR_ON_POWER : MOTOR_OFF_POWER);
+        intakeMotor.setPower((intakeOn ? MOTOR_POWER : 0) * (intakeReversed ? -1 : 1));
     }
 
     public void toggleIntakeDirection() {
         // Reverse direction of intake motor
-        intakeReversed = !intakeReversed;
-//        intakeMotor.setPower(intakeMotor.getPower() * (intakeReversed ? -1 : 1));
+        if (intakeOn) {
+            intakeReversed = !intakeReversed;
+            intakeMotor.setPower(-intakeMotor.getPower());
+        }
+    }
+
+    public void forwardIntake() {
+        intakeReversed = false;
+        intakeMotor.setPower(intakeOn ? MOTOR_POWER : 0);
+    }
+
+    public void reverseIntake() {
+        intakeReversed = true;
+        intakeMotor.setPower(-(intakeOn ? MOTOR_POWER : 0));
+    }
+
+    public void turnOn() {
+        intakeOn = true;
+        intakeMotor.setPower(MOTOR_POWER * (intakeReversed ? -1 : 1));
+    }
+
+    public void turnOff() {
+        intakeOn = false;
+        intakeMotor.setPower(0);
     }
 
 
