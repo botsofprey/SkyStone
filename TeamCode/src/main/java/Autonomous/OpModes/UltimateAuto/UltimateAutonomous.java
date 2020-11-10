@@ -8,7 +8,7 @@ import Actions.Ultimate.ShooterSystemV1;
 import Actions.Ultimate.WobbleGrabberV1;
 import Autonomous.AutoAlliance;
 import Autonomous.Location;
-import Autonomous.RingDetector;
+import Autonomous.ColorDetector;
 import Autonomous.VuforiaHelper;
 import DriveEngine.Ultimate.UltimateNavigation;
 
@@ -31,15 +31,16 @@ public class UltimateAutonomous {
     private final AutoAlliance alliance;
     private final LinearOpMode mode;
     private final HardwareMap hardwareMap;
-    private static double MAX_SPEED = 25.0;  // inches / second
 
     private UltimateNavigation robot;
     private VuforiaHelper vuforia;
-    private RingDetector ringDetector;
+    private ColorDetector ringDetector;
 
     private WobbleGrabberV1 wobbleGrabber;
     private ShooterSystemV1 shooter;
     private RingIntakeSystemV1 intake;
+
+    private static final double MAX_SPEED = UltimateNavigation.MAX_SPEED;
 
     private Location wobbleZone;
 
@@ -50,7 +51,7 @@ public class UltimateAutonomous {
         this.hardwareMap = mode.hardwareMap;
 
         vuforia = new VuforiaHelper(hardwareMap);
-        ringDetector = new RingDetector(vuforia);
+        ringDetector = new ColorDetector(vuforia, 0xFF, 0xa5, 0x00, 0x30);
 
         wobbleGrabber = new WobbleGrabberV1(hardwareMap);
         shooter = new ShooterSystemV1(hardwareMap);
@@ -137,7 +138,7 @@ public class UltimateAutonomous {
 
     public void driveToLocation(Location location) { robot.driveToLocationPID(redToBlue(location), MAX_SPEED, mode); }
 
-    public RingDetector getRingDetector() { return ringDetector; }
+    public ColorDetector getRingDetector() { return ringDetector; }
     public WobbleGrabberV1 getWobbleGrabber() { return wobbleGrabber; }
     public ShooterSystemV1 getShooter() { return shooter; }
     public RingIntakeSystemV1 getIntake() { return intake; }

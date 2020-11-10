@@ -27,6 +27,10 @@ public class Location {
         heading = target.getHeading();
     }
 
+    public Location(Location location, double heading) {
+        this(location.x, location.y, heading);
+    }
+
     public double getX() { return x; }
     public double getY() { return y; }
     public double getHeading() { return heading; }
