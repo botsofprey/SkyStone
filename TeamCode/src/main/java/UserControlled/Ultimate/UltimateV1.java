@@ -206,6 +206,16 @@ public class UltimateV1 extends LinearOpMode {
             grabber.releaseWobbleGoal();
         }
 
+        // d pad fine adjusts the shooter angle
+        if (controllerOne.dpadUpPressed()) {
+            telemetry.addData("Hopper raised", "pressed");
+            shooter.fineAdjustHopperAngleUp();
+        }
+
+        if (controllerOne.dpadDownPressed()) {
+            telemetry.addData("Hopper lowered", "pressed");
+            shooter.fineAdjustHopperAngleDown();
+        }
     }
 
     private void playerTwoFunctions() {

@@ -83,6 +83,10 @@ public class ShooterSystemV1 {
         hopperTurner.setPosition(hopperAngle);
     }
 
+    public void fineAdjustHopperAngleUp() { hopperAngle = hopperAngle++; }
+
+    public void fineAdjustHopperAngleDown() { hopperAngle = hopperAngle--; }
+
     public void shootWithAdjustedAngle(double distanceFromTarget, double targetHeight) {
         // targets: top goal, powershots
         double heightToShoot = targetHeight - 0; // height of shooter
@@ -93,6 +97,12 @@ public class ShooterSystemV1 {
     }
 
     public double calculateShootingAngle(double motorPower, double distance) {
+        /*
+        *  TODO this is a note for Ethan, when calculating launch velocity I am pretty sure you multiply angular velocity by radius of the wheel
+        *   (2.2 in at max expansion). Apparently you can calculate angular velocity by multiplying max rpm by 6, which in the
+        *   case of the shooter the motor runs at 6000 rpm. So at max power we run at (6000 rpm)(6)(2.2 in)(0.0254 m/in) = 2011.68 m/s (in theory)
+        *   so then for calculations at other powers you would just multiply that by the power; so at motorPower = 0.5, v = (2011.68 m/s)(0.5).
+        */
         return 0;
     }
 
