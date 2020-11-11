@@ -59,13 +59,13 @@ import UserControlled.JoystickHandler;
 public class UltimateV1 extends LinearOpMode {
 
     // create objects and locally global variables here
-    UltimateNavigation robot;
-    JoystickHandler leftStick, rightStick;
+    //UltimateNavigation robot;
+//    JoystickHandler leftStick, rightStick;
     GamepadController controllerOne, controllerTwo;
 
-    RingIntakeSystemV1 intake;
-    ShooterSystemV1 shooter;
-    WobbleGrabberV1 grabber;
+//    RingIntakeSystemV1 intake;
+//    ShooterSystemV1 shooter;
+    WobbleGrabberCaidenTest grabber;
 
     boolean eStop = false, slowMode = false;
 
@@ -76,19 +76,19 @@ public class UltimateV1 extends LinearOpMode {
 
         // initialize robot
         try {
-            robot = new UltimateNavigation(hardwareMap, new Location(0, 0, 270), "RobotConfig/UltimateV1.json");
+//            robot = new UltimateNavigation(hardwareMap, new Location(0, 0, 270), "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
             telemetry.addData("Robot Error", e.toString());
             telemetry.update();
         }
 
-        if(robot == null)
-            telemetry.addData("Robot is null!","");
+//        if(robot == null)
+//            telemetry.addData("Robot is null!","");
 
         // initialize systems
-        intake = new RingIntakeSystemV1(hardwareMap);
-        shooter = new ShooterSystemV1(hardwareMap);
-        grabber = new WobbleGrabberV1(hardwareMap);
+//        intake = new RingIntakeSystemV1(hardwareMap);
+//        shooter = new ShooterSystemV1(hardwareMap);
+        grabber = new WobbleGrabberCaidenTest(hardwareMap);
 
 //        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
 //                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
@@ -98,8 +98,8 @@ public class UltimateV1 extends LinearOpMode {
 //                new LimitSwitch(hardwareMap.get(TouchSensor.class, "rightArmStop"), "rightArmStop"));
 
         // initialize joysticks
-        leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
-        rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
+//        leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
+//        rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
 
         // initialize controllers
         controllerOne = new GamepadController(gamepad1);
@@ -125,7 +125,7 @@ public class UltimateV1 extends LinearOpMode {
                     slowMode = !slowMode;
 
                 updateEStop();
-                controlDrive();
+//                controlDrive();
 
                 updateEStop();
 
@@ -146,7 +146,7 @@ public class UltimateV1 extends LinearOpMode {
         }
 
         // disable/kill/stop objects here
-        robot.stopNavigation();
+//        robot.stopNavigation();
     }
 
     // misc functions here
@@ -156,28 +156,28 @@ public class UltimateV1 extends LinearOpMode {
     }
 
     private void controlDrive() {
-        double drivePower = slowMode ? leftStick.magnitude() / 3 : leftStick.magnitude();
-        double turnPower = slowMode ? rightStick.x() / 4 : rightStick.x();
-        if (!eStop)
-            robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
+//        double drivePower = slowMode ? leftStick.magnitude() / 3 : leftStick.magnitude();
+//        double turnPower = slowMode ? rightStick.x() / 4 : rightStick.x();
+//        if (!eStop)
+//            robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
     }
 
     private void playerOneFunctions() {
 
         if (controllerOne.aPressed()) {
             telemetry.addData("A", "pressed");
-            shooter.shoot();
+//            shooter.shoot();
         }
 
         // b toggles intake direction (setting it up or down)
         if (controllerOne.bPressed()) {
             telemetry.addData("B", "pressed");
-            intake.toggleIntakeDirection();
+//            intake.toggleIntakeDirection();
         }
 
         if (controllerOne.yPressed()) {
             telemetry.addData("Y", "pressed");
-            intake.toggleIntakePower();
+//            intake.toggleIntakePower();
         }
 
         // y grabs the wobble goal
@@ -187,13 +187,13 @@ public class UltimateV1 extends LinearOpMode {
 
         if (controllerOne.leftBumperPressed()) {
             telemetry.addData("Left bumper", "pressed");
-            shooter.adjustHopperAngle();
+//            shooter.adjustHopperAngle();
         }
 
         // left bumper lowers the arm
         if (controllerOne.rightBumperPressed()) {
             telemetry.addData("Right bumper", "pressed");
-            shooter.adjustShootingAngle();
+//            shooter.adjustShootingAngle();
         }
 
         if (controllerOne.dpadRightPressed()) {
@@ -211,12 +211,12 @@ public class UltimateV1 extends LinearOpMode {
     private void playerTwoFunctions() {
 
         // left trigger raises the hopper
-        if (gamepad2.left_trigger > 0.1)
-            shooter.adjustHopperAngle();
+//        if (gamepad2.left_trigger > 0.1)
+//            shooter.adjustHopperAngle();
 
         // left bumper lowers the arm
-        if (controllerTwo.leftBumperPressed())
-            shooter.adjustShootingAngle();
+//        if (controllerTwo.leftBumperPressed())
+//            shooter.adjustShootingAngle();
 
         // right trigger and bumper
 //        if (controllerTwo.rightBumperPressed())

@@ -16,27 +16,31 @@ public class WobbleGrabberCaidenTest {
     private static final int CLAW_OPEN_ANGLE = 75; //105
     private static final int CLAW_CLOSE_ANGLE = 105; //75
 
-//    private static final int UP_POSITION = ARM_HOLD_ANGLE / 180;
-//    private static final int DOWN_POSITION = ARM_RELEASE_ANGLE / 180;
-//    private static final int OPEN_POSITION = CLAW_OPEN_ANGLE / 180;
-//    private static final int CLOSE_POSITION = CLAW_CLOSE_ANGLE / 180;
+    private static final int UP_POSITION = ARM_HOLD_ANGLE / 180;
+    private static final int DOWN_POSITION = ARM_RELEASE_ANGLE / 180;
+    private static final int OPEN_POSITION = CLAW_OPEN_ANGLE / 180;
+    private static final int CLOSE_POSITION = CLAW_CLOSE_ANGLE / 180;
+
+    private static final double ARM_POWER = .05;
 
     public WobbleGrabberCaidenTest(HardwareMap hwm) {
         hardwareMap = hwm;
         claw = hardwareMap.servo.get("wobbleGrabberClaw");
         arm = hardwareMap.dcMotor.get("wobbleGrabberArm");
-
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void grabWobbleGoal() {
         // move arm to down position
         // move claw to closed position
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        claw.setPosition(OPEN_POSITION);
 //        arm.setTargetPosition(DOWN_POSITION);
-//        arm.setPower(.3);
+//        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        arm.setPower(ARM_POWER);
 //        claw.setPosition(CLOSE_POSITION);
 //        arm.setTargetPosition(UP_POSITION);
+//        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        arm.setPower(-ARM_POWER);
         /*
         grab:
         open
@@ -50,16 +54,25 @@ public class WobbleGrabberCaidenTest {
         up
         close
          */
+
+
+        arm.setTargetPosition(100);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(0.05);
+        while(arm.isBusy()) {}
+        arm.setPower(0);
     }
 
     public void releaseWobbleGoal() {
         // move arm to down position
         // move claw to open position
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        arm.setTargetPosition(DOWN_POSITION);
-//        arm.setPower(.3);
+//        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        arm.setPower(ARM_POWER);
 //        claw.setPosition(OPEN_POSITION);
 //        arm.setTargetPosition(UP_POSITION);
+//        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        arm.setPower(-ARM_POWER);
 //        claw.setPosition(CLOSE_POSITION);
     }
 }

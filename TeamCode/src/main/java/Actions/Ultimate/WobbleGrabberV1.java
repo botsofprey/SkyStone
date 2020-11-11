@@ -29,16 +29,15 @@ public class WobbleGrabberV1 {
     }
 
     public void grabWobbleGoal() {
-//        arm.setTargetPosition(ARM_GRAB_ANGLE);
-//        arm.setPower(ARM_POWER);
+        arm.setTargetPosition(ARM_GRAB_ANGLE);
+        arm.setPower(ARM_POWER);
         claw.setPosition(CLAW_GRAB_ANGLE);
     }
 
     public void releaseWobbleGoal() {
-//        arm.setPower(-ARM_POWER);
-//        arm.setTargetPosition(ARM_RELEASE_ANGLE);
+        arm.setPower(-ARM_POWER);
+        arm.setTargetPosition(ARM_RELEASE_ANGLE);
         claw.setPosition(CLAW_RELEASE_ANGLE);
     }
 
 }
-
