@@ -33,6 +33,14 @@ public class WobbleGrabberCaidenTest {
     public void grabWobbleGoal() {
         // move arm to down position
         // move claw to closed position
+
+         arm.setTargetPosition(100);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(0.05);
+        while(arm.isBusy()) {}
+        arm.setPower(0);
+
+
 //        claw.setPosition(OPEN_POSITION);
 //        arm.setTargetPosition(DOWN_POSITION);
 //        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -56,11 +64,7 @@ public class WobbleGrabberCaidenTest {
          */
 
 
-        arm.setTargetPosition(100);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setPower(0.05);
-        while(arm.isBusy()) {}
-        arm.setPower(0);
+
     }
 
     public void releaseWobbleGoal() {
