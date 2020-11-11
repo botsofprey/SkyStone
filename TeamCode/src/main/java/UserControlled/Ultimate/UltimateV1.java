@@ -87,9 +87,14 @@ public class UltimateV1 extends LinearOpMode {
         }
 
         // initialize systems
-        intake = new RingIntakeSystemV1(hardwareMap);
-        shooter = new ShooterSystemV1(hardwareMap);
-        grabber = new WobbleGrabberV1(hardwareMap);
+        try {
+            intake = new RingIntakeSystemV1(hardwareMap);
+            shooter = new ShooterSystemV1(hardwareMap);
+            grabber = new WobbleGrabberV1(hardwareMap);
+        } catch (Exception e) {
+            telemetry.addData("Systems Error", e.toString());
+            telemetry.update();
+        }
 
         // initialize red detector
         redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
@@ -141,7 +146,7 @@ public class UltimateV1 extends LinearOpMode {
                     playerTwoFunctions();
                 }
 
-                // TODO this is what i was wanting. If the color detector sees enough red, the wobble goal should be grabbed
+                // TODO this is what I was wanting. If the color detector sees enough red, the wobble goal should be grabbed
                 if (redDetector.shouldGrabWobbleGoal())
                     grabber.grabWobbleGoal();
             }
