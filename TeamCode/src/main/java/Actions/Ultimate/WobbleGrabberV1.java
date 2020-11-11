@@ -26,18 +26,22 @@ public class WobbleGrabberV1 {
     public WobbleGrabberV1(HardwareMap hardwareMap) {
         claw = hardwareMap.servo.get("wobbleGrabberClaw");
         arm = hardwareMap.dcMotor.get("wobbleGrabberArm");
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void grabWobbleGoal() {
         arm.setTargetPosition(ARM_GRAB_ANGLE);
         arm.setPower(ARM_POWER);
+        while (arm.isBusy());
+        arm.setPower(0);
         claw.setPosition(CLAW_GRAB_ANGLE);
     }
 
     public void releaseWobbleGoal() {
-        arm.setPower(-ARM_POWER);
-        arm.setTargetPosition(ARM_RELEASE_ANGLE);
         claw.setPosition(CLAW_RELEASE_ANGLE);
+        arm.setTargetPosition(ARM_RELEASE_ANGLE);
+        arm.setPower(-ARM_POWER);
+        while (arm.isBusy());
     }
 
 }
