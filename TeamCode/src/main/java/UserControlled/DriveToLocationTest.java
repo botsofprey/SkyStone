@@ -29,51 +29,48 @@
 
 package UserControlled;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import Autonomous.Location;
 import DriveEngine.Ultimate.UltimateNavigation;
 
-@TeleOp(name="Holonomic Drive Base Test", group="Competition")
+import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_LEFT;
+
+@TeleOp(name="Record JSON", group="Competition")
 //@Disabled
-public class HolonomicDriveBaseTest extends LinearOpMode {
+public class DriveToLocationTest extends LinearOpMode {
     // create objects and locally global variables here
 
     UltimateNavigation robot;
-    JoystickHandler leftStick, rightStick;
 
     @Override
     public void runOpMode() {
-        // initialize objects and variables here
-        // also create and initialize function local variables here
+
+        Location startLocation = new Location(STARTING_ROBOT_LOCATION_LEFT, UltimateNavigation.NORTH);
 
         try {
-            robot = new UltimateNavigation(hardwareMap, new Location(0, 0), "RobotConfig/UltimateV1.json");
+            robot = new UltimateNavigation(hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
-            telemetry.addData("Error", "Must've been the file I guess..." + e.toString());
+            telemetry.addData("Robot Error", e.toString());
         }
-        telemetry.addData("This is the holo base test", "");
 
-        leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
-        rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
-
-        // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        // nothing goes between the above and below lines
+
         waitForStart();
 
-        // should only be used for a time keeper or other small things, avoid using this space when possible
-        while (opModeIsActive()) {
+        // drive forward and right
+        // TODO play around with the x and y. If that works, try changing the heading too
+        Location locationToDrive = new Location(startLocation.getX() + 30, startLocation.getY() + 30, startLocation.getHeading());
+        robot.driveToLocation(locationToDrive, UltimateNavigation.MAX_SPEED, this);
 
-            double drivePower = leftStick.magnitude();
-            double turnPower = rightStick.x();
-
-            telemetry.update();
-        }
-
-        // disable/kill/stop objects here
     }
-
+    // misc functions here
 }

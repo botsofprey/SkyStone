@@ -8,14 +8,17 @@ import Actions.Ultimate.ShooterSystemV1;
 import Actions.Ultimate.WobbleGrabberV1;
 import Autonomous.AutoAlliance;
 import Autonomous.Location;
-import Autonomous.RingDetector;
+import Autonomous.ColorDetector;
 import Autonomous.VuforiaHelper;
 import DriveEngine.Ultimate.UltimateNavigation;
-import Autonomous.ConfigVariables;
 
+import static Autonomous.ConfigVariables.RED_WOBBLE_GOAL_LEFT;
 import static Autonomous.ConfigVariables.RED_ZONE_ONE;
 import static Autonomous.ConfigVariables.RED_ZONE_THREE;
 import static Autonomous.ConfigVariables.RED_ZONE_TWO;
+import static Autonomous.ConfigVariables.SHOOT_LINE;
+import static Autonomous.ConfigVariables.STARTING_RING_PILE;
+import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_LEFT;
 
 /**
  * Author: Ethan Fisher
@@ -28,113 +31,114 @@ public class UltimateAutonomous {
     private final AutoAlliance alliance;
     private final LinearOpMode mode;
     private final HardwareMap hardwareMap;
-    private double maxSpeed = 25.0;  // inches / second
 
     private UltimateNavigation robot;
     private VuforiaHelper vuforia;
-    private RingDetector ringDetector;
+    private ColorDetector ringDetector;
 
     private WobbleGrabberV1 wobbleGrabber;
     private ShooterSystemV1 shooter;
     private RingIntakeSystemV1 intake;
 
+    private static final double MAX_SPEED = UltimateNavigation.MAX_SPEED;
+
+    private Location wobbleZone;
+
     public UltimateAutonomous(AutoAlliance alliance, LinearOpMode mode) {
+
         this.alliance = alliance;
         this.mode = mode;
         this.hardwareMap = mode.hardwareMap;
 
-        initHardwareInterfaces();
-        initNavigationSystem();
-    }
-
-    private void initHardwareInterfaces() {
         vuforia = new VuforiaHelper(hardwareMap);
-        ringDetector = new RingDetector(vuforia);
+        ringDetector = new ColorDetector(vuforia, 0xFF, 0xa5, 0x00, 0x30);
 
         wobbleGrabber = new WobbleGrabberV1(hardwareMap);
         shooter = new ShooterSystemV1(hardwareMap);
         intake = new RingIntakeSystemV1(hardwareMap);
-    }
 
-    private void initNavigationSystem() {
         try {
-            Location startLocation = redToBlue(new Location(62, -26.5, 270.0));
-            robot = new UltimateNavigation(hardwareMap, startLocation, startLocation.getHeading(), "RobotConfig/AnnieV1.json");
-            robot.stopLoggingData();
+            Location startLocation = redToBlue(STARTING_ROBOT_LOCATION_LEFT);
+            robot = new UltimateNavigation(hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
-            e.printStackTrace();
+            mode.telemetry.addData("Robot error", e.toString());
+            mode.telemetry.update();
         }
     }
 
-    // converts red to blue. If it is blue, nothing happens
-    public Location redToBlue(Location location) {
-        if (alliance == AutoAlliance.BLUE) {
-            double reflectedHeading = redToBlueHeading(location.getHeading());
-            return new Location(-location.getX(), location.getY(), reflectedHeading);
-        } else {
-            return location;
-        }
+    public void driveToWobbleGoal() {
+        // TODO
+        robot.driveToLocation(RED_WOBBLE_GOAL_LEFT, MAX_SPEED, mode);
     }
 
-    public double redToBlueHeading(double heading) {
-        if (alliance == AutoAlliance.BLUE) {
-            return 360.0 - heading;  // reflect heading angle
-        } else {
-            return heading;
-        }
+    public void moveToZone(int numRings) {
+        // TODO (Check location measurements, assumed to be in cm)
+        if (numRings == 0)
+            driveToLocation(wobbleZone = RED_ZONE_ONE);
+
+        else if (numRings == 1)
+            driveToLocation(wobbleZone = RED_ZONE_TWO);
+
+        else if (numRings == 4)
+            driveToLocation(wobbleZone = RED_ZONE_THREE);
     }
 
-    public void turnToZero() {
-        robot.turnToHeading(0, mode);
+    public void moveBehindShootLine() {
+        double zoneDistFromLine = (wobbleZone.getY() - SHOOT_LINE.getY()) / 2.54;
+        double distToDrive = zoneDistFromLine + 20;
+        robot.driveDistance(distToDrive, UltimateNavigation.SOUTH, MAX_SPEED, mode);
+        robot.brake();
+        sleep(1000);
     }
 
-    public void driveToLocation(Location location) {
-        robot.driveToLocationPID(redToBlue(location), maxSpeed, mode);
+    public void shootPowerShots() {
+        shooter.turnOnShooterWheel();
+        sleep(1000);
+        shooter.shoot();
+        sleep(1000);
+        shooter.turnOffShooterWheel();
+    }
+
+    public void driveToStartingRings() {
+        // drive to the heading, within a certain range
+        // TODO maybe move in the x and then in the y for more accuracy???
+        robot.turnToHeading(UltimateNavigation.SOUTH, mode);
+        double desiredDistanceFromRings = 2;
+        robot.driveToLocationPID(STARTING_RING_PILE, MAX_SPEED, desiredDistanceFromRings, mode);
+        sleep(1000);
+    }
+
+    public void grabStartingPileRings() {
+        // turn towards the rings, then pick them up
+        intake.turnOn();
+        robot.driveDistance(10, MAX_SPEED, mode);
+        robot.brake();
+        sleep(1000);
+        intake.turnOff();
+    }
+
+    public void park() {
+        robot.driveToLine(SHOOT_LINE, MAX_SPEED, mode);
+        sleep(800);
     }
 
     public void stop() { robot.stopNavigation(); }
 
     public void sleep(long milliseconds) { mode.sleep(milliseconds); }
 
-    public void park() {
-        // TODO, spit tape after turning robot
-        sleep(800);
+    // converts red to blue. If it is blue, nothing happens
+    public Location redToBlue(Location location) {
+        if (alliance == AutoAlliance.BLUE)
+            return new Location(-location.getX(), location.getY(), 360 - location.getHeading());
+        else
+            return location;
     }
 
-    public void driveToWobbleGoal(int goalNum) {
-        // TODO, for picking up second wobble goal use color sensor to detect
-    }
+    public void turnToZero() { robot.turnToHeading(0, mode); }
 
-    public void moveToZone(int numRings) {
-        // TODO (Check location measurements, assumed to be in cm)
-        if(numRings == 0) {
-            driveToLocation(RED_ZONE_ONE);
-        }
-        else if(numRings == 1) {
-            driveToLocation(RED_ZONE_TWO);
-        }
-        else if(numRings == 4) {
-            driveToLocation(RED_ZONE_THREE);
-        }
-    }
+    public void driveToLocation(Location location) { robot.driveToLocationPID(redToBlue(location), MAX_SPEED, mode); }
 
-    public void moveBehindShootLine() {
-        // TODO
-    }
-
-    public void shootPowerShots() {
-        // TODO, the plan is to move left after each shot
-    }
-
-    public void grabStartingPileRings() {
-        // TODO, requires returning to the front of the field and maneuvering around 4th ring because it cannot be intaked
-    }
-
-    public void shootTowerGoal() {
-        // TODO
-    }
-
-    public RingDetector getRingDetector() { return ringDetector; }
+    public ColorDetector getRingDetector() { return ringDetector; }
     public WobbleGrabberV1 getWobbleGrabber() { return wobbleGrabber; }
     public ShooterSystemV1 getShooter() { return shooter; }
     public RingIntakeSystemV1 getIntake() { return intake; }
