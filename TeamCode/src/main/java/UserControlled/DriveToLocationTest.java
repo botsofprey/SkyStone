@@ -29,54 +29,48 @@
 
 package UserControlled;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name="Gamepad Controller Test", group="Testers")
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import Autonomous.Location;
+import DriveEngine.Ultimate.UltimateNavigation;
+
+import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_LEFT;
+
+@TeleOp(name="Record JSON", group="Competition")
 //@Disabled
-public class GamepadControllerTest extends LinearOpMode {
+public class DriveToLocationTest extends LinearOpMode {
     // create objects and locally global variables here
 
-    GamepadController controller;
+    UltimateNavigation robot;
 
     @Override
     public void runOpMode() {
-        // initialize objects and variables here
-        // also create and initialize function local variables here
 
-        telemetry.addData("Test", "1");
+        Location startLocation = new Location(STARTING_ROBOT_LOCATION_LEFT, UltimateNavigation.NORTH);
 
-        controller = new GamepadController(gamepad1);
+        try {
+            robot = new UltimateNavigation(hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
+        } catch (Exception e) {
+            telemetry.addData("Robot Error", e.toString());
+        }
 
-        // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("Another test", "2");
         telemetry.update();
-
-        // nothing goes between the above and below lines
 
         waitForStart();
 
-        int timesPressed = 0;
-        int timesHeld = 0;
+        // drive forward and right
+        // TODO play around with the x and y. If that works, try changing the heading too
+        Location locationToDrive = new Location(startLocation.getX() + 30, startLocation.getY() + 30, startLocation.getHeading());
+        robot.driveToLocation(locationToDrive, UltimateNavigation.MAX_SPEED, this);
 
-        // should only be used for a time keeper or other small things, avoid using this space when possible
-        while (opModeIsActive()) {
-            // main code goes here
-
-            controller.update(gamepad1);
-
-            if (controller.aPressed()) timesPressed++;
-            if (controller.aHeld()) timesHeld++;
-
-            telemetry.addData("Times Pressed", timesPressed);
-            telemetry.addData("Times Held", timesHeld);
-
-            // telemetry and logging data goes here
-            telemetry.update();
-        }
-        // disable/kill/stop objects here
     }
     // misc functions here
 }

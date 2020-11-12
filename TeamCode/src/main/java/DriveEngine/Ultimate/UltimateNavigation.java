@@ -14,6 +14,7 @@ import java.util.HashMap;
 import Autonomous.ConfigVariables;
 import Autonomous.HeadingVector;
 import Autonomous.Location;
+import Autonomous.Line;
 import Autonomous.Rectangle;
 import MotorControllers.JsonConfigReader;
 import MotorControllers.MotorController;
@@ -45,19 +46,19 @@ public class UltimateNavigation extends Thread {
     public static final long DEFAULT_DELAY_MILLIS = 10;
 
     public static final double FORWARD = 0;
-    public static final double BACK = 180;
     public static final double RIGHT = 90;
+    public static final double BACK = 180;
     public static final double LEFT = -90;
 
     private volatile long threadDelayMillis = 10;
 
-    private volatile double [] lastMotorPositionsInInches = {0,0,0,0};
+    private volatile double [] lastMotorPositionsInInches = { 0, 0, 0, 0 };
 
     public PIDController headingController, turnController, cameraTranslationYController,
             cameraTranslationXController, cameraOrientationController, xPositionController, yPositionController;
 
     private volatile Location myLocation;
-    private volatile HeadingVector [] wheelVectors = new HeadingVector[4];
+    private volatile HeadingVector[] wheelVectors;
     private volatile HeadingVector robotMovementVector = new HeadingVector();
     public ImuHandler orientation;
     private double orientationOffset = 0;
@@ -65,9 +66,11 @@ public class UltimateNavigation extends Thread {
     private volatile boolean shouldRun = true, loggingData = true, usingSensors = true;
     private volatile long startTime = System.nanoTime();
     private volatile HeadingVector IMUTravelVector = new HeadingVector();
+    public static double MAX_SPEED = 25.0;  // inches / second
 
     private volatile Location IMUDistance = new Location(0, 0);
-//    private LIDARSensor[] distanceSensors;
+
+    private LIDARSensor[] distanceSensors;
     public static final int LEFT_SENSOR = 0, BACK_SENSOR = 1, RIGHT_SENSOR = 2, DRIVE_BASE = 3, FRONT_SENSOR = 4;
     private HashMap<Integer, int[]>[] updateLocationInformation = new HashMap[4]; // structure: {direction, {xSensor, ySensor}}
 
@@ -86,23 +89,21 @@ public class UltimateNavigation extends Thread {
 
     // TODO fix this class
 
-    public UltimateNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile, boolean ignoreInitialSensorLocation) {
+    public UltimateNavigation(HardwareMap hw, Location startLocation, String configFile, boolean ignoreInitialSensorLocation) throws Exception {
         hardwareMap = hw;
         initializeUsingConfigFile(configFile);
-        populateHashmaps();
-        orientationOffset = robotOrientationOffset;
+        orientationOffset = startLocation.getHeading();
         orientation = new ImuHandler("imu", orientationOffset, hardwareMap);
-        myLocation = new Location(startLocation.getX(),startLocation.getY(), robotOrientationOffset);
+        myLocation = startLocation;
 
-        // TODO uncomment anything dealing with location when possible
+        distanceSensors = new LIDARSensor[3];
+        distanceSensors[LEFT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), LEFT_SENSOR, "left");
+        distanceSensors[BACK_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), BACK_SENSOR, "back");
+        distanceSensors[RIGHT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), RIGHT_SENSOR, "right");
 
-//        distanceSensors = new LIDARSensor[3];
-//        distanceSensors[LEFT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), LEFT_SENSOR, "left");
-//        distanceSensors[BACK_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), BACK_SENSOR, "back");
-//        distanceSensors[RIGHT_SENSOR] = new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), RIGHT_SENSOR, "right");
+        if (!ignoreInitialSensorLocation) getInitialLocation();
 
-//        if (!ignoreInitialSensorLocation) getInitialLocation();
-
+        wheelVectors = new HeadingVector[4];
         for (int i = 0; i < wheelVectors.length; i++)
             wheelVectors[i] = new HeadingVector();
 
@@ -115,7 +116,7 @@ public class UltimateNavigation extends Thread {
             @Override
             public void run() {
                 for (int i = 0; i < driveMotors.length; i++) {
-                    Log.d("Inch from start", Integer.toString(i) + ": " + driveMotors[i].getInchesFromStart());
+                    Log.d("Inch from start", i + ": " + driveMotors[i].getInchesFromStart());
                 }
                 while (shouldRun) {
                     try {
@@ -131,44 +132,44 @@ public class UltimateNavigation extends Thread {
         }).start();
     }
 
-    public UltimateNavigation(HardwareMap hw, Location startLocation, double robotOrientationOffset, String configFile) {
-        this(hw, startLocation, robotOrientationOffset, configFile, false);
+    public UltimateNavigation(HardwareMap hw, Location startLocation, String configFile) throws Exception {
+        this(hw, startLocation, configFile, false);
     }
 
-//    private void getInitialLocation() {
-//        // SOME LOGICAL ERROR IN FINDING QUADRANT MOST LIKELY -- CHECK HASHTABLE FOR LOCATION CHECKS
-//        int quadrant = -1;
-//        if(myLocation.getX() >= 0 && myLocation.getY() >= 0) quadrant = Q1;
-//        else if(myLocation.getX() < 0 && myLocation.getY() >= 0) quadrant = Q2;
-//        else if(myLocation.getX() < 0 && myLocation.getY() < 0) quadrant = Q3;
-//        else if(myLocation.getX() >= 0 && myLocation.getY() < 0) quadrant = Q4;
-//        Log.d("Quadrant: ", ""+quadrant);
-//
-//        double simpleHeading = myLocation.getHeading() % 360;
-//        int dir = -1;
-//        if(simpleHeading < 1 && simpleHeading > -1) dir = NORTH;
-//        else if(simpleHeading < 91 && simpleHeading > 89) dir = EAST; // REVIEW: suggest to define HEADING_TOLERANCE = 1 and use abs(simpleHeading - 90) < HEADING_TOLERANCE
-//        else if(simpleHeading < 181 && simpleHeading > 179) dir = SOUTH;
-//        else if(simpleHeading < 271 && simpleHeading > 269) dir = WEST;
-//        Log.d("Direction: ", ""+dir);
-//
-//        int[] sensorsToUse = updateLocationInformation[quadrant].get(dir);
-//        if (sensorsToUse != null && sensorsToUse[0] != DRIVE_BASE) {
-//            double x = 71.0 - distanceSensors[sensorsToUse[0]].getDistance() - 7.0;
-//            x *= quadrant == Q2 || quadrant == Q3 ? -1 : 1; //TODO this is wrong I'm pretty sure
-//            Log.d("Start sensor X: ", "" + x);
-//            Log.d("Start loc X: ", myLocation.getX()+"");
-//            if (Math.abs(myLocation.getX() - x) < 50) myLocation.setX(x);
-//        }
-//        if (sensorsToUse != null && sensorsToUse[1] != DRIVE_BASE) {
-//            double y = 71.0 - distanceSensors[sensorsToUse[1]].getDistance() - 7.0;
-//            y *= quadrant == Q3 || quadrant == Q4 ? -1 : 1;
-//            Log.d("Start sensor Y: ", "" + y);
-//            Log.d("Start loc Y:", myLocation.getY()+"");
-//            if (Math.abs(myLocation.getY() - y) < 50) myLocation.setY(y);
-//        }
-//        // TODO how can we stop both run and logcat from filling up with IMU Locations? It's really annoying cuz i can't see what's printed out from AnnieNavigation -- type in your filter, right now its location...
-//    }
+    private void getInitialLocation() {
+        // SOME LOGICAL ERROR IN FINDING QUADRANT MOST LIKELY -- CHECK HASHTABLE FOR LOCATION CHECKS
+        int quadrant = -1;
+        if(myLocation.getX() >= 0 && myLocation.getY() >= 0) quadrant = Q1;
+        else if(myLocation.getX() < 0 && myLocation.getY() >= 0) quadrant = Q2;
+        else if(myLocation.getX() < 0 && myLocation.getY() < 0) quadrant = Q3;
+        else if(myLocation.getX() >= 0 && myLocation.getY() < 0) quadrant = Q4;
+        Log.d("Quadrant: ", ""+quadrant);
+
+        double simpleHeading = myLocation.getHeading() % 360;
+        int dir = -1;
+        if(simpleHeading < 1 && simpleHeading > -1) dir = NORTH;
+        else if(simpleHeading < 91 && simpleHeading > 89) dir = EAST; // REVIEW: suggest to define HEADING_TOLERANCE = 1 and use abs(simpleHeading - 90) < HEADING_TOLERANCE
+        else if(simpleHeading < 181 && simpleHeading > 179) dir = SOUTH;
+        else if(simpleHeading < 271 && simpleHeading > 269) dir = WEST;
+        Log.d("Direction: ", ""+dir);
+
+        int[] sensorsToUse = updateLocationInformation[quadrant].get(dir);
+        if (sensorsToUse != null && sensorsToUse[0] != DRIVE_BASE) {
+            double x = 71.0 - distanceSensors[sensorsToUse[0]].getDistance() - 7.0;
+            x *= quadrant == Q2 || quadrant == Q3 ? -1 : 1; //TODO this is wrong I'm pretty sure
+            Log.d("Start sensor X: ", "" + x);
+            Log.d("Start loc X: ", myLocation.getX()+"");
+            if (Math.abs(myLocation.getX() - x) < 50) myLocation.setX(x);
+        }
+        if (sensorsToUse != null && sensorsToUse[1] != DRIVE_BASE) {
+            double y = 71.0 - distanceSensors[sensorsToUse[1]].getDistance() - 7.0;
+            y *= quadrant == Q3 || quadrant == Q4 ? -1 : 1;
+            Log.d("Start sensor Y: ", "" + y);
+            Log.d("Start loc Y:", myLocation.getY()+"");
+            if (Math.abs(myLocation.getY() - y) < 50) myLocation.setY(y);
+        }
+        // TODO how can we stop both run and logcat from filling up with IMU Locations? It's really annoying cuz i can't see what's printed out from AnnieNavigation -- type in your filter, right now its location...
+    }
 
     public void stopLoggingData() {
         loggingData = false;
@@ -201,94 +202,94 @@ public class UltimateNavigation extends Thread {
         return new Location(myLocation.getX(), myLocation.getY());
     }
 
-//    private void updateLocation() {
-//        boolean shouldTranslateX = false, shouldTranslateY = false;
-//        double expectedY, expectedX;
-//        double simpleHeading = getRobotHeading() % 360;
-//
-//        // sensor location tracking
-//        int quadrant = -1;
-//        if(myLocation.getX() >= 0 && myLocation.getY() >= 0) quadrant = Q1;
-//        else if(myLocation.getX() < 0 && myLocation.getY() >= 0) quadrant = Q2;
-//        else if(myLocation.getX() < 0 && myLocation.getY() < 0) quadrant = Q3;
-//        else if(myLocation.getX() >= 0 && myLocation.getY() < 0) quadrant = Q4;
-//        int dir = -1;
-//        if(simpleHeading < 2.5 && simpleHeading > -2.5) dir = NORTH;
-//        else if(simpleHeading < 92.5 && simpleHeading > 87.5) dir = EAST; // REVIEW: suggest to define HEADING_TOLERANCE = 1 and use abs(simpleHeading - 90) < HEADING_TOLERANCE
-//        else if(simpleHeading < 182.5 && simpleHeading > 177.5) dir = SOUTH;
-//        else if(simpleHeading < 272.5 && simpleHeading > 267.5) dir = WEST;
-//        else {
-//            // if not lined up to a square direction, then just use wheel odometry to track position
-//            shouldTranslateX = true;
-//            shouldTranslateY = true;
-//        }
-//
-//        // wheel location tracking
-//        HeadingVector travelVector = wheelVectors[0].addVectors(wheelVectors);
-//        travelVector = new HeadingVector(travelVector.x() / 2, travelVector.y() / 2);
-//        double headingOfRobot = travelVector.getHeading();
-//        double magnitudeOfRobot = travelVector.getMagnitude();
-//        double actualHeading = (headingOfRobot + getRobotHeading()) % 360;
-//        robotMovementVector.calculateVector(actualHeading, magnitudeOfRobot);
-//        double deltaX = robotMovementVector.x();
-//        double deltaY = robotMovementVector.y();
-//
-//        if (!myLocation.withinRectangle(NO_GO_ZONE) && usingSensors) {
-//            if (!shouldTranslateX) {
-//                int[] sensorsToUse = updateLocationInformation[quadrant].get(dir);
-//                if (sensorsToUse != null && sensorsToUse[0] == DRIVE_BASE) shouldTranslateX = true;
-//                else if (sensorsToUse != null && sensorsToUse[1] == DRIVE_BASE)
-//                    shouldTranslateY = true;
-//                if (!shouldTranslateX &&
-//                        (myLocation.withinRectangle(ConfigVariables.VALID_X_SENSOR_READ_AREA_1_RED) || myLocation.withinRectangle(ConfigVariables.VALID_X_SENSOR_READ_AREA_2_RED)
-//                        || myLocation.withinRectangle(ConfigVariables.VALID_X_SENSOR_READ_AREA_1_BLUE) || myLocation.withinRectangle(ConfigVariables.VALID_X_SENSOR_READ_AREA_2_BLUE))) {
-//                    // REVIEW: there are several conditions to check to determine if a distance reading is good, so
-//                    // is is best to encapsulate this in a class.  I suggest to have a sensor.getGoodDistance()
-//                    // function that returns a Double distance or null, if a good distances isn't available.
-//                    // Then, have a separate function that can be called in the null case, for example sensor.explainNull()
-//                    // to get a message describing the problem, which can be reported in telemetry or logs.
-//                    // An alternate implementation would have getDistance() return a double only if a good distance is
-//                    // available and throw InvalidDistanceException otherwise.  Then, this code can catch the exception
-//                    // to report in telemetry or logs.
-//                    Double dist = distanceSensors[sensorsToUse[0]].getGoodDistance();
-//                    Log.d("X sensor dist: ", dist+"");
-//                    if (dist != null && dist < GOOD_DIST_READING_TOLERANCE) {
-//                        // REVIEW: the magic numbers in the following formula should be pulled out as named constants
-//                        expectedX = 71.0 - dist - 7.0;
-//                        if (quadrant == Q2 || quadrant == Q3) expectedX *= -1;
-//                        if (Math.abs(expectedX - (myLocation.getX() + deltaX)) <= LIDAR_DISTANCE_TOLERANCE)
-//                            myLocation.setX(expectedX);
-//                        else shouldTranslateX = true;
-//                    } else {
-//                        shouldTranslateX = true;
-//                    }
-//                } else shouldTranslateX = true;
-//                if (!shouldTranslateY &&
-//                        (myLocation.withinRectangle(ConfigVariables.VALID_Y_SENSOR_READ_AREA_1_RED) || myLocation.withinRectangle(ConfigVariables.VALID_Y_SENSOR_READ_AREA_2_RED)
-//                        || myLocation.withinRectangle(ConfigVariables.VALID_Y_SENSOR_READ_AREA_1_BLUE) || myLocation.withinRectangle(ConfigVariables.VALID_Y_SENSOR_READ_AREA_2_BLUE))) {
-//                    Double dist = distanceSensors[sensorsToUse[1]].getGoodDistance();
-//                    if (dist != null && dist < GOOD_DIST_READING_TOLERANCE) {
-//                        expectedY = 71.0 - dist - 7.0;
-//                        if (quadrant == Q3 || quadrant == Q4) expectedY *= -1;
-//                        myLocation.setY(expectedY);
-//                        if (Math.abs(expectedY - (myLocation.getY() + deltaY)) <= LIDAR_DISTANCE_TOLERANCE)
-//                            myLocation.setY(expectedY);
-//                        else shouldTranslateY = true;
-//                    } else {
-//                        shouldTranslateY = true;
-//                    }
-//                } else shouldTranslateY = true;
-//            }
-//        }else{
-//            shouldTranslateX = shouldTranslateY = true;
-//        }
-//        if(shouldTranslateX) myLocation.addX(deltaX);
-//        if(shouldTranslateY) myLocation.addY(deltaY);
-//        myLocation.setHeading(restrictAngle(orientation.getOrientation(), 0));
-//        Log.d("Location", "X:" + myLocation.getX() + " Y:" + myLocation.getY());
-//        Log.d("Sensor X:", shouldTranslateX ? "ENCODER" : "LIDAR");
-//        Log.d("Sensor Y:", shouldTranslateY ? "ENCODER" : "LIDAR");
-//    }
+    private void updateLocation() {
+        boolean shouldTranslateX = false, shouldTranslateY = false;
+        double expectedY, expectedX;
+        double simpleHeading = getRobotHeading() % 360;
+
+        // sensor location tracking
+        int quadrant = -1;
+        if(myLocation.getX() >= 0 && myLocation.getY() >= 0) quadrant = Q1;
+        else if(myLocation.getX() < 0 && myLocation.getY() >= 0) quadrant = Q2;
+        else if(myLocation.getX() < 0 && myLocation.getY() < 0) quadrant = Q3;
+        else if(myLocation.getX() >= 0 && myLocation.getY() < 0) quadrant = Q4;
+        int dir = -1;
+        if(simpleHeading < 2.5 && simpleHeading > -2.5) dir = NORTH;
+        else if(simpleHeading < 92.5 && simpleHeading > 87.5) dir = EAST; // REVIEW: suggest to define HEADING_TOLERANCE = 1 and use abs(simpleHeading - 90) < HEADING_TOLERANCE
+        else if(simpleHeading < 182.5 && simpleHeading > 177.5) dir = SOUTH;
+        else if(simpleHeading < 272.5 && simpleHeading > 267.5) dir = WEST;
+        else {
+            // if not lined up to a square direction, then just use wheel odometry to track position
+            shouldTranslateX = true;
+            shouldTranslateY = true;
+        }
+
+        // wheel location tracking
+        HeadingVector travelVector = wheelVectors[0].addVectors(wheelVectors);
+        travelVector = new HeadingVector(travelVector.x() / 2, travelVector.y() / 2);
+        double headingOfRobot = travelVector.getHeading();
+        double magnitudeOfRobot = travelVector.getMagnitude();
+        double actualHeading = (headingOfRobot + getRobotHeading()) % 360;
+        robotMovementVector.calculateVector(actualHeading, magnitudeOfRobot);
+        double deltaX = robotMovementVector.x();
+        double deltaY = robotMovementVector.y();
+
+        if (!myLocation.withinRectangle(NO_GO_ZONE) && usingSensors) {
+            if (!shouldTranslateX) {
+                int[] sensorsToUse = updateLocationInformation[quadrant].get(dir);
+                if (sensorsToUse != null && sensorsToUse[0] == DRIVE_BASE) shouldTranslateX = true;
+                else if (sensorsToUse != null && sensorsToUse[1] == DRIVE_BASE)
+                    shouldTranslateY = true;
+                if (!shouldTranslateX &&
+                        (myLocation.withinRectangle(ConfigVariables.VALID_X_SENSOR_READ_AREA_1_RED) || myLocation.withinRectangle(ConfigVariables.VALID_X_SENSOR_READ_AREA_2_RED)
+                        || myLocation.withinRectangle(ConfigVariables.VALID_X_SENSOR_READ_AREA_1_BLUE) || myLocation.withinRectangle(ConfigVariables.VALID_X_SENSOR_READ_AREA_2_BLUE))) {
+                    // REVIEW: there are several conditions to check to determine if a distance reading is good, so
+                    // is is best to encapsulate this in a class.  I suggest to have a sensor.getGoodDistance()
+                    // function that returns a Double distance or null, if a good distances isn't available.
+                    // Then, have a separate function that can be called in the null case, for example sensor.explainNull()
+                    // to get a message describing the problem, which can be reported in telemetry or logs.
+                    // An alternate implementation would have getDistance() return a double only if a good distance is
+                    // available and throw InvalidDistanceException otherwise.  Then, this code can catch the exception
+                    // to report in telemetry or logs.
+                    Double dist = distanceSensors[sensorsToUse[0]].getGoodDistance();
+                    Log.d("X sensor dist: ", dist+"");
+                    if (dist != null && dist < GOOD_DIST_READING_TOLERANCE) {
+                        // REVIEW: the magic numbers in the following formula should be pulled out as named constants
+                        expectedX = 71.0 - dist - 7.0;
+                        if (quadrant == Q2 || quadrant == Q3) expectedX *= -1;
+                        if (Math.abs(expectedX - (myLocation.getX() + deltaX)) <= LIDAR_DISTANCE_TOLERANCE)
+                            myLocation.setX(expectedX);
+                        else shouldTranslateX = true;
+                    } else {
+                        shouldTranslateX = true;
+                    }
+                } else shouldTranslateX = true;
+                if (!shouldTranslateY &&
+                        (myLocation.withinRectangle(ConfigVariables.VALID_Y_SENSOR_READ_AREA_1_RED) || myLocation.withinRectangle(ConfigVariables.VALID_Y_SENSOR_READ_AREA_2_RED)
+                        || myLocation.withinRectangle(ConfigVariables.VALID_Y_SENSOR_READ_AREA_1_BLUE) || myLocation.withinRectangle(ConfigVariables.VALID_Y_SENSOR_READ_AREA_2_BLUE))) {
+                    Double dist = distanceSensors[sensorsToUse[1]].getGoodDistance();
+                    if (dist != null && dist < GOOD_DIST_READING_TOLERANCE) {
+                        expectedY = 71.0 - dist - 7.0;
+                        if (quadrant == Q3 || quadrant == Q4) expectedY *= -1;
+                        myLocation.setY(expectedY);
+                        if (Math.abs(expectedY - (myLocation.getY() + deltaY)) <= LIDAR_DISTANCE_TOLERANCE)
+                            myLocation.setY(expectedY);
+                        else shouldTranslateY = true;
+                    } else {
+                        shouldTranslateY = true;
+                    }
+                } else shouldTranslateY = true;
+            }
+        }else{
+            shouldTranslateX = shouldTranslateY = true;
+        }
+        if(shouldTranslateX) myLocation.addX(deltaX);
+        if(shouldTranslateY) myLocation.addY(deltaY);
+        myLocation.setHeading(restrictAngle(orientation.getOrientation(), 0));
+        Log.d("Location", "X:" + myLocation.getX() + " Y:" + myLocation.getY());
+        Log.d("Sensor X:", shouldTranslateX ? "ENCODER" : "LIDAR");
+        Log.d("Sensor Y:", shouldTranslateY ? "ENCODER" : "LIDAR");
+    }
 
     private double restrictAngle(double angleToChange, double referenceAngle) {
         while(angleToChange < referenceAngle - 180) angleToChange += 360;
@@ -314,11 +315,9 @@ public class UltimateNavigation extends Thread {
         startTime = System.nanoTime();
     }
 
-    public void setLocation(Location loc) {
-        myLocation = new Location(loc.getX(), loc.getY());
-    }
+//    public void setLocation(Location loc) { myLocation = new Location(loc.getX(), loc.getY()); }
 
-    private void updateData(){
+    private void updateData() {
 
         getRobotHeading();
         wheelVectors = getWheelVectors();
@@ -332,7 +331,6 @@ public class UltimateNavigation extends Thread {
         while (System.currentTimeMillis() - start < time && shouldRun);
     }
 
-    // Reads the config file and sets everything anyone could every think of
     public void initializeUsingConfigFile(String file) {
         InputStream stream = null;
         try {
@@ -351,12 +349,12 @@ public class UltimateNavigation extends Thread {
             for (int i = 0; i < driveMotors.length; i++) {
                 driveMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-            if(reader.getString("DRIVE_MOTOR_BRAKING_MODE").equals("BRAKE")){
+            if(reader.getString("DRIVE_MOTOR_BRAKING_MODE").equals("BRAKE")) {
                 for (int i = 0; i < driveMotors.length; i++) {
                     driveMotors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 }
             }
-            else if(reader.getString("DRIVE_MOTOR_BRAKING_MODE").equals("FLOAT")){
+            else if(reader.getString("DRIVE_MOTOR_BRAKING_MODE").equals("FLOAT")) {
                 for (int i = 0; i < driveMotors.length; i++) {
                     driveMotors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 }
@@ -568,6 +566,10 @@ public class UltimateNavigation extends Thread {
         driveDistance(myLocation.distanceToLocation(target), heading, desiredVelocity, mode);
     }
 
+    public void driveDistance(double distanceInInches, double desiredVelocity, LinearOpMode mode) {
+        driveDistance(distanceInInches, myLocation.getHeading(), desiredVelocity, mode);
+    }
+
     public void driveDistance(double distanceInInches, double heading, double desiredVelocity, LinearOpMode mode) {
 //        for(MotorController m : driveMotors) {
 //            m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -732,8 +734,8 @@ public class UltimateNavigation extends Thread {
         brake();
     }
 
-    long [] getMotorPositionsTicks(){
-        long [] positions = new long[4];
+    long[] getMotorPositionsTicks(){
+        long[] positions = new long[4];
         positions[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].getCurrentTick();
         positions[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].getCurrentTick();
         positions[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].getCurrentTick();
@@ -741,9 +743,9 @@ public class UltimateNavigation extends Thread {
         return  positions;
     }
 
-    public double [] getMotorPositionsInches(){
-        double [] inches = new double [4];
-        long [] ticks = getMotorPositionsTicks();
+    public double[] getMotorPositionsInches() {
+        double[] inches = new double [4];
+        long[] ticks = getMotorPositionsTicks();
         inches[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = Math.abs(driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].convertTicksToInches(ticks[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]));
         inches[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = Math.abs(driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].convertTicksToInches(ticks[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR]));
         inches[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = Math.abs(driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].convertTicksToInches(ticks[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR]));
@@ -751,12 +753,14 @@ public class UltimateNavigation extends Thread {
         return inches;
     }
 
-    double [] determineMotorVelocitiesToDriveOnHeading(double heading, double desiredVelocity) {
+    double[] determineMotorVelocitiesToDriveOnHeading(double heading, double desiredVelocity) {
         double[] velocities = new double[4];
-        velocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredVelocity * Math.sin(Math.toRadians(heading + 45));
-        velocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredVelocity * Math.cos(Math.toRadians(heading + 45));
-        velocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredVelocity * Math.sin(Math.toRadians(heading + 45));
-        velocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredVelocity * Math.cos(Math.toRadians(heading + 45));
+        double sinVelocity = desiredVelocity * Math.sin(Math.toRadians(heading + 45));
+        double cosVelocity = desiredVelocity * Math.cos(Math.toRadians(heading + 45));
+        velocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = sinVelocity;
+        velocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = cosVelocity;
+        velocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = sinVelocity;
+        velocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = cosVelocity;
         return velocities;
     }
 
@@ -765,47 +769,44 @@ public class UltimateNavigation extends Thread {
     }
 
     public void driveOnHeadingWithTurning(double heading, double movementPower, double turnPower){
-        double [] movementPowers = calculatePowersToDriveOnHeading(heading, movementPower);
-        double [] turningPowers = calculatePowersToTurn(turnPower);
-        double [] total = new double[4];
-        for (int i = 0; i < movementPowers.length; i ++) {
+        double[] movementPowers = calculatePowersToDriveOnHeading(heading, movementPower);
+        double[] turningPowers = calculatePowersToTurn(turnPower);
+        double[] total = new double[4];
+
+        for (int i = 0; i < movementPowers.length; i ++)
             total[i] = movementPowers[i] + turningPowers[i];
-        }
+
         normalizePowers(total);
         applyMotorPowers(total);
     }
 
-    private double [] calculatePowersToDriveOnHeading(double heading, double desiredPower){
-        double[] powers = new double[4];
-        if(desiredPower == 0){
-            for(int i = 0; i < powers.length; i ++){
-                powers[i] = 0;
-            }
+    private double[] calculatePowersToDriveOnHeading(double heading, double desiredPower){
+        double[] powers = new double[] { 0, 0, 0, 0 };
+        if (desiredPower == 0)
             return powers;
-        }
-        powers[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredPower * Math.sin(Math.toRadians(heading + 45));
-        powers[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredPower * Math.cos(Math.toRadians(heading + 45));
-        powers[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredPower * Math.sin(Math.toRadians(heading + 45));
-        powers[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredPower * Math.cos(Math.toRadians(heading + 45));
-        //Log.d("MotorPow","" + powers[0]);
+
+        double sinPower = desiredPower * Math.sin(Math.toRadians(heading + 45));
+        double cosPower = desiredPower * Math.cos(Math.toRadians(heading + 45));
+        powers[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = sinPower;
+        powers[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = cosPower;
+        powers[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = sinPower;
+        powers[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = cosPower;
         return powers;
     }
 
     private double[] calculatePowersToTurn(double desiredTurnRateOfMax) {
-        double[] powers = new double[4];
-        if (desiredTurnRateOfMax == 0) {
-            for (int i = 0; i < powers.length; i++) {
-                powers[i] = 0;
-            }
+        double[] powers = new double[] { 0, 0, 0, 0 };
+        if (desiredTurnRateOfMax == 0)
             return powers;
-        }
+
         powers[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredTurnRateOfMax;
         powers[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -desiredTurnRateOfMax;
         powers[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredTurnRateOfMax;
         powers[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -desiredTurnRateOfMax;
-        for (int i = 0; i < powers.length; i++) {
+
+        for (int i = 0; i < powers.length; i++)
             if (Double.isNaN(powers[i])) powers[i] = 0;
-        }
+
         return powers;
     }
 
@@ -883,7 +884,7 @@ public class UltimateNavigation extends Thread {
             }
         }
 
-        if(scaleValue != 1){
+        if (scaleValue != 1) {
             for(int i = 0; i < finalVelocities.length; i ++){
                 finalVelocities[i] *= scaleValue;
                 Log.d("final velocity" + i,"" + finalVelocities[i]);
@@ -896,15 +897,12 @@ public class UltimateNavigation extends Thread {
     public double[] calculateTurnVelocitiesRelativeToMax(double percentOfMax){
         double[] velocities = new double[4];
         double maxWheelVelocity = driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].getMaxSpeed();
-        if(Double.isNaN(percentOfMax)) percentOfMax = 0;
+        if (Double.isNaN(percentOfMax)) percentOfMax = 0;
         double velocity = maxWheelVelocity * percentOfMax;
         //double velocity = rps*WHEEL_BASE_RADIUS*2.0*Math.PI;
-        if(Double.isNaN(velocity)){
-            velocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = 0;
-            velocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = 0;
-            velocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = 0;
-            velocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = 0;
-        }
+
+        if (Double.isNaN(velocity))
+            return new double[] { 0, 0, 0, 0 };
         else {
             velocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = velocity;
             velocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -velocity;
@@ -914,16 +912,12 @@ public class UltimateNavigation extends Thread {
         return velocities;
     }
 
-    public double [] calculateTurnVelocities(double rps){
+    public double[] calculateTurnVelocities(double rps){
         double[] velocities = new double[4];
         if(Double.isNaN(rps)) rps = 0;
         double velocity = rps*WHEEL_BASE_RADIUS*2.0* Math.PI;
-        if(Double.isNaN(velocity)){
-            velocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = 0;
-            velocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = 0;
-            velocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = 0;
-            velocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = 0;
-        }
+        if (Double.isNaN(velocity))
+            return new double[] { 0, 0, 0, 0 };
         else {
             velocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = velocity;
             velocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -velocity;
@@ -1019,7 +1013,7 @@ public class UltimateNavigation extends Thread {
 
     }
 
-    public void setDrivePower(double power){
+    public void setDrivePower(double power) {
         double[] powers = new double[4];
         for(int i = 0; i < 4; i++){
             powers[i] = power;
@@ -1027,35 +1021,32 @@ public class UltimateNavigation extends Thread {
         applyMotorPowers(powers);
     }
 
-    public void applyMotorVelocities(double [] velocities){
-        for(MotorController m : driveMotors) {
-            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+    public void applyMotorVelocities(double [] velocities) {
+        for (MotorController motor : driveMotors)
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
     }
 
-    public void applyMotorPowers(double [] powers){
-        for(MotorController m : driveMotors) {
-            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+    public void applyMotorPowers(double [] powers) {
+        for (MotorController motor : driveMotors)
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         driveMotors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].setMotorPower(powers[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].setMotorPower(powers[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].setMotorPower(powers[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR]);
         driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].setMotorPower(powers[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
     }
 
-    public void brake(){
-        applyMotorVelocities(new double []{0,0,0,0});
-    }
+    public void brake() { applyMotorVelocities(new double [] { 0, 0, 0, 0 }); }
 
-    public void stopNavigation(){
+    public void stopNavigation() {
         shouldRun = false;
-        for(int i =0; i < driveMotors.length; i ++){
-            driveMotors[i].killMotorController();
-        }
+        for (MotorController motor : driveMotors)
+            motor.killMotorController();
         orientation.stopIMU();
     }
 
@@ -1369,83 +1360,59 @@ public class UltimateNavigation extends Thread {
         driveToLocation(myLocation, targetLocation, desiredSpeed, secToQuit, mode);
     }
 
-    public double getDistanceFrom(Location location) {
-        // TODO
-//        This is called the distance formula, Jordan. Remember the song?
-        return Math.sqrt(Math.pow(location.getX() - myLocation.getX(), 2) + Math.pow(location.getY() - myLocation.getY(), 2));
+    // TODO check this
+    public void driveToLine(Line line, double desiredSpeed, LinearOpMode mode) {
+        Location closestLocation = line.getClosestLocationOnLine(myLocation);
+        driveToLocation(closestLocation, desiredSpeed, mode);
     }
 
-    public void navigatePath(Location[] path, double desiredSpeed, LinearOpMode mode) {
-        for(int i = 0; i < path.length; i++) {
-            driveToLocation(path[i], desiredSpeed, mode);
-            Log.d("Target Location", path[i]+"");
-            Log.d("Actual Location", getRobotLocation()+"");
+    public double getDistanceFrom(Location location) {
+//        This is called the distance formula, Jordan. Remember the song?
+        return myLocation.distanceToLocation(location);
+    }
+
+    public void navigatePath(Location[] paths, double desiredSpeed, LinearOpMode mode) {
+        for (Location path : paths) {
+            driveToLocation(path, desiredSpeed, mode);
+            Log.d("Target Location", path + "");
+            Log.d("Actual Location", getRobotLocation() + "");
             mode.sleep(1000);
         }
     }
 
     public void navigatePath(Location[] path, double desiredSpeed, double[] secToQuit, LinearOpMode mode) {
-        for(int i = 0; i < path.length; i++) {
+        for (int i = 0; i < path.length; i++)
             driveToLocation(path[i], desiredSpeed, secToQuit[i], mode);
-        }
     }
 
     public void navigatePathPID(Location[] path, double desiredSpeed, LinearOpMode mode) {
-        for(Location toTravelTo : path) {
+        for (Location toTravelTo : path)
             driveToLocationPID(toTravelTo, desiredSpeed, mode);
-        }
     }
 
-    public HeadingVector[] getWheelVectors(){
-        double [] deltaWheelPositions = {0,0,0,0};
-        for(int i = 0; i < driveMotors.length; i ++){
+    public HeadingVector[] getWheelVectors() {
+        double[] deltaWheelPositions = { 0, 0, 0, 0 };
+        for (int i = 0; i < driveMotors.length; i++) {
             double a = driveMotors[i].getInchesFromStart();
-            Log.d("Last Motor Pos Inches:", lastMotorPositionsInInches[i]+"");
+            Log.d("Last Motor Pos Inches:", lastMotorPositionsInInches[i] + "");
             deltaWheelPositions[i] = a - lastMotorPositionsInInches[i];
             lastMotorPositionsInInches[i] = a;
         }
         //updateLastMotorPositionsInInches();
-        HeadingVector [] vectors = new HeadingVector[4];
-        for(int i = 0; i < vectors.length; i++){
+        HeadingVector[] vectors = new HeadingVector[4];
+        for (int i = 0; i < vectors.length; i++)
             vectors[i] = new HeadingVector();
-        }
-        vectors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].calculateVector(FL_WHEEL_HEADING_OFFSET,deltaWheelPositions[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]);
-        vectors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].calculateVector(FR_WHEEL_HEADING_OFFSET,deltaWheelPositions[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
-        vectors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].calculateVector(BL_WHEEL_HEADING_OFFSET,deltaWheelPositions[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR]);
-        vectors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].calculateVector(BR_WHEEL_HEADING_OFFSET,deltaWheelPositions[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
+
+        vectors[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR].calculateVector(FL_WHEEL_HEADING_OFFSET, deltaWheelPositions[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR]);
+        vectors[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR].calculateVector(FR_WHEEL_HEADING_OFFSET, deltaWheelPositions[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
+        vectors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR].calculateVector(BL_WHEEL_HEADING_OFFSET, deltaWheelPositions[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR]);
+        vectors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].calculateVector(BR_WHEEL_HEADING_OFFSET, deltaWheelPositions[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
         return vectors;
     }
 
     private double restrictAngle(double angleToChange, double referenceAngle, LinearOpMode mode) {
-        while(mode.opModeIsActive() && angleToChange < referenceAngle - 180) angleToChange += 360;
+        while (mode.opModeIsActive() && angleToChange < referenceAngle - 180) angleToChange += 360;
         while (mode.opModeIsActive() && angleToChange > referenceAngle + 180) angleToChange -= 360;
         return angleToChange;
-    }
-
-    private void populateHashmaps() {
-        updateLocationInformation[Q1] = new HashMap<>();
-        updateLocationInformation[Q2] = new HashMap<>();
-        updateLocationInformation[Q3] = new HashMap<>();
-        updateLocationInformation[Q4] = new HashMap<>();
-
-        updateLocationInformation[Q1].put(NORTH, new int[] {RIGHT_SENSOR, DRIVE_BASE});
-        updateLocationInformation[Q1].put(EAST, new int[] {DRIVE_BASE, LEFT_SENSOR});
-        updateLocationInformation[Q1].put(SOUTH, new int[] {LEFT_SENSOR, BACK_SENSOR});
-        updateLocationInformation[Q1].put(WEST, new int[] {BACK_SENSOR, RIGHT_SENSOR});
-
-        updateLocationInformation[Q2].put(NORTH, new int[] {LEFT_SENSOR, DRIVE_BASE});
-        updateLocationInformation[Q2].put(EAST, new int[] {BACK_SENSOR, LEFT_SENSOR});
-        updateLocationInformation[Q2].put(SOUTH, new int[] {RIGHT_SENSOR, BACK_SENSOR});
-        updateLocationInformation[Q2].put(WEST, new int[] {DRIVE_BASE, RIGHT_SENSOR});
-
-        updateLocationInformation[Q3].put(NORTH, new int[] {LEFT_SENSOR, BACK_SENSOR});
-        updateLocationInformation[Q3].put(EAST, new int[] {BACK_SENSOR, RIGHT_SENSOR});
-        updateLocationInformation[Q3].put(SOUTH, new int[] {RIGHT_SENSOR, DRIVE_BASE});
-        updateLocationInformation[Q3].put(WEST, new int[] {DRIVE_BASE, LEFT_SENSOR});
-
-        updateLocationInformation[Q4].put(NORTH, new int[] {RIGHT_SENSOR, BACK_SENSOR});
-        updateLocationInformation[Q4].put(EAST, new int[] {DRIVE_BASE, RIGHT_SENSOR});
-        updateLocationInformation[Q4].put(SOUTH, new int[] {LEFT_SENSOR, DRIVE_BASE});
-        updateLocationInformation[Q4].put(WEST, new int[] {BACK_SENSOR, LEFT_SENSOR});
     }
 }

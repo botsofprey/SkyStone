@@ -212,7 +212,7 @@ public class VisionHelperUltimateGoal extends Thread {
         if (targetVisible) {
             translation = lastLocation.getTranslation();
             robotLocation = new Location(0, 0);
-            robotLocation.updateXY(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch);
+            robotLocation.update(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch);
             robotOrientation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
         } else {
             robotLocation = null;
@@ -228,7 +228,7 @@ public class VisionHelperUltimateGoal extends Thread {
                 lastStoneLocation = stoneLocationTransform;
                 stoneTranslation = lastStoneLocation.getTranslation();
                 skyStoneLocation = new Location(0, 0);
-                skyStoneLocation.updateXY(stoneTranslation.get(0) / mmPerInch, stoneTranslation.get(1) / mmPerInch);
+                skyStoneLocation.update(stoneTranslation.get(0) / mmPerInch, stoneTranslation.get(1) / mmPerInch);
                 skyStoneOrientation = Orientation.getOrientation(lastStoneLocation, EXTRINSIC, XYZ, DEGREES);
             }
         } else {

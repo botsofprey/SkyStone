@@ -27,56 +27,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package UserControlled;
+package FreshmanTestingClasses;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Gamepad Controller Test", group="Testers")
-//@Disabled
-public class GamepadControllerTest extends LinearOpMode {
+@TeleOp(name="Basic: Linear OpMode", group="Testers")
+@Disabled
+public class ButtonTesting extends LinearOpMode {
+
     // create objects and locally global variables here
-
-    GamepadController controller;
+    DcMotor leftMotor, rightMotor;
 
     @Override
     public void runOpMode() {
+        leftMotor = hardwareMap.dcMotor.get("leftMotor");
+        rightMotor = hardwareMap.dcMotor.get("rightMotor");
+        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         // initialize objects and variables here
         // also create and initialize function local variables here
 
-        telemetry.addData("Test", "1");
-
-        controller = new GamepadController(gamepad1);
-
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("Another test", "2");
         telemetry.update();
-
         // nothing goes between the above and below lines
-
         waitForStart();
-
-        int timesPressed = 0;
-        int timesHeld = 0;
-
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
-            // main code goes here
 
-            controller.update(gamepad1);
+            /* main code goes here */
 
-            if (controller.aPressed()) timesPressed++;
-            if (controller.aHeld()) timesHeld++;
-
-            telemetry.addData("Times Pressed", timesPressed);
-            telemetry.addData("Times Held", timesHeld);
 
             // telemetry and logging data goes here
             telemetry.update();
         }
         // disable/kill/stop objects here
     }
+
     // misc functions here
 }
