@@ -28,6 +28,7 @@ public class WobbleGrabberV1 {
 
     public WobbleGrabberV1(HardwareMap hardwareMap) throws Exception {
         claw = hardwareMap.servo.get("wobbleGrabberClaw");
+
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // don't worry about this line. Just test what's currently in the file
