@@ -26,7 +26,7 @@ public class WobbleGrabberV1 {
     private static final double CLAW_GRAB_ANGLE = 1.0;
     private static final double CLAW_RELEASE_ANGLE = 0.5;
 
-    public WobbleGrabberV1(HardwareMap hardwareMap) throws Exception {
+    public WobbleGrabberV1(HardwareMap hardwareMap){
         claw = hardwareMap.servo.get("wobbleGrabberClaw");
         arm = hardwareMap.dcMotor.get("wobbleGrabberArm");
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
