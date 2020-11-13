@@ -16,7 +16,6 @@ public class WobbleGrabberV1 {
 
     private Servo claw;
     private MotorController arm;
-//    private MotorController armC;
 
     private static final double ARM_POWER = 0.2;
 
@@ -28,48 +27,62 @@ public class WobbleGrabberV1 {
 
     public WobbleGrabberV1(HardwareMap hardwareMap) throws Exception {
         claw = hardwareMap.servo.get("wobbleGrabberClaw");
-
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // don't worry about this line. Just test what's currently in the file
-//        armC = new MotorController("wobbleGrabberArm", "ActionConfig/WobbleArm.json", hardwareMap);
+        arm = new MotorController("wobbleGrabberArm", "ActionConfig/DefaultMotorConfig.json", hardwareMap);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     // TODO it's okay if after lifting, the motor begins to fall. Just try and get the servo to grab it and the motor to move up
     public void grabWobbleGoal() {
-        arm.setTargetPosition(ARM_DOWN_ANGLE);
-        arm.setPower(ARM_POWER);
-        while (arm.isBusy());
-        arm.setPower(0);
+//        arm.setTargetPosition(ARM_DOWN_ANGLE);
+//        arm.setPower(ARM_POWER);
+//        while (arm.isBusy());
+//        arm.setPower(0);
+//
+//        claw.setPosition(CLAW_GRAB_ANGLE);
+//
+//        arm.setTargetPosition(ARM_UP_ANGLE);
+//        arm.setPower(-ARM_POWER);
+//        while (arm.isBusy());
+//        arm.setPower(0);
+
+        lowerArm();
 
         claw.setPosition(CLAW_GRAB_ANGLE);
 
-        arm.setTargetPosition(ARM_UP_ANGLE);
-        arm.setPower(-ARM_POWER);
-        while (arm.isBusy());
-        arm.setPower(0);
+        raiseArm();
     }
 
     public void releaseWobbleGoal() {
 
-        arm.setTargetPosition(ARM_DOWN_ANGLE);
-        arm.setPower(ARM_POWER);
-        while (arm.isBusy());
-        arm.setPower(0);
+//        arm.setTargetPosition(ARM_DOWN_ANGLE);
+//        arm.setPower(ARM_POWER);
+//        while (arm.isBusy());
+//        arm.setPower(0);
+//
+//        claw.setPosition(CLAW_RELEASE_ANGLE);
+//
+//        arm.setTargetPosition(ARM_UP_ANGLE);
+//        arm.setPower(-ARM_POWER);
+//        while (arm.isBusy());
+
+        lowerArm();
 
         claw.setPosition(CLAW_RELEASE_ANGLE);
 
-        arm.setTargetPosition(ARM_UP_ANGLE);
-        arm.setPower(-ARM_POWER);
-        while (arm.isBusy());
+        raiseArm();
     }
 
-    void raiseArm() {
-        arm.setAngle(ARM_UP_ANGLE);
+    public void raiseArm() {
+        arm.setPositionDegrees(ARM_UP_ANGLE);
+        arm.setMotorPower(-ARM_POWER);
     }
 
-    void lowerArm() {
-        arm.setAngle(ARM_DOWN_ANGLE);
+    public void lowerArm() {
+        arm.setPositionDegrees(ARM_DOWN_ANGLE);
+        arm.setMotorPower(ARM_POWER);
     }
 
 }

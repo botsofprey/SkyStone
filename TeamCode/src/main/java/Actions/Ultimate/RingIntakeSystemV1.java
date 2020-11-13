@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class RingIntakeSystemV1 {
 
+    // TODO this class should be working rn
+
     private DcMotor intakeMotor;
     private boolean intakeOn;
     private boolean intakeReversed;

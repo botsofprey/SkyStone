@@ -50,22 +50,10 @@ import UserControlled.JoystickHandler;
  *
  * -------------- TLDR ---------------
  * Player One:
- *      a - toggle intake power
- *      b - toggle intake direction
- *      y - target top goal
- *      left trigger (hold) - raise hopper
- *      right trigger - fire
- *      dpad - fine shooter adjustment
- *      start - slow mode toggle
+ *      a -
  *
  * Player Two:
- *      a - grab/ungrab
- *      x - target left power shot
- *      y - target middle power shot
- *      b - target right power shot
- *      left trigger (hold) - raise hopper
- *      left/right bumper - lower/raise arm
- *      dpad up/right/down/left - arm positions 1/2/3/4
+ *      b -
  */
 
 @TeleOp(name="Ultimate V1", group="Competition")
@@ -190,39 +178,32 @@ public class UltimateV1 extends LinearOpMode {
     private void playerOneFunctions() {
 
         if (controllerOne.aPressed()) {
-            telemetry.addData("A", "pressed");
             shooter.shoot();
         }
 
         // b toggles intake direction (setting it up or down)
         if (controllerOne.bPressed()) {
-            telemetry.addData("B", "pressed");
             intake.toggleIntakeDirection();
         }
 
         if (controllerOne.yPressed()) {
-            telemetry.addData("Y", "pressed");
             intake.toggleIntakePower();
         }
 
         if (controllerOne.leftBumperPressed()) {
-            telemetry.addData("Left bumper", "pressed");
             shooter.adjustHopperAngle();
         }
 
         // left bumper lowers the arm
         if (controllerOne.rightBumperPressed()) {
-            telemetry.addData("Right bumper", "pressed");
             shooter.adjustShootingAngle();
         }
 
         if (controllerOne.dpadRightPressed()) {
-            telemetry.addData("Wobble Grabbed", "pressed");
             grabber.grabWobbleGoal();
         }
 
         if (controllerOne.dpadLeftPressed()) {
-            telemetry.addData("Wobble Released", "pressed");
             grabber.releaseWobbleGoal();
         }
 
@@ -230,7 +211,7 @@ public class UltimateV1 extends LinearOpMode {
 
     private void playerTwoFunctions() {
 
-        if (gamepad2.left_trigger > 0.1)
+        if (controllerTwo.leftBumperPressed())
             shooter.adjustHopperAngle();
 
         // left bumper lowers the arm

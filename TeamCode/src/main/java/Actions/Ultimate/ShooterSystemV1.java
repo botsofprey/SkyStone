@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import MotorControllers.MotorController;
+
 /**
  * Author: Ethan Fisher
  * Date: 10/21/2020
@@ -12,11 +14,13 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 public class ShooterSystemV1 {
 
-    private DcMotor aimMotor;
+    private MotorController aimMotor;
     private int armPosition;
     private static final int TOP_GOAL_POSITION = 30;
     private static final int POWER_SHOT_POSITION = 20;
     private static final int LOWERED_POSITION = 0;
+
+    private static final double AIM_MOTOR_POWER = 0.25;
 
     private DcMotor wheelMotor;
     private boolean wheelSpinning;
@@ -33,9 +37,9 @@ public class ShooterSystemV1 {
     private static final double PINBALL_TURNED = 0.25;
     private static final double PINBALL_REST = 0;
 
-    public ShooterSystemV1(HardwareMap hardwareMap) {
+    public ShooterSystemV1(HardwareMap hardwareMap) throws Exception {
         wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
-        aimMotor = hardwareMap.dcMotor.get("aimMotor");
+        aimMotor = new MotorController("aimMotor", "ActionConfig/DefaultMotorConfig.json", hardwareMap);
         hopperTurner = hardwareMap.servo.get("hopperTurner");
         pinballServo = hardwareMap.servo.get("pinballServo");
 
@@ -69,11 +73,18 @@ public class ShooterSystemV1 {
     }
 
     public void adjustShootingAngle() {
+        int prevPosition = armPosition;
+
         if (armPosition == TOP_GOAL_POSITION) armPosition = POWER_SHOT_POSITION;
         else if (armPosition == POWER_SHOT_POSITION) armPosition = LOWERED_POSITION;
         else armPosition = TOP_GOAL_POSITION;
 
-        aimMotor.setPower(0.3);
+        if (armPosition < prevPosition)
+            aimMotor.setMotorPower(-AIM_MOTOR_POWER);
+        else
+            aimMotor.setMotorPower(AIM_MOTOR_POWER);
+
+        aimMotor.setPositionDegrees(armPosition);
     }
 
     public void adjustHopperAngle() {
@@ -88,12 +99,13 @@ public class ShooterSystemV1 {
         double heightToShoot = targetHeight - 0; // height of shooter
     }
 
+    // TODO
     public double calculateMotorPower(double distance) {
         return 0;
     }
 
+    // TODO
     public double calculateShootingAngle(double motorPower, double distance) {
         return 0;
     }
-
 }
