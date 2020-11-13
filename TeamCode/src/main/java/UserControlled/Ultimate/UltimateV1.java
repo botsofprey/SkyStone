@@ -230,17 +230,16 @@ public class UltimateV1 extends LinearOpMode {
 
     private void playerTwoFunctions() {
 
-        // left trigger raises the hopper
-//        if (gamepad2.left_trigger > 0.1)
-//            shooter.adjustHopperAngle();
-//
-//        // left bumper lowers the arm
-//        if (controllerTwo.leftBumperPressed())
-//            shooter.adjustShootingAngle();
-//
-//        // right trigger and bumper
-//        if (controllerTwo.rightBumperPressed())
-//            shooter.raiseArm();
+        if (gamepad2.left_trigger > 0.1)
+            shooter.adjustHopperAngle();
+
+        // left bumper lowers the arm
+        if (controllerTwo.leftBumperPressed())
+            grabber.lowerArm();
+
+        // right trigger and bumper
+        if (controllerTwo.rightBumperPressed())
+            grabber.raiseArm();
 
     }
 

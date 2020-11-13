@@ -15,7 +15,7 @@ import MotorControllers.MotorController;
 public class WobbleGrabberV1 {
 
     private Servo claw;
-    private DcMotor arm;
+    private MotorController arm;
 //    private MotorController armC;
 
     private static final double ARM_POWER = 0.2;
@@ -28,7 +28,6 @@ public class WobbleGrabberV1 {
 
     public WobbleGrabberV1(HardwareMap hardwareMap) throws Exception {
         claw = hardwareMap.servo.get("wobbleGrabberClaw");
-        arm = hardwareMap.dcMotor.get("wobbleGrabberArm");
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // don't worry about this line. Just test what's currently in the file
@@ -62,6 +61,14 @@ public class WobbleGrabberV1 {
         arm.setTargetPosition(ARM_UP_ANGLE);
         arm.setPower(-ARM_POWER);
         while (arm.isBusy());
+    }
+
+    void raiseArm() {
+        arm.setAngle
+    }
+
+    void lowerArm() {
+
     }
 
 }
