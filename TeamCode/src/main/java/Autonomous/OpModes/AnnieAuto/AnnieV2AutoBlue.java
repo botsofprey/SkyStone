@@ -29,7 +29,7 @@
 
 package Autonomous.OpModes.AnnieAuto;
 
-import android.graphics.Bitmap;
+//import android.graphics.Bitmap;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -98,25 +98,25 @@ public class AnnieV2AutoBlue extends LinearOpMode {
         // LOOK IF YOU SEE BLACK ON THE SCREEN, IF SO, GO TO THE PROPER LIDAR DISTANCE FROM THE WALL TO GET THAT SKYSTONE!!!
 
 //        Search for skystone and break if found
-        boolean skystoneFound = false;
-        while (opModeIsActive() && right.getDistance(INCH) > 5.5) {
-            if(!skystoneFound) robot.driveOnHeadingPID(AnnieNavigation.RIGHT,10, this);  //NOTE: MOVING RIGHT
-            Bitmap bmp = null;
-            ArrayList<Integer> blockCenters;
-            long timeStart = System.currentTimeMillis();
-            while (bmp == null && System.currentTimeMillis() - timeStart < 50) {
-                bmp = vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT);
-            }
-            if(bmp != null){
-                blockCenters = stoneFinder.findColumns(bmp, false);
-
-                if (blockCenters.size() > 0) {
-//                telemetry.addData("Skystone", "" + blockCenters.get(0));
-                    skystoneFound = true;
-                    if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 3, 30,this)) break; //Get left-most skystone
-                }else skystoneFound = false;
-            }
-        }
+//        boolean skystoneFound = false;
+//        while (opModeIsActive() && right.getDistance(INCH) > 5.5) {
+//            if(!skystoneFound) robot.driveOnHeadingPID(AnnieNavigation.RIGHT,10, this);  //NOTE: MOVING RIGHT
+//            Bitmap bmp = null;
+//            ArrayList<Integer> blockCenters;
+//            long timeStart = System.currentTimeMillis();
+//            while (bmp == null && System.currentTimeMillis() - timeStart < 50) {
+//                bmp = vuforia.getImage(SkystoneImageProcessor.DESIRED_WIDTH, SkystoneImageProcessor.DESIRED_HEIGHT);
+//            }
+//            if(bmp != null){
+//                blockCenters = stoneFinder.findColumns(bmp, false);
+//
+//                if (blockCenters.size() > 0) {
+////                telemetry.addData("Skystone", "" + blockCenters.get(0));
+//                    skystoneFound = true;
+//                    if(robot.centerOnSkystone((blockCenters.size() == 1)? blockCenters.get(0):blockCenters.get(1), 3, 30,this)) break; //Get left-most skystone
+//                }else skystoneFound = false;
+//            }
+//        }
         robot.brake();
 
 //      Grab skystone

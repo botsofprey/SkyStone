@@ -50,10 +50,22 @@ import UserControlled.JoystickHandler;
  *
  * -------------- TLDR ---------------
  * Player One:
- *      a -
+ *      a - toggle intake power
+ *      b - toggle intake direction
+ *      y - target top goal
+ *      left trigger (hold) - raise hopper
+ *      right trigger - fire
+ *      dpad - fine shooter adjustment
+ *      start - slow mode toggle
  *
  * Player Two:
- *      b -
+ *      a - grab/ungrab
+ *      x - target left power shot
+ *      y - target middle power shot
+ *      b - target right power shot
+ *      left trigger (hold) - raise hopper
+ *      left/right bumper - lower/raise arm
+ *      dpad up/right/down/left - arm positions 1/2/3/4
  */
 
 @TeleOp(name="Ultimate V1", group="Competition")
