@@ -28,6 +28,8 @@ import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_LEFT;
  */
 public class UltimateAutonomous {
 
+    // TODO test this class
+
     private final AutoAlliance alliance;
     private final LinearOpMode mode;
     private final HardwareMap hardwareMap;
@@ -67,12 +69,10 @@ public class UltimateAutonomous {
     }
 
     public void driveToWobbleGoal() {
-        // TODO
         robot.driveToLocation(RED_WOBBLE_GOAL_LEFT, MAX_SPEED, mode);
     }
 
     public void moveToZone(int numRings) {
-        // TODO (Check location measurements, assumed to be in cm)
         if (numRings == 0)
             driveToLocation(wobbleZone = RED_ZONE_ONE);
 

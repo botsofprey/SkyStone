@@ -178,39 +178,32 @@ public class UltimateV1 extends LinearOpMode {
     private void playerOneFunctions() {
 
         if (controllerOne.aPressed()) {
-            telemetry.addData("A", "pressed");
             shooter.shoot();
         }
 
         // b toggles intake direction (setting it up or down)
         if (controllerOne.bPressed()) {
-            telemetry.addData("B", "pressed");
             intake.toggleIntakeDirection();
         }
 
         if (controllerOne.yPressed()) {
-            telemetry.addData("Y", "pressed");
             intake.toggleIntakePower();
         }
 
         if (controllerOne.leftBumperPressed()) {
-            telemetry.addData("Left bumper", "pressed");
             shooter.adjustHopperAngle();
         }
 
         // left bumper lowers the arm
         if (controllerOne.rightBumperPressed()) {
-            telemetry.addData("Right bumper", "pressed");
             shooter.adjustShootingAngle();
         }
 
         if (controllerOne.dpadRightPressed()) {
-            telemetry.addData("Wobble Grabbed", "pressed");
             grabber.grabWobbleGoal();
         }
 
         if (controllerOne.dpadLeftPressed()) {
-            telemetry.addData("Wobble Released", "pressed");
             grabber.releaseWobbleGoal();
         }
 
@@ -218,17 +211,16 @@ public class UltimateV1 extends LinearOpMode {
 
     private void playerTwoFunctions() {
 
-        // left trigger raises the hopper
-//        if (gamepad2.left_trigger > 0.1)
-//            shooter.adjustHopperAngle();
-//
-//        // left bumper lowers the arm
-//        if (controllerTwo.leftBumperPressed())
-//            shooter.adjustShootingAngle();
-//
-//        // right trigger and bumper
-//        if (controllerTwo.rightBumperPressed())
-//            shooter.raiseArm();
+        if (controllerTwo.leftBumperPressed())
+            shooter.adjustHopperAngle();
+
+        // left bumper lowers the arm
+        if (controllerTwo.leftBumperPressed())
+            grabber.lowerArm();
+
+        // right trigger and bumper
+        if (controllerTwo.rightBumperPressed())
+            grabber.raiseArm();
 
     }
 

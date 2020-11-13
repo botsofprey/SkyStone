@@ -68,7 +68,7 @@ public class UltimateV1AutoRed extends LinearOpMode {
      *          your own testing class by copying one of the opModes already made. Add a ring detector object
      *          (Reference this class to see how vuforia is initialized along with the color detector).
      *          Change the tolerance and test it out until it works well. If it has detected the desired
-     *          amout of red, grab the wobble goal
+     *          amount of red, grab the wobble goal
      *  2. In the WobbleGrabber class, there is an arm and a claw. You did most of the claw yesterday,
      *          so I want you to finish that quickly. Next, I want you to look at the SpoolMotor class
      *          (in Actions/HardwareWrappers) there should be code the allows the motor to go to a
