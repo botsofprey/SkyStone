@@ -64,11 +64,11 @@ public class WobbleGrabberV1 {
     }
 
     void raiseArm() {
-        arm.setAngle
+        arm.setAngle(ARM_UP_ANGLE);
     }
 
     void lowerArm() {
-
+        arm.setAngle(ARM_DOWN_ANGLE);
     }
 
 }
