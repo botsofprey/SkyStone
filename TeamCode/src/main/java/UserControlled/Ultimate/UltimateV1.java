@@ -31,6 +31,7 @@ package UserControlled.Ultimate;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import Actions.Ultimate.RingIntakeSystemV1;
 import Actions.Ultimate.ShooterSystemV1;
@@ -40,6 +41,8 @@ import Autonomous.ColorDetector;
 import Autonomous.Location;
 import Autonomous.VuforiaHelper;
 import DriveEngine.Ultimate.UltimateNavigation;
+import SensorHandlers.LimitSwitch;
+import SensorHandlers.MagneticLimitSwitch;
 import UserControlled.GamepadController;
 import UserControlled.JoystickHandler;
 
@@ -71,6 +74,8 @@ public class UltimateV1 extends LinearOpMode {
 
     ColorDetector redDetector;
 
+    MagneticLimitSwitch wobbleBottom, wobbleTop;
+
     boolean eStop = false, slowMode = false;
 
     @Override
@@ -99,12 +104,9 @@ public class UltimateV1 extends LinearOpMode {
         // initialize red detector
         redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
 
-//        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
-//                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
-//                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"),
-//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"),
-//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "leftArmStop"), "leftArmStop"),
-//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "rightArmStop"), "rightArmStop"));
+        // initialize limit switches
+        wobbleBottom = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("wobbleBottomSwitch"));
+        wobbleTop = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("wobbleBottomTop"));
 
         // initialize joysticks
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
@@ -146,9 +148,7 @@ public class UltimateV1 extends LinearOpMode {
                     playerTwoFunctions();
                 }
 
-                // TODO this is what I was wanting. If the color detector sees enough red, the wobble goal should be grabbed
-                if (redDetector.shouldGrabWobbleGoal())
-                    grabber.grabWobbleGoal();
+                controlMiscFunctions();
             }
 
             if (eStop)
@@ -222,6 +222,25 @@ public class UltimateV1 extends LinearOpMode {
         if (controllerTwo.rightBumperPressed())
             grabber.raiseArm();
 
+    }
+
+    private void controlMiscFunctions() {
+        if (redDetector.shouldGrabWobbleGoal())
+            grabber.grabWobbleGoal();
+
+        // TODO uncomment
+//        // if the wobble goal has negative motor power going down, stop it
+//        if (wobbleTop.isActivated() && grabber.isGoingUp()) {
+//            grabber.holdPosition();
+//        }
+//
+//        // if the wobble goal has positive motor power going up, stop it
+//        if (wobbleBottom.isActivated() && grabber.isGoingDown()) {
+//            grabber.holdPosition();
+//        }
+
+//        if (grabber.getRedPixels() > WobbleGrabberV1.PIXELS_FOR_WOBBLE_GRAB)
+//            grabber.grabWobbleGoal();
     }
 
     private void stopActions() {

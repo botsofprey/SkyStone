@@ -290,4 +290,7 @@ public class MotorController extends Thread {
     private void logError(String main, String sub){
         Log.d(motor.getDeviceName(), logTag + ":" + main + ":" + sub);
     }
+
+    public DcMotor getMotor() { return motor; }
+    public double getTicksPerDegree() { return ticksPerDegree; }
 }

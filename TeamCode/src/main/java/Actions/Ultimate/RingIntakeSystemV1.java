@@ -33,6 +33,7 @@ public class RingIntakeSystemV1 {
         }
     }
 
+    // the following are used in auto
     public void forwardIntake() {
         intakeReversed = false;
         intakeMotor.setPower(intakeOn ? MOTOR_POWER : 0);

@@ -29,36 +29,38 @@
 
 package UserControlled;
 
-import android.util.Log;
-
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import Autonomous.Location;
-import DriveEngine.Ultimate.UltimateNavigation;
+import Actions.Ultimate.WobbleGrabberV1;
+import MotorControllers.MotorController;
 
-import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_LEFT;
-
-@TeleOp(name="Record JSON", group="Competition")
+@TeleOp(name="Systems Test", group="Competition")
 //@Disabled
-public class DriveToLocationTest extends LinearOpMode {
+public class SystemsTest extends LinearOpMode {
     // create objects and locally global variables here
 
-    UltimateNavigation robot;
+    GamepadController controller;
 
     @Override
     public void runOpMode() {
 
-        Location startLocation = new Location(STARTING_ROBOT_LOCATION_LEFT, UltimateNavigation.NORTH);
+        controller = new GamepadController(gamepad1);
 
+        WobbleGrabberV1 grabber = null;
         try {
-            robot = new UltimateNavigation(hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
+            grabber = new WobbleGrabberV1(hardwareMap);
         } catch (Exception e) {
-            telemetry.addData("Robot Error", e.toString());
+            telemetry.addData("Systems Error", e.toString());
         }
 
         telemetry.addData("Status", "Initialized");
@@ -66,11 +68,17 @@ public class DriveToLocationTest extends LinearOpMode {
 
         waitForStart();
 
-        // drive forward and right
-        // TODO play around with the x and y. If that works, try changing the heading too
-        Location locationToDrive = new Location(startLocation.getX() + 30, startLocation.getY() + 30, startLocation.getHeading());
-        robot.driveToLocation(locationToDrive, UltimateNavigation.MAX_SPEED, this);
-        robot.brake();
+        while(opModeIsActive()) {
+            controller.update(gamepad1);
+            boolean wobbleGrabbed = false;
+            if (controller.xPressed()) {
+                grabber.lowerArm();
+                grabber.grabWobbleGoal();
+            }
+
+            telemetry.addData("Cur Tick", grabber.arm.getCurrentTick() + "");
+            telemetry.update();
+        }
     }
-    // misc functions here
+
 }

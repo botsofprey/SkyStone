@@ -55,9 +55,14 @@ public class UltimateAutonomous {
         vuforia = new VuforiaHelper(hardwareMap);
         ringDetector = new ColorDetector(vuforia, 0xFF, 0xa5, 0x00, 0x30);
 
-        wobbleGrabber = new WobbleGrabberV1(hardwareMap);
-        shooter = new ShooterSystemV1(hardwareMap);
-        intake = new RingIntakeSystemV1(hardwareMap);
+        try {
+            wobbleGrabber = new WobbleGrabberV1(hardwareMap);
+            shooter = new ShooterSystemV1(hardwareMap);
+            intake = new RingIntakeSystemV1(hardwareMap);
+        } catch (Exception e) {
+            mode.telemetry.addData("Systems Error", e.toString());
+            mode.telemetry.update();
+        }
 
         try {
             Location startLocation = redToBlue(STARTING_ROBOT_LOCATION_LEFT);
