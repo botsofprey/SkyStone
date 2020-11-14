@@ -29,20 +29,13 @@
 
 package UserControlled;
 
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 import Actions.Ultimate.WobbleGrabberV1;
-import MotorControllers.MotorController;
+import SensorHandlers.MagneticLimitSwitch;
 
 @TeleOp(name="Systems Test", group="Competition")
 //@Disabled
@@ -51,17 +44,20 @@ public class SystemsTest extends LinearOpMode {
 
     GamepadController controller;
 
+    private Servo aimServo;
+
+    // TODO get numbers for these variables
+    private static final double TOP_GOAL_POSITION = 1;
+    private static final double POWER_SHOT_POSITION = 0.8;
+    private static final double LOWERED_POSITION = 0.5;
+
     @Override
     public void runOpMode() {
 
         controller = new GamepadController(gamepad1);
 
-        WobbleGrabberV1 grabber = null;
-        try {
-            grabber = new WobbleGrabberV1(hardwareMap);
-        } catch (Exception e) {
-            telemetry.addData("Systems Error", e.toString());
-        }
+        aimServo = hardwareMap.servo.get("aimServo");
+        aimServo.setPosition(1);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -70,15 +66,14 @@ public class SystemsTest extends LinearOpMode {
 
         while(opModeIsActive()) {
             controller.update(gamepad1);
-            boolean wobbleGrabbed = false;
-            if (controller.xPressed()) {
-                grabber.lowerArm();
-                grabber.grabWobbleGoal();
-            }
 
-            telemetry.addData("Cur Tick", grabber.arm.getCurrentTick() + "");
+            if (controller.dpadUpPressed())
+                aimServo.setPosition(aimServo.getPosition() - 0.05);
+            if (controller.dpadDownPressed())
+                aimServo.setPosition(aimServo.getPosition() + 0.05);
+
+            telemetry.addData("Servo Angle", aimServo.getPosition());
             telemetry.update();
         }
     }
-
 }

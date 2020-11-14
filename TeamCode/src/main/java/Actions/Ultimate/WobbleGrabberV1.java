@@ -16,27 +16,28 @@ import MotorControllers.MotorController;
  *
  * Used for grabbing and releasing the wobble goal
  */
-public class WobbleGrabberV1 {
+public class WobbleGrabberV1 extends Thread {
 
     // TODO test grabbing
 
-    private Servo claw;
+    public Servo claw;
     public MotorController arm;
-    private RevColorSensorV3 redSensor;
+//    private RevColorSensorV3 redSensor;
 
-    private static final double ARM_POWER_UP = -0.8;
-    private static final double ARM_POWER_DOWN = 0.1;
+    private static final double ARM_POWER_UP = -0.5;
+    private static final double ARM_POWER_DOWN = 0.2;
+
+    private static final long ARM_TICKS_PER_SECOND = 300;
 
     private static final int ARM_DOWN_TICKS = 240;
     private static final int ARM_UP_TICKS = 0;
 
-    private static final double CLAW_GRAB_ANGLE = 0.0;
-    private static final double CLAW_RELEASE_ANGLE = 0.5;
+    public static final double CLAW_GRAB_ANGLE = 0.0;
+    public static final double CLAW_RELEASE_ANGLE = 0.5;
 
     public static final int PIXELS_FOR_WOBBLE_GRAB = 0;
 
-    private boolean goingUp;
-    private boolean goingDown;
+    public boolean wobbleGrabbed;
 
     public WobbleGrabberV1(HardwareMap hardwareMap) throws Exception {
         claw = hardwareMap.servo.get("wobbleGrabberClaw");
@@ -44,70 +45,29 @@ public class WobbleGrabberV1 {
         // don't worry about this line. Just test what's currently in the file
         arm = new MotorController("wobbleGrabberArm", "ActionConfig/WobbleArmConfig.json", hardwareMap);
 
-        redSensor = hardwareMap.get(RevColorSensorV3.class, "redSensor");
+//        redSensor = hardwareMap.get(RevColorSensorV3.class, "redSensor");
 
-        goingUp = false;
-        goingDown = false;
+        wobbleGrabbed = false;
     }
 
-    // TODO it's okay if after lifting, the motor begins to fall. Just try and get the servo to grab it and the motor to move up
-    public void grabWobbleGoal() {
-//        arm.setTargetPosition(ARM_DOWN_ANGLE);
-//        arm.setPower(ARM_POWER);
-//        while (arm.isBusy());
-//        arm.setPower(0);
-//
-//        claw.setPosition(CLAW_GRAB_ANGLE);
-//
-//        arm.setTargetPosition(ARM_UP_ANGLE);
-//        arm.setPower(-ARM_POWER);
-//        while (arm.isBusy());
-//        arm.setPower(0);
-
-        lowerArm();
-        claw.setPosition(CLAW_GRAB_ANGLE);
-        raiseArm();
+    public void lowerArm(double motorSpeed) {
+//        arm.setTicksPerSecondVelocity(ARM_TICKS_PER_SECOND);
+        arm.setPositionDegrees(150, motorSpeed);
     }
 
-    public void releaseWobbleGoal() {
-
-//        arm.setTargetPosition(ARM_DOWN_ANGLE);
-//        arm.setPower(ARM_POWER);
-//        while (arm.isBusy());
-//        arm.setPower(0);
-//
-//        claw.setPosition(CLAW_RELEASE_ANGLE);
-//
-//        arm.setTargetPosition(ARM_UP_ANGLE);
-//        arm.setPower(-ARM_POWER);
-//        while (arm.isBusy());
-
-        lowerArm();
-        claw.setPosition(CLAW_RELEASE_ANGLE);
-        raiseArm();
+    public void addAngle(double dAngle, double motorSpeed) {
+        arm.setPositionDegrees(arm.getDegree() - dAngle, motorSpeed);
     }
 
-    public void raiseArm() {
-        goingDown = false;
-        goingUp = true;
+    public void grabWobbleGoal() { claw.setPosition(CLAW_GRAB_ANGLE); }
+    public void releaseWobbleGoal() { claw.setPosition(CLAW_RELEASE_ANGLE); }
 
-        arm.setPositionTicks(ARM_UP_TICKS);
-        arm.setMotorPower(ARM_POWER_UP);
+    public void grabOrReleaseWobbleGoal() {
+        if (wobbleGrabbed) releaseWobbleGoal();
+        else grabWobbleGoal();
+        wobbleGrabbed = !wobbleGrabbed;
     }
 
-    public void lowerArm() {
-        goingDown = true;
-        goingUp = false;
-
-        arm.setPositionTicks(ARM_DOWN_TICKS);
-        arm.setMotorPower(ARM_POWER_DOWN);
-    }
-
-    public void holdPosition() { arm.holdPosition(); }
-
-    public boolean isGoingUp() { return goingUp; }
-    public boolean isGoingDown() { return goingDown; }
-
-    public int getRedPixels() { return redSensor.red(); }
+//    public int getRedPixels() { return redSensor.red(); }
 
 }

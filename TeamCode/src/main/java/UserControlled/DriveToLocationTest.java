@@ -43,7 +43,7 @@ import DriveEngine.Ultimate.UltimateNavigation;
 
 import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_LEFT;
 
-@TeleOp(name="Record JSON", group="Competition")
+@TeleOp(name="Drive To Location", group="Competition")
 //@Disabled
 public class DriveToLocationTest extends LinearOpMode {
     // create objects and locally global variables here
