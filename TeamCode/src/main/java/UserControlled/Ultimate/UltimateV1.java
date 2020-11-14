@@ -228,7 +228,7 @@ public class UltimateV1 extends LinearOpMode {
     }
 
     private void controlMiscFunctions() {
-        shooter.update();
+        shooter.update(this);
     }
 
     private void stopActions() {

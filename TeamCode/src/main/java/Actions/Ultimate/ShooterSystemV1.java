@@ -32,9 +32,9 @@ public class ShooterSystemV1 {
 
     // good
     private CRServo elevatorServo;
-    public int elevatorPosition;
     private static final int TOP = 0;
     private static final int BOTTOM = 1;
+    public int elevatorPosition = TOP;
     private MagneticLimitSwitch elevatorSwitch;
 
     // good
@@ -101,12 +101,14 @@ public class ShooterSystemV1 {
         }
     }
 
-    public void update() {
+    public void update(LinearOpMode mode) {
         if (elevatorSwitch.isActivated()) {
-            if (elevatorServo.getPower() < 0)
+            if (elevatorServo.getPower() < 0) {
                 elevatorPosition = TOP;
-            else
+            }
+            else if (elevatorServo.getPower() > 0){ //watch out for the zero case because then the robot will think its at the bottom when its at the top
                 elevatorPosition = BOTTOM;
+            }
             elevatorServo.setPower(0);
         } else elevatorPosition = 2;
     }

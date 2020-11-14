@@ -16,7 +16,7 @@ public class RingIntakeSystemV1 {
     public RingIntakeSystemV1(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
         intakeOn = false;
-        intakeReversed = false;
+        intakeReversed = true;
     }
 
     public void toggleIntakePower() {
