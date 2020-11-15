@@ -47,37 +47,6 @@ import Autonomous.AutoAlliance;
 //@Disabled
 public class UltimateV1AutoRed extends LinearOpMode {
 
-    /**
-     * Always remember to pull from github before you start programming, and push after you are done
-     *
-     * If you need help, I will be unavailable during robotics but if you ask on discord I can help
-     * you when I'm not working. Good luck!
-     *
-     * TODO assignment 11/10/2020:
-     *  1. Finish off anything in teleop that may have been added to the robot
-     *  2. Configure the robot to add distance sensors called "left", "back", and "right"
-     *          (ask what type they are when you add them to the configuration)
-     *  3. Test drive to location (in UserControlled/DriveToLocationTest). It won't be perfect,
-     *          but it should get quite close. Play around with the x and y and see how accurate
-     *          it is. You can try changing the heading, but I'm not sure Jordan added that last year
-     *  4. If you finish this, move on to tomorrow's assignment
-     *
-     * TODO assignment 11/12/2020:
-     *  1. There is going to be a color sensor on the wobble grabber. Its purpose is to detect when
-     *          a lot of red is on the screen to know when to pick up the wobble goal. I would create
-     *          your own testing class by copying one of the opModes already made. Add a ring detector object
-     *          (Reference this class to see how vuforia is initialized along with the color detector).
-     *          Change the tolerance and test it out until it works well. If it has detected the desired
-     *          amount of red, grab the wobble goal
-     *  2. In the WobbleGrabber class, there is an arm and a claw. You did most of the claw yesterday,
-     *          so I want you to finish that quickly. Next, I want you to look at the SpoolMotor class
-     *          (in Actions/HardwareWrappers) there should be code the allows the motor to go to a
-     *          certain point and uses a PID controller to hold that value. Copy that code and add
-     *          it to the test class you made in assignment 1 for today. Change some of the angles and
-     *          such so the arm with be able to lift the wobble goal and hold it at a desired position.
-     *  3. Start testing UltimateV1AutoRed
-     */
-
     @Override
     public void runOpMode() {
 
@@ -91,34 +60,43 @@ public class UltimateV1AutoRed extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        // if (opModeIsActive()) goes before all of statements in case the 30 seconds is up
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // drive to the wobble goal
-        robot.driveToWobbleGoal();
+        // TODO the robot should start with the wobble goal
+//        // drive to the wobble goal
+//        robot.driveToWobbleGoal();
+//
+//        // grab the wobble goal
+//        robot.getWobbleGrabber().grabWobbleGoal();
 
-        // grab the wobble goal
-        robot.getWobbleGrabber().grabWobbleGoal();
+        // move to the zone with the wobble goal and release it
+        if (opModeIsActive()) robot.moveToZone(numRings);
+        if (opModeIsActive()) robot.getWobbleGrabber().releaseWobbleGoal();
 
-        // move to the zone with the wobble goal
-        robot.moveToZone(numRings);
+        // grab the second wobble goal
+        if (opModeIsActive()) robot.driveToSecondWobbleGoal();
+        if (opModeIsActive()) robot.getWobbleGrabber().grabWobbleGoal();
 
-        // release the wobble goal
-        robot.getWobbleGrabber().releaseWobbleGoal();
+        // move it to the same zone and drop it
+        if (opModeIsActive()) robot.moveToZone(numRings);
+        if (opModeIsActive()) robot.getWobbleGrabber().releaseWobbleGoal();
 
         // move behind shot line, rotate towards powershots,  and shoot them
-        robot.moveBehindShootLine();
-        robot.turnToZero();
-        robot.shootPowerShots();
+        if (opModeIsActive()) robot.moveBehindShootLine();
+        if (opModeIsActive()) robot.turnToZero();
+        if (opModeIsActive()) robot.shootPowerShots();
 
         // drive back to the starting rings
-        robot.driveToStartingRings();
+        if (opModeIsActive()) robot.driveToStartingRings();
 
         // ??? Maybe grab three rings at the end ???
-        robot.grabStartingPileRings();
+        if (opModeIsActive()) robot.grabStartingPileRings();
 
         // park on the line and stop
-        robot.park();
+        if (opModeIsActive()) robot.park();
         robot.stop();
 
         // run until the end of the match (driver presses STOP)
