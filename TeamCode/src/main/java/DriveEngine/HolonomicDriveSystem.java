@@ -240,7 +240,7 @@ public class HolonomicDriveSystem {
     private void readConfigAndInitialize(String file){
         InputStream stream = null;
         try {
-            stream = hardwareMap.appContext.getAssets().openFile();
+            stream = hardwareMap.appContext.getAssets().open(file);
         }
         catch(Exception e){
             Log.d("Drive Engine Error: ",e.toString());

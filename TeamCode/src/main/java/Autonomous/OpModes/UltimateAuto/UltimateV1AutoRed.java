@@ -53,6 +53,9 @@ public class UltimateV1AutoRed extends LinearOpMode {
         // initialize robot
         UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, this);
 
+        telemetry.addData("Robot Created", "");
+        telemetry.update();
+
         // get number of rings and log them
         int numRings = robot.getRingDetector().getNumRings();
         telemetry.addData("Rings Found", numRings);
