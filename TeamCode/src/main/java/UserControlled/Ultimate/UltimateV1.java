@@ -31,13 +31,18 @@ package UserControlled.Ultimate;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import Actions.Ultimate.RingIntakeSystemV1;
 import Actions.Ultimate.ShooterSystemV1;
 import Actions.Ultimate.WobbleGrabberV1;
 import Actions.WobbleGrabberCaidenTest;
+import Autonomous.ColorDetector;
 import Autonomous.Location;
+import Autonomous.VuforiaHelper;
 import DriveEngine.Ultimate.UltimateNavigation;
+import SensorHandlers.LimitSwitch;
+import SensorHandlers.MagneticLimitSwitch;
 import UserControlled.GamepadController;
 import UserControlled.JoystickHandler;
 
@@ -48,24 +53,37 @@ import UserControlled.JoystickHandler;
  *
  * -------------- TLDR ---------------
  * Player One:
- *      a -
+ *      joysticks - drive base
+ *      start - slow mode
+ *      a - shoot
+ *      dpad up and down - raise and lower shooter angle
+ *      right bumper - raise elevator
+ *      left bumper - lower elevator
  *
  * Player Two:
- *      b -
+ *      b - intake direction
+ *      a - intake power
+ *      dpad up and down - raise and lower wobble grabber arm
+ *      x - resets arm position for grabbing wobble goal
+ *      y - grabbing or releasing wobble goal
  */
 
 @TeleOp(name="Ultimate V1", group="Competition")
 //@Disabled
 public class UltimateV1 extends LinearOpMode {
 
+    // TODO add speed values and angles when using the wobble grabber
+
     // create objects and locally global variables here
-    //UltimateNavigation robot;
-//    JoystickHandler leftStick, rightStick;
+    UltimateNavigation robot;
+    JoystickHandler leftStick, rightStick;
     GamepadController controllerOne, controllerTwo;
 
-//    RingIntakeSystemV1 intake;
-//    ShooterSystemV1 shooter;
-    WobbleGrabberCaidenTest grabber;
+    RingIntakeSystemV1 intake;
+    ShooterSystemV1 shooter;
+    WobbleGrabberV1 grabber;
+
+//    ColorDetector redDetector;
 
     boolean eStop = false, slowMode = false;
 
@@ -75,31 +93,30 @@ public class UltimateV1 extends LinearOpMode {
         // also create and initialize function local variables here
 
         // initialize robot
+        // TODO get starting angle
         try {
-//            robot = new UltimateNavigation(hardwareMap, new Location(0, 0, 270), "RobotConfig/UltimateV1.json");
+            robot = new UltimateNavigation(hardwareMap, new Location(0, 0, 270), "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
             telemetry.addData("Robot Error", e.toString());
             telemetry.update();
         }
 
-//        if(robot == null)
-//            telemetry.addData("Robot is null!","");
-
         // initialize systems
-//        intake = new RingIntakeSystemV1(hardwareMap);
-//        shooter = new ShooterSystemV1(hardwareMap);
-        grabber = new WobbleGrabberCaidenTest(hardwareMap);
+        try {
+            intake = new RingIntakeSystemV1(hardwareMap);
+            shooter = new ShooterSystemV1(hardwareMap);
+            grabber = new WobbleGrabberV1(hardwareMap);
+        } catch (Exception e) {
+            telemetry.addData("Systems Error", e.toString());
+            telemetry.update();
+        }
 
-//        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
-//                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
-//                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"),
-//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"),
-//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "leftArmStop"), "leftArmStop"),
-//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "rightArmStop"), "rightArmStop"));
+        // initialize red detector
+//        redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
 
         // initialize joysticks
-//        leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
-//        rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
+        leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
+        rightStick = new JoystickHandler(gamepad1, JoystickHandler.RIGHT_JOYSTICK);
 
         // initialize controllers
         controllerOne = new GamepadController(gamepad1);
@@ -113,6 +130,9 @@ public class UltimateV1 extends LinearOpMode {
 
         waitForStart();
 
+        // puts the pinball servo on the outside
+        shooter.pinballServo.setPosition(ShooterSystemV1.PINBALL_REST);
+
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
@@ -125,7 +145,7 @@ public class UltimateV1 extends LinearOpMode {
                     slowMode = !slowMode;
 
                 updateEStop();
-//                controlDrive();
+                controlDrive();
 
                 updateEStop();
 
@@ -136,6 +156,8 @@ public class UltimateV1 extends LinearOpMode {
                     playerOneFunctions();
                     playerTwoFunctions();
                 }
+
+                controlMiscFunctions();
             }
 
             if (eStop)
@@ -146,95 +168,70 @@ public class UltimateV1 extends LinearOpMode {
         }
 
         // disable/kill/stop objects here
-//        robot.stopNavigation();
+        robot.stopNavigation();
     }
 
     // misc functions here
     private void updateEStop() {
-//        if ((controllerOne.dpadDownHeld() && gamepad1.back) || (controllerTwo.dpadDownHeld() && gamepad2.back))
-//            eStop = !eStop;
+        if ((controllerOne.dpadDownHeld() && gamepad1.back) || (controllerTwo.dpadDownHeld() && gamepad2.back))
+            eStop = !eStop;
     }
 
     private void controlDrive() {
-//        double drivePower = slowMode ? leftStick.magnitude() / 3 : leftStick.magnitude();
-//        double turnPower = slowMode ? rightStick.x() / 4 : rightStick.x();
-//        if (!eStop)
-//            robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
+        double drivePower = slowMode ? leftStick.magnitude() / 3 : leftStick.magnitude();
+        double turnPower = slowMode ? rightStick.x() / 4 : rightStick.x();
+        if (!eStop)
+            robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
     }
 
     private void playerOneFunctions() {
 
-        if (controllerOne.aPressed()) {
-            telemetry.addData("A", "pressed");
-//            shooter.shoot();
-        }
+        if (controllerOne.aPressed())
+            shooter.shoot();
 
-        // b toggles intake direction (setting it up or down)
-        if (controllerOne.bPressed()) {
-            telemetry.addData("B", "pressed");
-//            intake.toggleIntakeDirection();
-        }
+        if (controllerOne.bPressed())
+            shooter.toggleWheelPower();
 
-        if (controllerOne.yPressed()) {
-            telemetry.addData("Y", "pressed");
-//            intake.toggleIntakePower();
-        }
+        if (controllerOne.dpadUpPressed())
+            shooter.raiseShooter(0.05);
 
-        // y grabs the wobble goal
-//        if (controllerOne.yPressed())
-//            grabber.grabWobbleGoal();
-        // left trigger raises the hopper
+        if (controllerOne.dpadDownPressed())
+            shooter.lowerShooter(0.05);
 
-        if (controllerOne.leftBumperPressed()) {
-            telemetry.addData("Left bumper", "pressed");
-//            shooter.adjustHopperAngle();
-        }
+        if (controllerOne.rightBumperPressed())
+            shooter.raiseElevator(this);
 
-        // left bumper lowers the arm
-        if (controllerOne.rightBumperPressed()) {
-            telemetry.addData("Right bumper", "pressed");
-//            shooter.adjustShootingAngle();
-        }
-
-        if (controllerOne.dpadRightPressed()) {
-            telemetry.addData("Wobble Grabbed", "pressed");
-            grabber.grabWobbleGoal();
-        }
-
-        if (controllerOne.dpadLeftPressed()) {
-            telemetry.addData("Wobble Released", "pressed");
-            grabber.releaseWobbleGoal();
-        }
-
-        // d pad fine adjusts the shooter angle
-        if (controllerOne.dpadUpPressed()) {
-            telemetry.addData("Hopper raised", "pressed");
-            shooter.fineAdjustHopperAngleUp();
-        }
-
-        if (controllerOne.dpadDownPressed()) {
-            telemetry.addData("Hopper lowered", "pressed");
-            shooter.fineAdjustHopperAngleDown();
-        }
+        if (controllerOne.leftBumperPressed())
+            shooter.lowerElevator(this);
     }
 
     private void playerTwoFunctions() {
 
-        // left trigger raises the hopper
-//        if (gamepad2.left_trigger > 0.1)
-//            shooter.adjustHopperAngle();
+        if (controllerTwo.xPressed())
+            grabber.lowerArm(0.2);
 
-        // left bumper lowers the arm
-//        if (controllerTwo.leftBumperPressed())
-//            shooter.adjustShootingAngle();
+        if (controllerTwo.yPressed())
+            grabber.grabOrReleaseWobbleGoal();
 
-        // right trigger and bumper
-//        if (controllerTwo.rightBumperPressed())
-//            shooter.raiseArm();
+        if (controllerTwo.dpadUpPressed())
+            grabber.addAngle(15, 0.2);
+
+        if (controllerTwo.dpadDownPressed())
+            grabber.addAngle(-15, 0.2);
+
+        if (controllerTwo.bPressed())
+            intake.toggleIntakeDirection();
+
+        if (controllerTwo.aPressed())
+            intake.toggleIntakePower();
 
     }
 
+    private void controlMiscFunctions() {
+        shooter.update(this);
+    }
+
     private void stopActions() {
-//        robot.brake();
+        robot.brake();
     }
 }

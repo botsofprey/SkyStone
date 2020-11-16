@@ -71,8 +71,17 @@ public class ConfigVariables {
     public static final Location RED_WOBBLE_GOAL_LEFT = new Location(0, -120);
     public static final Location RED_WOBBLE_GOAL_RIGHT = new Location(60, -120);
 
-    public static final Location STARTING_ROBOT_LOCATION_LEFT = new Location(0, -165);
-    public static final Location STARTING_ROBOT_LOCATION_RIGHT = new Location(60, -165);
+    public static final Location STARTING_ROBOT_LOCATION_LEFT = new Location(0, -165, 0);
+    public static final Location STARTING_ROBOT_LOCATION_RIGHT = new Location(60, -165, 0);
+
+    // TODO find these locations
+    public static final Location POWER_SHOT_LEFT = new Location(0, 0);
+    public static final Location POWER_SHOT_MIDDLE = new Location(0, 0);
+    public static final Location POWER_SHOT_RIGHT = new Location(0, 0);
+    public static final double POWER_SHOT_HEIGHT_CM = 0;
+
+    public static final Location TOP_GOAL = new Location(0, 0);
+    public static final double TOP_GOAL_HEIGHT_CM = 0;
 
     public static final Rectangle VALID_Y_SENSOR_READ_AREA_1_RED = new Rectangle(34, 48, 12, 48);
     public static final Rectangle VALID_Y_SENSOR_READ_AREA_2_RED = new Rectangle(34, -48, 12, 48);

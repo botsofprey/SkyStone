@@ -16,7 +16,7 @@ public class WobbleGrabberCaidenTest {
     private static final int CLAW_OPEN_ANGLE = 75; //105
     private static final int CLAW_CLOSE_ANGLE = 105; //75
 
-    private static final int UP_POSITION = ARM_HOLD_ANGLE / 180;
+    private static final int UP_POSITION = ARM_HOLD_ANGLE / 180; // this is integer division. These four numbers evaluate to 0
     private static final int DOWN_POSITION = ARM_RELEASE_ANGLE / 180;
     private static final int OPEN_POSITION = CLAW_OPEN_ANGLE / 180;
     private static final int CLOSE_POSITION = CLAW_CLOSE_ANGLE / 180;
@@ -36,8 +36,8 @@ public class WobbleGrabberCaidenTest {
 
          arm.setTargetPosition(100);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setPower(0.05);
-        while(arm.isBusy()) {}
+        arm.setPower(0.5); // 0.05 is probably too low
+        while(arm.isBusy());
         arm.setPower(0);
 
 

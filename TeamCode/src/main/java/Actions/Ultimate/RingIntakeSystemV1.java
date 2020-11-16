@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class RingIntakeSystemV1 {
 
+    // TODO this class should be working rn
+
     private DcMotor intakeMotor;
     private boolean intakeOn;
     private boolean intakeReversed;
@@ -14,7 +16,7 @@ public class RingIntakeSystemV1 {
     public RingIntakeSystemV1(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
         intakeOn = false;
-        intakeReversed = false;
+        intakeReversed = true;
     }
 
     public void toggleIntakePower() {
@@ -31,6 +33,7 @@ public class RingIntakeSystemV1 {
         }
     }
 
+    // the following are used in auto
     public void forwardIntake() {
         intakeReversed = false;
         intakeMotor.setPower(intakeOn ? MOTOR_POWER : 0);

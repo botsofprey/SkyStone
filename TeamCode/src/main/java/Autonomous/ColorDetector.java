@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 /**
  * Author: Ethan Fisher
- * Date: 10/26
+ * Date: 10/26/2020
  *
  * Detects rings easily
  */
@@ -19,6 +19,8 @@ public class ColorDetector {
 
     public static final int PERCENT_NUM_RINGS_REQUIRED = 70;
     public static final int TRIES_TO_GET_NUM_RINGS = 10;
+
+    public static final int RED_PIXELS_REQUIRED = 100;
 
     private int targetR;
     private int targetG;
@@ -44,11 +46,7 @@ public class ColorDetector {
 
     // TODO use this function to find the amount of red in the screen. Test how much red
     // is a good amount to grab the wobble goal
-    public boolean shouldGrabWobbleGoal() {
-        int redPixels = findNumDesiredPixels();
-        // TODO
-        return false;
-    }
+    public boolean shouldGrabWobbleGoal() { return findNumDesiredPixels() > RED_PIXELS_REQUIRED; }
 
     private NumRings getNumRingsFound() {
 
@@ -78,7 +76,7 @@ public class ColorDetector {
             return NumRings.FOUR;
     }
 
-    private int findNumDesiredPixels() {
+    public int findNumDesiredPixels() {
 
         Bitmap image = vuforia.getImage(TARGET_WIDTH, TARGET_HEIGHT);
         if (image == null) return 0;
