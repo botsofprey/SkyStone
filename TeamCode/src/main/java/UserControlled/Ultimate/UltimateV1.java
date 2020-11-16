@@ -214,10 +214,10 @@ public class UltimateV1 extends LinearOpMode {
             grabber.grabOrReleaseWobbleGoal();
 
         if (controllerTwo.dpadUpPressed())
-            grabber.addAngle(15, 0.2);
+            grabber.addAngle(30, 0.2);
 
         if (controllerTwo.dpadDownPressed())
-            grabber.addAngle(-15, 0.2);
+            grabber.addAngle(-30, 0.2);
 
         if (controllerTwo.bPressed())
             intake.toggleIntakeDirection();
