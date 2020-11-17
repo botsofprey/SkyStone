@@ -34,6 +34,9 @@ public class WobbleGrabberV1 extends Thread {
 
     public static final double CLAW_GRAB_ANGLE = 0.0;
     public static final double CLAW_RELEASE_ANGLE = 0.5;
+    public static final double ANGLE_INCREMENT = 30;
+    public static final double LOWERED_ANGLE = 150;
+    public static final double RAISED_ANGLE = 100;
 
     public static final int PIXELS_FOR_WOBBLE_GRAB = 0;
 
@@ -50,17 +53,46 @@ public class WobbleGrabberV1 extends Thread {
         wobbleGrabbed = false;
     }
 
-    public void lowerArm(double motorSpeed) {
+    public void lowerArm() {
 //        arm.setTicksPerSecondVelocity(ARM_TICKS_PER_SECOND);
-        arm.setPositionDegrees(150, motorSpeed);
+        arm.setPositionDegrees(LOWERED_ANGLE, (3*ARM_POWER_DOWN)/4); // Brooks said motor speed was too fast, thus the 3/4 power but can be adjusted later
     }
 
-    public void addAngle(double dAngle, double motorSpeed) {
-        arm.setPositionDegrees(arm.getDegree() - dAngle, motorSpeed);
+    public void raiseArm() {
+//        arm.setTicksPerSecondVelocity(ARM_TICKS_PER_SECOND);
+        arm.setPositionDegrees(RAISED_ANGLE, (3*ARM_POWER_DOWN)/4); // Brooks said motor speed was too fast, thus the 3/4 power but can be adjusted later
+    }
+
+    //    public void toggleArmPosition() {
+//       arm.setTicksPerSecondVelocity(ARM_TICKS_PER_SECOND);
+//       arm.setPositionDegrees(LOWERED_ANGLE, (3*ARM_POWER_DOWN)/4); // Brooks said motor speed was too fast, thus the 3/4 power but can be adjusted later
+//        if (arm.getDegree() == 150) {
+//
+//        }
+//
+//        else if(arm.getDegree() == )
+//    }
+
+
+    public void decreaseAngle(){
+        arm.setPositionDegrees(arm.getDegree() + ANGLE_INCREMENT, ARM_POWER_DOWN);
+    }
+    public void addAngle() {
+        arm.setPositionDegrees(arm.getDegree() - ANGLE_INCREMENT, ARM_POWER_UP);
     }
 
     public void grabWobbleGoal() { claw.setPosition(CLAW_GRAB_ANGLE); }
     public void releaseWobbleGoal() { claw.setPosition(CLAW_RELEASE_ANGLE); }
+
+    public void dropWobbleGoal() {
+        lowerArm();
+        grabOrReleaseWobbleGoal();
+    }
+
+    public void lowerAndGrabWobbleGoal() {
+        lowerArm();
+        grabOrReleaseWobbleGoal();
+    }
 
     public void grabOrReleaseWobbleGoal() {
         if (wobbleGrabbed) releaseWobbleGoal();

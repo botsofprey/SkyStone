@@ -61,17 +61,19 @@ public class ConfigVariables {
 
     // TODO check these locations
     public static final Location RED_ZONE_ONE = new Location(90, 30);
-    public static final Location RED_ZONE_TWO = new Location(30, 90);
-    public static final Location RED_ZONE_THREE = new Location(90, 150);
+    public static final Location RED_ZONE_TWO = new Location(60, 55);
+    public static final Location RED_ZONE_THREE = new Location(60, 60);
+    public static final Location CENTER = new Location(0,0);
 
     public static final Location STARTING_RING_PILE = new Location(30, -60);
 
     public static final HorizontalLine SHOOT_LINE = new HorizontalLine(new Location(-120, 30), 240);
 
-    public static final Location RED_WOBBLE_GOAL_LEFT = new Location(0, -120);
-    public static final Location RED_WOBBLE_GOAL_RIGHT = new Location(60, -120);
+    public static final Location RED_WOBBLE_GOAL_LEFT = new Location(24, -48);
+    public static final Location RED_WOBBLE_GOAL_RIGHT = new Location(48, -48);
 
-    public static final Location STARTING_ROBOT_LOCATION_LEFT = new Location(0, -165, 0);
+    public static final Location STARTING_ROBOT_LOCATION_LEFT = new Location(24, -63, 0);
+  //  public static final Location STARTING_ROBOT_LOCATION_LEFT = new Location(0, -10, 0);
     public static final Location STARTING_ROBOT_LOCATION_RIGHT = new Location(60, -165, 0);
 
     // TODO find these locations

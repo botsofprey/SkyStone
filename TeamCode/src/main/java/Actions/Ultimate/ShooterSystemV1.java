@@ -87,6 +87,8 @@ public class ShooterSystemV1 {
         aimServo.setPosition(aimServo.getPosition() + angle);
     }
 
+    public void setShooter(double angle) { aimServo.setPosition(angle); }
+
     public void raiseElevator(LinearOpMode mode) {
         if (elevatorPosition != TOP) {
             elevatorServo.setPower(-1);

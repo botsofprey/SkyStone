@@ -37,6 +37,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import Autonomous.AutoAlliance;
 
+import static Autonomous.ConfigVariables.CENTER;
+
 /*
     Author: Ethan Fisher
     Date: 10/29/2020
@@ -56,8 +58,10 @@ public class UltimateV1AutoRed extends LinearOpMode {
         telemetry.addData("Robot Created", "");
         telemetry.update();
 
+
         // get number of rings and log them
-        int numRings = robot.getRingDetector().getNumRings();
+      telemetry.addData("About to get ring detector...", "");
+        int numRings = 4; //robot.getRingDetector().getNumRings();
         telemetry.addData("Rings Found", numRings);
 
         telemetry.addData("Status", "Initialized");
@@ -76,16 +80,19 @@ public class UltimateV1AutoRed extends LinearOpMode {
 //        robot.getWobbleGrabber().grabWobbleGoal();
 
         // move to the zone with the wobble goal and release it
+        if (opModeIsActive()) robot.getWobbleGrabber().grabWobbleGoal();
         if (opModeIsActive()) robot.moveToZone(numRings);
-        if (opModeIsActive()) robot.getWobbleGrabber().releaseWobbleGoal();
+        if (opModeIsActive()) robot.robot.turnToHeading(90, this);
+        if (opModeIsActive()) robot.placeWobbleGoal(); // take second look at, isn't doing anything at the moment. same for pickup method.
 
         // grab the second wobble goal
         if (opModeIsActive()) robot.driveToSecondWobbleGoal();
-        if (opModeIsActive()) robot.getWobbleGrabber().grabWobbleGoal();
+        if (opModeIsActive()) robot.robot.turnToHeading(-90,this);
+        if (opModeIsActive()) robot.pickupWobbleGoal();
 
         // move it to the same zone and drop it
         if (opModeIsActive()) robot.moveToZone(numRings);
-        if (opModeIsActive()) robot.getWobbleGrabber().releaseWobbleGoal();
+        if (opModeIsActive()) robot.placeWobbleGoal();
 
         // move behind shot line, rotate towards powershots,  and shoot them
         if (opModeIsActive()) robot.moveBehindShootLine();
@@ -104,5 +111,7 @@ public class UltimateV1AutoRed extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive());
+
     }
 }
+

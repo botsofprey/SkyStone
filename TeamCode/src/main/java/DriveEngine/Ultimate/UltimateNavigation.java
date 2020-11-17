@@ -291,6 +291,19 @@ public class UltimateNavigation extends Thread {
 //        Log.d("Sensor Y:", shouldTranslateY ? "ENCODER" : "LIDAR");
 //    }
 
+    private void updateLocation(){
+        HeadingVector travelVector = wheelVectors[0].addVectors(wheelVectors);
+        travelVector = new HeadingVector(travelVector.x() / 2, travelVector.y() / 2);
+        double headingOfRobot = travelVector.getHeading();
+        double magnitudeOfRobot = travelVector.getMagnitude();
+        double actualHeading = (headingOfRobot + getRobotHeading()) % 360;
+        robotMovementVector.calculateVector(actualHeading, magnitudeOfRobot);
+        double deltaX = robotMovementVector.x();
+        double deltaY = robotMovementVector.y();
+        myLocation.addX(deltaX);
+        myLocation.addY(deltaY);
+        Log.d("Location", "X:" + myLocation.getX() + " Y:" + myLocation.getY());
+    }
     private double restrictAngle(double angleToChange, double referenceAngle) {
         while(angleToChange < referenceAngle - 180) angleToChange += 360;
         while (angleToChange > referenceAngle + 180) angleToChange -= 360;
@@ -322,7 +335,7 @@ public class UltimateNavigation extends Thread {
         getRobotHeading();
         wheelVectors = getWheelVectors();
         // TODO uncomment
-//        updateLocation();
+        updateLocation();
         updateIMUTrackedDistance();
     }
 
@@ -1132,6 +1145,10 @@ public class UltimateNavigation extends Thread {
         distToHeading = restrictAngle(distToHeading, 0, mode);
         long startTime = System.currentTimeMillis();
         while (mode.opModeIsActive() && (Math.abs(xDist) > locationTolerance || Math.abs(yDist) > locationTolerance || Math.abs(distToHeading) > HEADING_THRESHOLD)) {
+
+            mode.telemetry.addData("Position", startLocation.toString());
+            mode.telemetry.update();
+
             xDist = targetLocation.getX() - startLocation.getX();
             yDist = targetLocation.getY() - startLocation.getY();
             distToHeading = targetLocation.getHeading() - startLocation.getHeading();

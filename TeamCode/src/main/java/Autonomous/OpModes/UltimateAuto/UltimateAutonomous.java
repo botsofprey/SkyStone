@@ -34,7 +34,7 @@ public class UltimateAutonomous {
     private final AutoAlliance alliance;
     private final LinearOpMode mode;
 
-    private UltimateNavigation robot;
+    public UltimateNavigation robot;
     private ColorDetector ringDetector;
 
     private WobbleGrabberV1 wobbleGrabber;
@@ -141,6 +141,18 @@ public class UltimateAutonomous {
     public void park() {
         robot.driveToLine(SHOOT_LINE, MAX_SPEED, mode);
         sleep(800);
+    }
+
+    public void placeWobbleGoal() {
+        wobbleGrabber.dropWobbleGoal();
+        sleep(1000);
+        wobbleGrabber.raiseArm();
+    }
+
+    public void pickupWobbleGoal() {
+        wobbleGrabber.lowerAndGrabWobbleGoal();
+        sleep(1000);
+        wobbleGrabber.raiseArm();
     }
 
     public void stop() { robot.stopNavigation(); }

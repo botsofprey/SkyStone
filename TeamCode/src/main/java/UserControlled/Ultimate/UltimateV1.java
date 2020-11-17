@@ -198,6 +198,9 @@ public class UltimateV1 extends LinearOpMode {
         if (controllerOne.dpadDownPressed())
             shooter.lowerShooter(0.05);
 
+        if (controllerOne.dpadRightPressed())
+            shooter.setShooter(0);
+
         if (controllerOne.rightBumperPressed())
             shooter.raiseElevator(this);
 
@@ -208,16 +211,16 @@ public class UltimateV1 extends LinearOpMode {
     private void playerTwoFunctions() {
 
         if (controllerTwo.xPressed())
-            grabber.lowerArm(0.2);
+            grabber.lowerArm();
 
         if (controllerTwo.yPressed())
             grabber.grabOrReleaseWobbleGoal();
 
         if (controllerTwo.dpadUpPressed())
-            grabber.addAngle(30, 0.2);
+            grabber.addAngle();
 
         if (controllerTwo.dpadDownPressed())
-            grabber.addAngle(-30, 0.2);
+            grabber.addAngle();
 
         if (controllerTwo.bPressed())
             intake.toggleIntakeDirection();
