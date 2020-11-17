@@ -13,6 +13,7 @@ import Autonomous.VuforiaHelper;
 import DriveEngine.Ultimate.UltimateNavigation;
 
 import static Autonomous.ConfigVariables.RED_WOBBLE_GOAL_LEFT;
+import static Autonomous.ConfigVariables.RED_WOBBLE_GOAL_RIGHT;
 import static Autonomous.ConfigVariables.RED_ZONE_ONE;
 import static Autonomous.ConfigVariables.RED_ZONE_THREE;
 import static Autonomous.ConfigVariables.RED_ZONE_TWO;
@@ -32,10 +33,8 @@ public class UltimateAutonomous {
 
     private final AutoAlliance alliance;
     private final LinearOpMode mode;
-    private final HardwareMap hardwareMap;
 
     private UltimateNavigation robot;
-    private VuforiaHelper vuforia;
     private ColorDetector ringDetector;
 
     private WobbleGrabberV1 wobbleGrabber;
@@ -50,26 +49,32 @@ public class UltimateAutonomous {
 
         this.alliance = alliance;
         this.mode = mode;
-        this.hardwareMap = mode.hardwareMap;
 
-        vuforia = new VuforiaHelper(hardwareMap);
+        VuforiaHelper vuforia = new VuforiaHelper(mode.hardwareMap);
         ringDetector = new ColorDetector(vuforia, 0xFF, 0xa5, 0x00, 0x30);
 
-        wobbleGrabber = new WobbleGrabberV1(hardwareMap);
-        shooter = new ShooterSystemV1(hardwareMap);
-        intake = new RingIntakeSystemV1(hardwareMap);
+        try {
+            wobbleGrabber = new WobbleGrabberV1(mode.hardwareMap);
+            shooter = new ShooterSystemV1(mode.hardwareMap);
+            intake = new RingIntakeSystemV1(mode.hardwareMap);
+        } catch (Exception e) {
+            mode.telemetry.addData("Systems Error", e.toString());
+        }
 
         try {
             Location startLocation = redToBlue(STARTING_ROBOT_LOCATION_LEFT);
-            robot = new UltimateNavigation(hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
+            robot = new UltimateNavigation(mode.hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
             mode.telemetry.addData("Robot error", e.toString());
-            mode.telemetry.update();
         }
     }
 
-    public void driveToWobbleGoal() {
+    public void driveToFirstWobbleGoal() {
         robot.driveToLocation(RED_WOBBLE_GOAL_LEFT, MAX_SPEED, mode);
+    }
+
+    public void driveToSecondWobbleGoal() {
+        robot.driveToLocation(RED_WOBBLE_GOAL_RIGHT, MAX_SPEED, mode);
     }
 
     public void moveToZone(int numRings) {
@@ -93,6 +98,7 @@ public class UltimateAutonomous {
 
     public void shootPowerShots() {
         shooter.turnOnShooterWheel();
+        shooter.raiseElevator(mode);
         sleep(1000);
         shooter.shoot();
         sleep(1000);

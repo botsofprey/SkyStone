@@ -29,48 +29,51 @@
 
 package UserControlled;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import Actions.Ultimate.WobbleGrabberV1;
+import SensorHandlers.MagneticLimitSwitch;
 
-import Autonomous.Location;
-import DriveEngine.Ultimate.UltimateNavigation;
-
-import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_LEFT;
-
-@TeleOp(name="Drive To Location", group="Competition")
+@TeleOp(name="Systems Test", group="Competition")
 //@Disabled
-public class DriveToLocationTest extends LinearOpMode {
+public class SystemsTest extends LinearOpMode {
     // create objects and locally global variables here
 
-    UltimateNavigation robot;
+    GamepadController controller;
+
+    private Servo aimServo;
+
+    // TODO get numbers for these variables
+    private static final double TOP_GOAL_POSITION = 1;
+    private static final double POWER_SHOT_POSITION = 0.8;
+    private static final double LOWERED_POSITION = 0.5;
 
     @Override
     public void runOpMode() {
 
-        Location startLocation = new Location(STARTING_ROBOT_LOCATION_LEFT, UltimateNavigation.NORTH);
+        controller = new GamepadController(gamepad1);
 
-        try {
-            robot = new UltimateNavigation(hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
-        } catch (Exception e) {
-            telemetry.addData("Robot Error", e.toString());
-        }
+        aimServo = hardwareMap.servo.get("aimServo");
+        aimServo.setPosition(1);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
 
-        // drive forward and right
-        // TODO play around with the x and y. If that works, try changing the heading too
-        Location locationToDrive = new Location(startLocation.getX() + 30, startLocation.getY() + 30, startLocation.getHeading());
-        robot.driveToLocation(locationToDrive, UltimateNavigation.MAX_SPEED, this);
-        robot.brake();
+        while(opModeIsActive()) {
+            controller.update(gamepad1);
+
+            if (controller.dpadUpPressed())
+                aimServo.setPosition(aimServo.getPosition() - 0.05);
+            if (controller.dpadDownPressed())
+                aimServo.setPosition(aimServo.getPosition() + 0.05);
+
+            telemetry.addData("Servo Angle", aimServo.getPosition());
+            telemetry.update();
+        }
     }
-    // misc functions here
 }

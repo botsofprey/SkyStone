@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 /**
  * Author: Ethan Fisher
- * Date: 10/26
+ * Date: 10/26/2020
  *
  * Detects rings easily
  */
@@ -46,9 +46,7 @@ public class ColorDetector {
 
     // TODO use this function to find the amount of red in the screen. Test how much red
     // is a good amount to grab the wobble goal
-    public boolean shouldGrabWobbleGoal() {
-        return findNumDesiredPixels() > RED_PIXELS_REQUIRED;
-    }
+    public boolean shouldGrabWobbleGoal() { return findNumDesiredPixels() > RED_PIXELS_REQUIRED; }
 
     private NumRings getNumRingsFound() {
 

@@ -11,12 +11,12 @@ public class RingIntakeSystemV1 {
     private boolean intakeOn;
     private boolean intakeReversed;
 
-    private static final int MOTOR_POWER = 1;
+    private static final double MOTOR_POWER = 0.85;
 
     public RingIntakeSystemV1(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
         intakeOn = false;
-        intakeReversed = false;
+        intakeReversed = true;
     }
 
     public void toggleIntakePower() {
@@ -33,6 +33,7 @@ public class RingIntakeSystemV1 {
         }
     }
 
+    // the following are used in auto
     public void forwardIntake() {
         intakeReversed = false;
         intakeMotor.setPower(intakeOn ? MOTOR_POWER : 0);
