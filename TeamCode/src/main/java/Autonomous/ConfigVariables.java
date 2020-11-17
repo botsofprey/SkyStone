@@ -60,9 +60,9 @@ public class ConfigVariables {
     public static final Location BLUE_FOUNDATION_CENTER = new Location(-24-10-5, 49.5, 90);
 
     // TODO check these locations
-    public static final Location RED_ZONE_ONE = new Location(36, 12);
-    public static final Location RED_ZONE_TWO = new Location(12, 36);
-    public static final Location RED_ZONE_THREE = new Location(36, 60);
+    public static final Location RED_ZONE_ONE = new Location(18, 12);
+    public static final Location RED_ZONE_TWO = new Location(-2, 36);
+    public static final Location RED_ZONE_THREE = new Location(18, 60);
 
     public static final Location STARTING_RING_PILE = new Location(12, -24);
 
