@@ -69,7 +69,7 @@ public class ConfigVariables {
     public static final HorizontalLine SHOOT_LINE = new HorizontalLine(new Location(-48, 12), 96);
 
     public static final Location RED_WOBBLE_GOAL_LEFT = new Location(0, -48);
-    public static final Location RED_WOBBLE_GOAL_RIGHT = new Location(24, -48);
+    public static final Location RED_WOBBLE_GOAL_RIGHT = new Location(24, -48, 180);
 
     public static final Location STARTING_ROBOT_LOCATION_LEFT = new Location(0, -63, 0);
     public static final Location STARTING_ROBOT_LOCATION_RIGHT = new Location(24, -63, 0);

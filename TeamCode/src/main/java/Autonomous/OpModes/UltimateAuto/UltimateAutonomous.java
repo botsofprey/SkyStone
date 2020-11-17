@@ -86,6 +86,7 @@ public class UltimateAutonomous {
 
         else if (numRings == 4)
             driveToLocation(wobbleZone = RED_ZONE_THREE);
+        driveToLocation(new Location(robot.getRobotLocation()).setHeading(180));
     }
 
     public void moveBehindShootLine() {
