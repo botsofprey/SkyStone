@@ -4,6 +4,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+/**
+ * Created by Caiden Lineman on 11/04/2020.
+ *
+ * functions to run the wobble grabber; picks up wobble grabber as well as putting it down
+ *
+ */
+
 public class WobbleGrabberCaidenTest {
 
     private HardwareMap hardwareMap;
@@ -34,49 +41,40 @@ public class WobbleGrabberCaidenTest {
         // move arm to down position
         // move claw to closed position
 
-         arm.setTargetPosition(100);
+        /** test code that worked to base updates on
+        arm.setTargetPosition(100);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setPower(0.5); // 0.05 is probably too low
+        arm.setPower(0.5);
         while(arm.isBusy());
         arm.setPower(0);
+        */
 
-
-//        claw.setPosition(OPEN_POSITION);
-//        arm.setTargetPosition(DOWN_POSITION);
-//        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        arm.setPower(ARM_POWER);
-//        claw.setPosition(CLOSE_POSITION);
-//        arm.setTargetPosition(UP_POSITION);
-//        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        arm.setPower(-ARM_POWER);
-        /*
-        grab:
-        open
-        down
-        close
-        up
-
-        ungrab:
-        down
-        open
-        up
-        close
-         */
-
-
-
+        claw.setPosition(OPEN_POSITION);
+        arm.setTargetPosition(DOWN_POSITION);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(ARM_POWER);
+        while(!arm.isBusy()) {
+            claw.setPosition(CLOSE_POSITION);
+            arm.setTargetPosition(UP_POSITION);
+        }
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(-ARM_POWER);
     }
 
     public void releaseWobbleGoal() {
         // move arm to down position
         // move claw to open position
-//        arm.setTargetPosition(DOWN_POSITION);
-//        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        arm.setPower(ARM_POWER);
-//        claw.setPosition(OPEN_POSITION);
-//        arm.setTargetPosition(UP_POSITION);
-//        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        arm.setPower(-ARM_POWER);
-//        claw.setPosition(CLOSE_POSITION);
+        arm.setTargetPosition(DOWN_POSITION);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(ARM_POWER);
+        while(!arm.isBusy()) {
+            claw.setPosition(OPEN_POSITION);
+            arm.setTargetPosition(UP_POSITION);
+            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            arm.setPower(-ARM_POWER);
+        }
+        while(!arm.isBusy()) {
+            claw.setPosition(CLOSE_POSITION);
+        }
     }
 }
