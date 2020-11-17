@@ -56,14 +56,15 @@ import UserControlled.JoystickHandler;
  *      joysticks - drive base
  *      start - slow mode
  *      a - shoot
- *      dpad up and down - raise and lower shooter angle
+ *      dpad up / down - raise / lower shooter angle
+ *      dpad left / right - bring shooter all the way down / up
  *      right bumper - raise elevator
  *      left bumper - lower elevator
  *
  * Player Two:
  *      b - intake direction
  *      a - intake power
- *      dpad up and down - raise and lower wobble grabber arm
+ *      dpad up / down - raise / lower wobble grabber arm
  *      x - resets arm position for grabbing wobble goal
  *      y - grabbing or releasing wobble goal
  */
