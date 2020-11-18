@@ -44,7 +44,6 @@ public class UltimateAutonomous {
     private WobbleGrabberV1 wobbleGrabber;
     private ShooterSystemV1 shooter;
     private RingIntakeSystemV1 intake;
-    public Location startLocation;
 
     private static final double MAX_SPEED = UltimateNavigation.MAX_SPEED;
 
@@ -67,7 +66,7 @@ public class UltimateAutonomous {
         }
 
         try {
-            startLocation = redToBlue(STARTING_ROBOT_LOCATION_RIGHT);
+            Location startLocation = redToBlue(STARTING_ROBOT_LOCATION_RIGHT);
             robot = new UltimateNavigation(mode.hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
             mode.telemetry.addData("Robot error", e.toString());
@@ -211,7 +210,6 @@ public class UltimateAutonomous {
     public void turnToZero() { robot.turnToHeading(0, mode); }
 
     public void driveToLocation(Location location) { robot.driveToLocationPID(redToBlue(location), MAX_SPEED, mode); }
-    public Location getStartLocation() { return startLocation; }
     public ColorDetector getRingDetector() { return ringDetector; }
     public WobbleGrabberV1 getWobbleGrabber() { return wobbleGrabber; }
     public ShooterSystemV1 getShooter() { return shooter; }
