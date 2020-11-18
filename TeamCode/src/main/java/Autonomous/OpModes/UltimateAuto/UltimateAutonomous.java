@@ -97,7 +97,7 @@ public class UltimateAutonomous {
     }
 
 
-    public void moveToZone(int numRings) {
+    public void moveToZone(int numRings) { // TODO needs a lot of testing
         Location waypoint = new Location(ZONE_WAYPOINT);
         waypoint.setHeading(robot.orientation.getOrientation());
         driveToLocation(waypoint); // Travel to waypoint before moving to zone
