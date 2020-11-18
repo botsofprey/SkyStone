@@ -96,7 +96,7 @@ public class UltimateV1AutoRed extends LinearOpMode {
         if (opModeIsActive()) robot.placeWobbleGoal();
 
         // move behind shot line, rotate towards powershots,  and shoot them
-        if (opModeIsActive()) robot.moveToShootLine();
+        if (opModeIsActive()) robot.moveToShootLine(); // TODO still need to work on calculations for shooting into goals & powershots
         //if (opModeIsActive()) robot.moveBehindShootLine();
         if (opModeIsActive()) robot.turnToZero();
         if (opModeIsActive()) robot.shootPowerShots();
