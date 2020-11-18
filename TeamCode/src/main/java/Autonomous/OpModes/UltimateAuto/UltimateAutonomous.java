@@ -12,14 +12,18 @@ import Autonomous.ColorDetector;
 import Autonomous.VuforiaHelper;
 import DriveEngine.Ultimate.UltimateNavigation;
 
+import static Autonomous.ConfigVariables.CENTER;
 import static Autonomous.ConfigVariables.RED_WOBBLE_GOAL_LEFT;
 import static Autonomous.ConfigVariables.RED_WOBBLE_GOAL_RIGHT;
 import static Autonomous.ConfigVariables.RED_ZONE_ONE;
 import static Autonomous.ConfigVariables.RED_ZONE_THREE;
 import static Autonomous.ConfigVariables.RED_ZONE_TWO;
+import static Autonomous.ConfigVariables.SHOOTING_LINE_POINT;
 import static Autonomous.ConfigVariables.SHOOT_LINE;
 import static Autonomous.ConfigVariables.STARTING_RING_PILE;
 import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_LEFT;
+import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
+import static Autonomous.ConfigVariables.ZONE_WAYPOINT;
 
 /**
  * Author: Ethan Fisher
@@ -69,33 +73,50 @@ public class UltimateAutonomous {
         }
     }
 
-    public void driveToFirstWobbleGoal() {
+    public void driveToLeftWobbleGoal() {
+        robot.driveToLocation(ZONE_WAYPOINT, MAX_SPEED, mode);
         robot.driveToLocation(RED_WOBBLE_GOAL_LEFT, MAX_SPEED, mode);
     }
 
-    public void driveToSecondWobbleGoal() {
+    public void driveToRightWobbleGoal() {
         robot.driveToLocation(RED_WOBBLE_GOAL_RIGHT, MAX_SPEED, mode);
+        robot.turnToHeading(UltimateNavigation.WEST, mode);
     }
+
+    public void driveToRightStartingPos() {
+        driveToLocation(STARTING_ROBOT_LOCATION_RIGHT);
+        //robot.turnToHeading(UltimateNavigation.SOUTH, mode);
+    }
+
 
     public void moveToZone(int numRings) {
-        if (numRings == 0)
-            driveToLocation(wobbleZone = RED_ZONE_ONE);
+        driveToLocation(ZONE_WAYPOINT);
+        if (numRings == 0) {
+            driveToLocation(RED_ZONE_ONE);
+        }
 
-        else if (numRings == 1)
-            driveToLocation(wobbleZone = RED_ZONE_TWO);
+        else if (numRings == 1) {
+            driveToLocation(RED_ZONE_TWO);
+        }
 
-        else if (numRings == 4)
-            driveToLocation(wobbleZone = RED_ZONE_THREE);
-        driveToLocation(new Location(robot.getRobotLocation()).setHeading(180));
+        else if (numRings == 4) {
+            driveToLocation(RED_ZONE_THREE);
+        }
+        robot.turnToHeading(UltimateNavigation.SOUTH, mode);
     }
 
-    public void moveBehindShootLine() {
-        double zoneDistFromLine = (wobbleZone.getY() - SHOOT_LINE.getY()) / 2.54;
-        double distToDrive = zoneDistFromLine + 20;
-        robot.driveDistance(distToDrive, UltimateNavigation.SOUTH, MAX_SPEED, mode);
-        robot.brake();
-        sleep(1000);
-    }
+
+      public void moveToShootLine() {
+        driveToLocation(SHOOTING_LINE_POINT);
+        robot.turnToHeading(UltimateNavigation.NORTH, mode);
+      }
+//    public void moveBehindShootLine() {
+//        double zoneDistFromLine = (wobbleZone.getY() - SHOOT_LINE.getY()) / 2.54;
+//        double distToDrive = zoneDistFromLine + 20;
+//        robot.driveDistance(distToDrive, UltimateNavigation.SOUTH, MAX_SPEED, mode);
+//        robot.brake();
+//        sleep(1000);
+//    }
 
     public void shootPowerShots() {
         shooter.turnOnShooterWheel();
@@ -130,16 +151,33 @@ public class UltimateAutonomous {
     }
 
     public void placeWobbleGoal() {
-        wobbleGrabber.dropWobbleGoal();
-        sleep(1000);
+        dropWobbleGoal();
         wobbleGrabber.raiseArm();
+        waitForArm();
+    }
+
+    public void waitForArm() {
+        while(mode.opModeIsActive() && wobbleGrabber.armIsBusy());
+        wobbleGrabber.arm.setMotorPower(0);
+    }
+
+    public void dropWobbleGoal() {
+        wobbleGrabber.lowerArm();
+        waitForArm();
+        wobbleGrabber.releaseWobbleGoal();
+        sleep(200);
     }
 
     public void pickupWobbleGoal() {
-        wobbleGrabber.lowerAndGrabWobbleGoal();
-        sleep(1000);
+        wobbleGrabber.lowerArm();
+        waitForArm();
+        wobbleGrabber.grabWobbleGoal();
+        sleep(600);
         wobbleGrabber.raiseArm();
+        waitForArm();
+
     }
+
 
     public void stop() { robot.stopNavigation(); }
 

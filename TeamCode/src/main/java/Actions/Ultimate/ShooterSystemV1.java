@@ -6,9 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import Autonomous.ConfigVariables;
-import Autonomous.Location;
-import Autonomous.Vector3;
 import SensorHandlers.MagneticLimitSwitch;
 
 /**
@@ -35,7 +32,8 @@ public class ShooterSystemV1 {
     private static final int TOP = 0;
     private static final int BOTTOM = 1;
     public int elevatorPosition = TOP;
-    private MagneticLimitSwitch elevatorSwitch;
+    private MagneticLimitSwitch elevatorTopSwitch;
+    private MagneticLimitSwitch elevatorBottomSwitch;
 
     // good
     public Servo pinballServo;
@@ -47,7 +45,9 @@ public class ShooterSystemV1 {
         aimServo = hardwareMap.servo.get("aimServo");
         wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
         elevatorServo = hardwareMap.crservo.get("elevatorServo");
-        elevatorSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorSwitch"));
+        elevatorTopSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorTopSwitch"));
+        elevatorBottomSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorBottomSwitch"));
+
 
         pinballServo = hardwareMap.servo.get("pinballServo");
 
@@ -92,27 +92,26 @@ public class ShooterSystemV1 {
     public void raiseElevator(LinearOpMode mode) {
         if (elevatorPosition != TOP) {
             elevatorServo.setPower(-1);
-            while(elevatorSwitch.isActivated() && mode.opModeIsActive());
         }
     }
 
     public void lowerElevator(LinearOpMode mode) {
         if (elevatorPosition != BOTTOM) {
             elevatorServo.setPower(1);
-            while(elevatorSwitch.isActivated() && mode.opModeIsActive());
         }
     }
 
     public void update(LinearOpMode mode) {
-        if (elevatorSwitch.isActivated()) {
-            if (elevatorServo.getPower() < 0) {
-                elevatorPosition = TOP;
-            }
-            else if (elevatorServo.getPower() > 0){ //watch out for the zero case because then the robot will think its at the bottom when its at the top
-                elevatorPosition = BOTTOM;
-            }
+        if (elevatorServo.getPower() < 0 && elevatorTopSwitch.isActivated()) {
+            elevatorPosition = TOP;
             elevatorServo.setPower(0);
-        } else elevatorPosition = 2;
+        } else if (elevatorServo.getPower() > 0 && elevatorBottomSwitch.isActivated()) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
+            elevatorPosition = BOTTOM;
+            elevatorServo.setPower(0);
+        } else if(Math.abs(elevatorServo.getPower()) > 0) {
+            elevatorPosition = 2;
+        }
+
     }
 
     // TODO

@@ -11,7 +11,7 @@ public class RingIntakeSystemV1 {
     private boolean intakeOn;
     private boolean intakeReversed;
 
-    private static final double MOTOR_POWER = 0.85;
+    private static final int MOTOR_POWER = 1;
 
     public RingIntakeSystemV1(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.dcMotor.get("intakeMotor");

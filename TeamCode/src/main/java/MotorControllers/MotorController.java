@@ -104,6 +104,10 @@ public class MotorController extends Thread {
         }
     }
 
+    public boolean isBusy() {
+        return motor.isBusy();
+    }
+
     public int getTargetPosition() { return motor.getTargetPosition(); }
 
     private void safetySleep(long time) {

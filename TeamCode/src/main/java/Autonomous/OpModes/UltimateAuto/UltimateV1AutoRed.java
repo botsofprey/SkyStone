@@ -36,8 +36,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import Autonomous.AutoAlliance;
+import DriveEngine.Ultimate.UltimateNavigation;
 
-import static Autonomous.ConfigVariables.CENTER;
+//import static Autonomous.ConfigVariables.CENTER;
 
 /*
     Author: Ethan Fisher
@@ -60,7 +61,6 @@ public class UltimateV1AutoRed extends LinearOpMode {
 
 
         // get number of rings and log them
-      telemetry.addData("About to get ring detector...", "");
         int numRings = 4; //robot.getRingDetector().getNumRings();
         telemetry.addData("Rings Found", numRings);
 
@@ -76,18 +76,15 @@ public class UltimateV1AutoRed extends LinearOpMode {
 //        // drive to the wobble goal
 //        robot.driveToWobbleGoal();
 //
-//        // grab the wobble goal
-//        robot.getWobbleGrabber().grabWobbleGoal();
 
         // move to the zone with the wobble goal and release it
         if (opModeIsActive()) robot.getWobbleGrabber().grabWobbleGoal();
+        // if (opModeIsActive()) robot.driveToRightStartingPos();
         if (opModeIsActive()) robot.moveToZone(numRings);
-        if (opModeIsActive()) robot.robot.turnToHeading(90, this);
-        if (opModeIsActive()) robot.placeWobbleGoal(); // take second look at, isn't doing anything at the moment. same for pickup method.
+        if (opModeIsActive()) robot.placeWobbleGoal();
 
         // grab the second wobble goal
-        if (opModeIsActive()) robot.driveToSecondWobbleGoal();
-        if (opModeIsActive()) robot.robot.turnToHeading(-90,this);
+        if (opModeIsActive()) robot.driveToRightWobbleGoal();
         if (opModeIsActive()) robot.pickupWobbleGoal();
 
         // move it to the same zone and drop it
@@ -95,7 +92,8 @@ public class UltimateV1AutoRed extends LinearOpMode {
         if (opModeIsActive()) robot.placeWobbleGoal();
 
         // move behind shot line, rotate towards powershots,  and shoot them
-        if (opModeIsActive()) robot.moveBehindShootLine();
+        if (opModeIsActive()) robot.moveToShootLine();
+        //if (opModeIsActive()) robot.moveBehindShootLine();
         if (opModeIsActive()) robot.turnToZero();
         if (opModeIsActive()) robot.shootPowerShots();
 

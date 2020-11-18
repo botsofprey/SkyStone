@@ -83,8 +83,8 @@ public class UltimateV1 extends LinearOpMode {
     RingIntakeSystemV1 intake;
     ShooterSystemV1 shooter;
     WobbleGrabberV1 grabber;
+    //ColorSensor redDetector;
 
-//    ColorDetector redDetector;
 
     boolean eStop = false, slowMode = false;
 
@@ -113,7 +113,7 @@ public class UltimateV1 extends LinearOpMode {
         }
 
         // initialize red detector
-//        redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
+       // redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
 
         // initialize joysticks
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
@@ -137,6 +137,8 @@ public class UltimateV1 extends LinearOpMode {
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
+            telemetry.addData("Motor Angle: ", grabber.arm.getDegree());
+            telemetry.update();
 
             updateEStop();
             if (!eStop) {
@@ -193,14 +195,33 @@ public class UltimateV1 extends LinearOpMode {
         if (controllerOne.bPressed())
             shooter.toggleWheelPower();
 
+//        if (controllerOne.dpadUpPressed())
+//            robot.turnToHeading(UltimateNavigation.NORTH, this);
+//            robot.driveDistance(10, 15, this);
+//
+//        if (controllerOne.dpadDownPressed())
+//            robot.turnToHeading(UltimateNavigation.SOUTH, this);
+//            robot.driveDistance(10,15, this);
+//
+//        if(controllerOne.dpadLeftPressed())
+//            robot.turnToHeading(UltimateNavigation.WEST, this);
+//            robot.driveDistance(10, 15, this);
+//
+//        if (controllerOne.dpadRightPressed())
+//            robot.turnToHeading(UltimateNavigation.EAST, this);
+//            robot.driveDistance(10, 15, this);
+
         if (controllerOne.dpadUpPressed())
             shooter.raiseShooter(0.05);
 
         if (controllerOne.dpadDownPressed())
             shooter.lowerShooter(0.05);
 
+        if(controllerOne.dpadLeftPressed())
+           shooter.setShooter(0);
+
         if (controllerOne.dpadRightPressed())
-            shooter.setShooter(0);
+            shooter.setShooter(1);
 
         if (controllerOne.rightBumperPressed())
             shooter.raiseElevator(this);
@@ -225,13 +246,14 @@ public class UltimateV1 extends LinearOpMode {
             grabber.grabOrReleaseWobbleGoal();
 
         if (controllerTwo.dpadUpPressed())
-            grabber.addAngle();
+            grabber.decreaseAngle();
 
         if (controllerTwo.dpadDownPressed())
             grabber.addAngle();
 
         if (controllerTwo.bPressed())
-            intake.toggleIntakeDirection();
+            //intake.toggleIntakeDirection();
+            grabber.raiseArm();
 
         if (controllerTwo.aPressed())
             intake.toggleIntakePower();

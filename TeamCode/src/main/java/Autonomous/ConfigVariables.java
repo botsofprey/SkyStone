@@ -2,12 +2,14 @@ package Autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import DriveEngine.Ultimate.UltimateNavigation;
+
 @Config
 public class ConfigVariables {
 
     /*********************************
      * NOTE: (0, 0) is the center of the field
-     * since we're using a half field, it is two squares to the right and 3 up
+     * since we're using half field, center should be one square to the right and three up.
      *********************************/
 
     public static final double STONE_ONE_LEFT = 36.5;
@@ -59,20 +61,26 @@ public class ConfigVariables {
     public static final Location RED_FOUNDATION_STACK_LEFT = new Location(20+9+4, 37.5, 270);
     public static final Location BLUE_FOUNDATION_CENTER = new Location(-24-10-5, 49.5, 90);
 
-    // TODO check these locations
-    public static final Location RED_ZONE_ONE = new Location(18, 12);
-    public static final Location RED_ZONE_TWO = new Location(-2, 36);
-    public static final Location RED_ZONE_THREE = new Location(18, 60);
+    public static final Location RED_ZONE_ONE = new Location(53, 0);
+    public static final Location RED_ZONE_TWO = new Location(29, 24);
+    public static final Location RED_ZONE_THREE = new Location(48, 60);
+    public static final Location ZONE_WAYPOINT = new Location(12, -12);
 
-    public static final Location STARTING_RING_PILE = new Location(12, -24);
+//    public static final Location RED_ZONE_ONE = new Location(48, 12);
+//    public static final Location RED_ZONE_TWO = new Location(24, 36);
+//    public static final Location RED_ZONE_THREE = new Location(48, 60);
 
-    public static final HorizontalLine SHOOT_LINE = new HorizontalLine(new Location(-48, 12), 96);
+    public static final Location STARTING_RING_PILE = new Location(36, -24);
 
-    public static final Location RED_WOBBLE_GOAL_LEFT = new Location(0, -48);
-    public static final Location RED_WOBBLE_GOAL_RIGHT = new Location(24, -48, 180);
+    public static final HorizontalLine SHOOT_LINE = new HorizontalLine(new Location(-120, 30), 240);
+    public static final Location SHOOTING_LINE_POINT = new Location(16, 0);
+    public static final Location CENTER = new Location(0,0);
 
-    public static final Location STARTING_ROBOT_LOCATION_LEFT = new Location(0, -63, 0);
-    public static final Location STARTING_ROBOT_LOCATION_RIGHT = new Location(24, -63, 0);
+    public static final Location RED_WOBBLE_GOAL_LEFT = new Location(12, -42);
+    public static final Location RED_WOBBLE_GOAL_RIGHT = new Location(54, -31);
+
+    public static final Location STARTING_ROBOT_LOCATION_LEFT = new Location(24, -60, 0);
+    public static final Location STARTING_ROBOT_LOCATION_RIGHT = new Location(52, -60, 0);
 
     // TODO find these locations
     public static final Location POWER_SHOT_LEFT = new Location(0, 0);

@@ -75,7 +75,7 @@ public class UltimateNavigation extends Thread {
     private HashMap<Integer, int[]>[] updateLocationInformation = new HashMap[4]; // structure: {direction, {xSensor, ySensor}}
 
     public static final int Q1 = 0, Q2 = 1, Q3 = 2, Q4 = 3,
-            NORTH = 0, SOUTH = 180, EAST = 90, WEST = 270;
+            NORTH = 0, SOUTH = -180, EAST = 90, WEST = -90;
 
     private final double HEADING_THRESHOLD = 2;
     private final double WHEEL_BASE_RADIUS = 20;
@@ -360,6 +360,7 @@ public class UltimateNavigation extends Thread {
             driveMotors[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = new MotorController(reader.getString("BACK_LEFT_MOTOR_NAME"), "MotorConfig/DriveMotors/NewHolonomicDriveMotorConfig.json", hardwareMap);
             driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = new MotorController(reader.getString("BACK_RIGHT_MOTOR_NAME"), "MotorConfig/DriveMotors/NewHolonomicDriveMotorConfig.json", hardwareMap);
             for (int i = 0; i < driveMotors.length; i++) {
+                driveMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 driveMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
             if(reader.getString("DRIVE_MOTOR_BRAKING_MODE").equals("BRAKE")) {
