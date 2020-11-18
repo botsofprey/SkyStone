@@ -54,7 +54,12 @@ public class UltimateV1AutoRed extends LinearOpMode {
     public void runOpMode() {
 
         // initialize robot
-        UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, this);
+        UltimateAutonomous robot = null;
+        try {
+            robot = new UltimateAutonomous(AutoAlliance.RED, this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         telemetry.addData("Robot Created", "");
         telemetry.update();
@@ -79,12 +84,11 @@ public class UltimateV1AutoRed extends LinearOpMode {
 
         // move to the zone with the wobble goal and release it
         if (opModeIsActive()) robot.getWobbleGrabber().grabWobbleGoal();
-        // if (opModeIsActive()) robot.driveToRightStartingPos();
         if (opModeIsActive()) robot.moveToZone(numRings);
         if (opModeIsActive()) robot.placeWobbleGoal();
 
         // grab the second wobble goal
-        if (opModeIsActive()) robot.driveToRightWobbleGoal();
+        if (opModeIsActive()) robot.driveToLeftWobbleGoal();
         if (opModeIsActive()) robot.pickupWobbleGoal();
 
         // move it to the same zone and drop it

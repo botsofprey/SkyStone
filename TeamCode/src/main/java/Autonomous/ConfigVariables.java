@@ -64,7 +64,7 @@ public class ConfigVariables {
     public static final Location RED_ZONE_ONE = new Location(53, 0);
     public static final Location RED_ZONE_TWO = new Location(29, 24);
     public static final Location RED_ZONE_THREE = new Location(48, 60);
-    public static final Location ZONE_WAYPOINT = new Location(12, -12);
+    public static final Location ZONE_WAYPOINT = new Location(12, 60);
 
 //    public static final Location RED_ZONE_ONE = new Location(48, 12);
 //    public static final Location RED_ZONE_TWO = new Location(24, 36);
@@ -80,7 +80,7 @@ public class ConfigVariables {
     public static final Location RED_WOBBLE_GOAL_RIGHT = new Location(54, -31);
 
     public static final Location STARTING_ROBOT_LOCATION_LEFT = new Location(24, -60, 0);
-    public static final Location STARTING_ROBOT_LOCATION_RIGHT = new Location(52, -60, 0);
+    public static final Location STARTING_ROBOT_LOCATION_RIGHT = new Location(52, -60, UltimateNavigation.SOUTH);
 
     // TODO find these locations
     public static final Location POWER_SHOT_LEFT = new Location(0, 0);

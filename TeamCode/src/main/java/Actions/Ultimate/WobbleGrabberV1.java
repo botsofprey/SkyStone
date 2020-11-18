@@ -24,8 +24,8 @@ public class WobbleGrabberV1 extends Thread {
     public MotorController arm;
     //private RevColorSensorV3 redSensor;
 
-    private static final double ARM_POWER_DOWN = -0.5;
-    private static final double ARM_POWER_UP = 0.5;
+    private static final double ARM_POWER_DOWN = -0.35;
+    private static final double ARM_POWER_UP = 0.35;
 
     private static final long ARM_TICKS_PER_SECOND = 300;
 

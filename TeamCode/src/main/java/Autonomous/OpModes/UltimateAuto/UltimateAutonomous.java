@@ -44,12 +44,13 @@ public class UltimateAutonomous {
     private WobbleGrabberV1 wobbleGrabber;
     private ShooterSystemV1 shooter;
     private RingIntakeSystemV1 intake;
+    public Location startLocation;
 
     private static final double MAX_SPEED = UltimateNavigation.MAX_SPEED;
 
     private Location wobbleZone;
 
-    public UltimateAutonomous(AutoAlliance alliance, LinearOpMode mode) {
+    public UltimateAutonomous(AutoAlliance alliance, LinearOpMode mode) throws Exception {
 
         this.alliance = alliance;
         this.mode = mode;
@@ -66,7 +67,7 @@ public class UltimateAutonomous {
         }
 
         try {
-            Location startLocation = redToBlue(STARTING_ROBOT_LOCATION_LEFT);
+            startLocation = redToBlue(STARTING_ROBOT_LOCATION_RIGHT);
             robot = new UltimateNavigation(mode.hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
             mode.telemetry.addData("Robot error", e.toString());
@@ -74,41 +75,57 @@ public class UltimateAutonomous {
     }
 
     public void driveToLeftWobbleGoal() {
-        robot.driveToLocation(ZONE_WAYPOINT, MAX_SPEED, mode);
-        robot.driveToLocation(RED_WOBBLE_GOAL_LEFT, MAX_SPEED, mode);
+        Location target = new Location(RED_WOBBLE_GOAL_LEFT);
+        Location waypoint = new Location(ZONE_WAYPOINT);
+        waypoint.setHeading(robot.orientation.getOrientation());
+        driveToLocation(ZONE_WAYPOINT);
+        target.setHeading(robot.orientation.getOrientation());
+        driveToLocation(target);
     }
 
     public void driveToRightWobbleGoal() {
-        robot.driveToLocation(RED_WOBBLE_GOAL_RIGHT, MAX_SPEED, mode);
         robot.turnToHeading(UltimateNavigation.WEST, mode);
+        Location target = new Location(RED_WOBBLE_GOAL_RIGHT);
+        target.setHeading(robot.orientation.getOrientation());
+        driveToLocation(target);
     }
 
     public void driveToRightStartingPos() {
-        driveToLocation(STARTING_ROBOT_LOCATION_RIGHT);
-        //robot.turnToHeading(UltimateNavigation.SOUTH, mode);
+        Location target = new Location(STARTING_ROBOT_LOCATION_RIGHT);
+        target.setHeading(robot.orientation.getOrientation());
+        driveToLocation(target);
     }
 
 
     public void moveToZone(int numRings) {
-        driveToLocation(ZONE_WAYPOINT);
+        Location waypoint = new Location(ZONE_WAYPOINT);
+        waypoint.setHeading(robot.orientation.getOrientation());
+        driveToLocation(waypoint); // Travel to waypoint before moving to zone
+        Location targetZone;
         if (numRings == 0) {
-            driveToLocation(RED_ZONE_ONE);
+            targetZone = new Location(RED_ZONE_ONE);
+            targetZone.setHeading(robot.orientation.getOrientation());
         }
-
         else if (numRings == 1) {
-            driveToLocation(RED_ZONE_TWO);
+            targetZone = new Location(RED_ZONE_TWO);
+            targetZone.setHeading(robot.orientation.getOrientation());
         }
-
         else if (numRings == 4) {
-            driveToLocation(RED_ZONE_THREE);
+            targetZone = new Location(RED_ZONE_THREE);
+            targetZone.setHeading(robot.orientation.getOrientation());
         }
-        robot.turnToHeading(UltimateNavigation.SOUTH, mode);
+        else {
+            targetZone = new Location(RED_ZONE_ONE); // Default to zone one if rings aren't detected properly
+            targetZone.setHeading(robot.orientation.getOrientation());
+        }
+        driveToLocation(targetZone);
     }
 
 
       public void moveToShootLine() {
+        Location target = new Location(SHOOTING_LINE_POINT);
+        target.setHeading(robot.orientation.getOrientation());
         driveToLocation(SHOOTING_LINE_POINT);
-        robot.turnToHeading(UltimateNavigation.NORTH, mode);
       }
 //    public void moveBehindShootLine() {
 //        double zoneDistFromLine = (wobbleZone.getY() - SHOOT_LINE.getY()) / 2.54;
@@ -194,7 +211,7 @@ public class UltimateAutonomous {
     public void turnToZero() { robot.turnToHeading(0, mode); }
 
     public void driveToLocation(Location location) { robot.driveToLocationPID(redToBlue(location), MAX_SPEED, mode); }
-
+    public Location getStartLocation() { return startLocation; }
     public ColorDetector getRingDetector() { return ringDetector; }
     public WobbleGrabberV1 getWobbleGrabber() { return wobbleGrabber; }
     public ShooterSystemV1 getShooter() { return shooter; }
