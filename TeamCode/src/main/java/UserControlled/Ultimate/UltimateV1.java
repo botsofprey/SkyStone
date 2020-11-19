@@ -31,6 +31,7 @@ package UserControlled.Ultimate;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import Actions.Ultimate.RingIntakeSystemV1;
 import Actions.Ultimate.ShooterSystemV1;
@@ -76,6 +77,7 @@ public class UltimateV1 extends LinearOpMode {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         //grabber = new WobbleGrabberCaidenTest(hardwareMap);
 
 //        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
@@ -178,8 +180,8 @@ public class UltimateV1 extends LinearOpMode {
 
     private void controlRobotFunctions() {
         if (!eStop) {
-            controllerOne.update();
-            controllerTwo.update();
+            controllerOne.update(gamepad1);
+            controllerTwo.update(gamepad2);
 
             playerOneFunctions();
             playerTwoFunctions();

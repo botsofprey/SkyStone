@@ -47,7 +47,7 @@ public class WobbleGrabberV1 extends Thread {
 
         // don't worry about this line. Just test what's currently in the file
         arm = new MotorController("wobbleGrabberArm", "ActionConfig/WobbleArmConfig.json", hardwareMap);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         //redSensor = hardwareMap.get(RevColorSensorV3.class, "redSensor");
 
         wobbleGrabbed = false;
