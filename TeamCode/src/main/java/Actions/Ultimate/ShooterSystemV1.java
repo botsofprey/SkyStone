@@ -1,12 +1,8 @@
 package Actions.Ultimate;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import SensorHandlers.MagneticLimitSwitch;
 
 /**
  * Author: Ethan Fisher
@@ -16,141 +12,48 @@ import SensorHandlers.MagneticLimitSwitch;
  */
 public class ShooterSystemV1 {
 
-    // good
-    private Servo aimServo;
-    private static final double HIGHEST_POSITION = 0;
-    private static final double LOWERED_POSITION = 1;
-
-    // good
     private DcMotor wheelMotor;
-    private boolean wheelSpinning;
-    private static final double SHOOTER_ON_POWER = 1;
-    private static final double SHOOTER_OFF_POWER = 0;
+    private Servo hopperTurner;
+    private Servo pinballServo;
+    // private DcMotor armTurner;
 
-    // good
-    private CRServo elevatorServo;
-    private static final int TOP = 0;
-    private static final int BOTTOM = 1;
-    public int elevatorPosition = TOP;
-    private MagneticLimitSwitch elevatorTopSwitch;
-    private MagneticLimitSwitch elevatorBottomSwitch;
+    private static final double WHEEL_POWER = -1;
 
-    // good
-    public Servo pinballServo;
-    private double pinballAngle;
-    public static final double PINBALL_TURNED = 1;
-    public static final double PINBALL_REST = 0;
+    // TODO put a variable here for the pinball's angle when it is shot
+
+    private static final double HOPPER_UP_ANGLE = 30;
+    private static final double HOPPER_DOWN_ANGLE = 0;
 
     public ShooterSystemV1(HardwareMap hardwareMap) {
-        aimServo = hardwareMap.servo.get("aimServo");
         wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
-        elevatorServo = hardwareMap.crservo.get("elevatorServo");
-        elevatorTopSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorTopSwitch"));
-        elevatorBottomSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorBottomSwitch"));
-
-
-        pinballServo = hardwareMap.servo.get("pinballServo");
-
-        wheelSpinning = false;
-        elevatorPosition = TOP;
-        pinballAngle = PINBALL_REST;
+        hopperTurner = hardwareMap.servo.get("hopperTurner");
+        pinballServo = hardwareMap.servo.get("pinballServer");
     }
 
-    public void toggleWheelPower() {
-        wheelSpinning = !wheelSpinning;
-        wheelMotor.setPower(wheelSpinning ? SHOOTER_ON_POWER : SHOOTER_OFF_POWER);
-    }
-
-    public void turnOnShooterWheel() {
-        wheelSpinning = true;
-        wheelMotor.setPower(SHOOTER_ON_POWER);
-    }
-
-    public void turnOffShooterWheel() {
-        wheelSpinning = false;
-        wheelMotor.setPower(SHOOTER_OFF_POWER);
-    }
-
-    // moves the pinball servo
     public void shoot() {
-        if (pinballAngle == PINBALL_TURNED) pinballAngle = PINBALL_REST;
-        else pinballAngle = PINBALL_TURNED;
-
-        pinballServo.setPosition(pinballAngle);
-    }
-
-    public void raiseShooter(double angle) {
-        aimServo.setPosition(aimServo.getPosition() - angle);
-    }
-
-    public void lowerShooter(double angle) {
-        aimServo.setPosition(aimServo.getPosition() + angle);
-    }
-
-    public void setShooter(double angle) { aimServo.setPosition(angle); }
-
-    public void raiseElevator(LinearOpMode mode) {
-        if (elevatorPosition != TOP) {
-            elevatorServo.setPower(-1);
-        }
-    }
-
-    public void lowerElevator(LinearOpMode mode) {
-        if (elevatorPosition != BOTTOM) {
-            elevatorServo.setPower(1);
-        }
-    }
-
-    public void update(LinearOpMode mode) {
-        if (elevatorServo.getPower() < 0 && elevatorTopSwitch.isActivated()) {
-            elevatorPosition = TOP;
-            elevatorServo.setPower(0);
-        } else if (elevatorServo.getPower() > 0 && elevatorBottomSwitch.isActivated()) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
-            elevatorPosition = BOTTOM;
-            elevatorServo.setPower(0);
-        } else if(Math.abs(elevatorServo.getPower()) > 0) {
-            elevatorPosition = 2;
-        }
-
+        // TODO rotate pinball servo
     }
 
     // TODO
-//    public void shootWithAdjustedAngle(Location robotLocation) {
-//        // targets: top goal, powershots
-//
-//        double shooterHeightCM = 5;
-//        Vector3 robotVector = new Vector3(robotLocation.getX(), robotLocation.getY(), shooterHeightCM);
-//
-//        Vector3 targetVector;
-//        if (aimPosition == POWER_SHOT_POSITION) {
-//            targetVector = new Vector3(ConfigVariables.POWER_SHOT_MIDDLE.getX(),
-//                    ConfigVariables.POWER_SHOT_MIDDLE.getY(),
-//                    ConfigVariables.POWER_SHOT_HEIGHT_CM);
-//        } else {
-//            targetVector = new Vector3(ConfigVariables.TOP_GOAL.getX(),
-//                    ConfigVariables.TOP_GOAL.getY(),
-//                    ConfigVariables.TOP_GOAL_HEIGHT_CM);
-//        }
-//
-//        Vector3 differenceVector = robotVector.distanceFromVector(targetVector);
-//        double distanceFromTargetCM = differenceVector.length();
-//
-//        double motorPower = calculateMotorPower(distanceFromTargetCM);
-//        double servoAngle = calculateShootingAngle(motorPower, distanceFromTargetCM);
-//
-//        wheelMotor.setPower(motorPower);
-//        aimServo.setPosition(servoAngle);
-//    }
-//
-//    // TODO
-//    public double calculateMotorPower(double distanceCM) {
-//        // constrain it to like 0.6 to 1 or something
-//        return 0;
-//    }
-//
-//    // TODO
-//    public double calculateShootingAngle(double motorPower, double distance) {
-//        // probably gonna be something like 30 - 40 degrees
-//        return 0;
-//    }
+    public void adjustShootingAngle() {}
+
+    // TODO
+    public void targetTopGoal() {}
+
+    public void raiseHopper() {
+        hopperTurner.setPosition(HOPPER_UP_ANGLE);
+
+        // also, start the wheel motor
+        wheelMotor.setPower(WHEEL_POWER);
+    }
+    public void lowerHopper() {
+        hopperTurner.setPosition(HOPPER_DOWN_ANGLE);
+
+        // also, stop the wheel motor
+        wheelMotor.setPower(0);
+    }
+
+    public void raiseArm() {}
+    public void lowerArm() {}
+
 }
