@@ -1,6 +1,7 @@
 package Actions.Ultimate;
 
 import android.sax.StartElementListener;
+import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -30,6 +31,8 @@ public class ShooterSystemV1 {
     private static double rpm;
     private static long ticks;
     private static long nanoseconds;
+    private static int iterator;
+    private static double[] rpmMeasurements;
     private static final double SHOOTER_ON_POWER = 1;
     private static final double SHOOTER_OFF_POWER = 0;
 
@@ -64,6 +67,32 @@ public class ShooterSystemV1 {
         rpm = 0;
         ticks = 0;
         nanoseconds = System.nanoTime();
+        iterator = 0;
+        rpmMeasurements = new double[1024];
+        for(int i = 0; i < 1024; i++)
+            rpmMeasurements[i] = 0;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long currentTicks = wheelMotor.getCurrentPosition();
+                long currentNanoseconds = System.nanoTime();
+                if(currentTicks != ticks) {//only calculate if ticks have changed to avoid outputting 0
+                    double timeDiff = currentNanoseconds - nanoseconds;
+                    double nanosecondsPerRotation = timeDiff / (currentTicks - ticks) * 28;//28 encoder ticks per rotation
+                    double minutesPerRotation = nanosecondsPerRotation / 60000000000.0;
+                    rpmMeasurements[iterator] = 1.0 / minutesPerRotation;
+                    iterator++;
+                    iterator %= 1024;
+                    ticks = currentTicks;
+                    nanoseconds = currentNanoseconds;
+                    double temp = 0;
+                    for(int i = 0; i < 1024; i++)
+                        temp += rpmMeasurements[i];
+                    rpm = temp / 1024.0;
+                }
+            }
+        }).start();
     }
 
     public void toggleWheelPower() {
@@ -83,10 +112,14 @@ public class ShooterSystemV1 {
 
     public void updateShooterRPM() {
         long currentTicks = wheelMotor.getCurrentPosition();
-        if(currentTicks != ticks) {
-            long currentNanoseconds = System.nanoTime();
+        long currentNanoseconds = System.nanoTime();
+        if(currentTicks != ticks) {//only calculate if ticks have changed to avoid outputting 0
             long timeDiff = currentNanoseconds - nanoseconds;
-            double nanosecondsPerRotation = timeDiff * 28;
+            double nanosecondsPerRotation = timeDiff * 28;//28 encoder ticks per rotation
+            double minutesPerRotation = nanosecondsPerRotation / 60000000000.0;
+            rpm = 1.0 / minutesPerRotation;
+            ticks = currentTicks;
+            nanoseconds = currentNanoseconds;
         }
     }
 
@@ -136,6 +169,7 @@ public class ShooterSystemV1 {
             elevatorServo.setPower(0);
         }*/
 
+        mode.telemetry.addData("RPM", rpm);
         mode.telemetry.addData("Bottom Activated", elevatorBottomSwitch.isActivated());
         mode.telemetry.addData("Top Activated", elevatorTopSwitch.isActivated());
         mode.telemetry.update();
