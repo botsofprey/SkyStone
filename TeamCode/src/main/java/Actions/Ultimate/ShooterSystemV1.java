@@ -33,7 +33,6 @@ public class ShooterSystemV1 {
     private CRServo elevatorServo;
     public static final int TOP = 0;
     public static final int BOTTOM = 1;
-    public static final int MIDDLE = 2;
 
     public int elevatorPosition = TOP;
     private MagneticLimitSwitch elevatorTopSwitch;
@@ -56,7 +55,7 @@ public class ShooterSystemV1 {
         pinballServo = hardwareMap.servo.get("pinballServo");
 
         wheelSpinning = false;
-        elevatorPosition = MIDDLE;
+        elevatorPosition = BOTTOM;
         pinballAngle = PINBALL_REST;
     }
 
@@ -106,14 +105,12 @@ public class ShooterSystemV1 {
     }
 
     public void update(LinearOpMode mode) {
-        if (elevatorServo.getPower() < 0 && elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
+        if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
             elevatorServo.setPower(0);
-        } else if (elevatorServo.getPower() > 0 && elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
+        } else if (elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
             elevatorPosition = BOTTOM;
             elevatorServo.setPower(0);
-        } else if(Math.abs(elevatorServo.getPower()) > 0) {
-            elevatorPosition = MIDDLE;
         }
 
         mode.telemetry.addData("Bottom Activated", elevatorBottomSwitch.isActivated());
