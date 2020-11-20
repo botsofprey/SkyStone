@@ -31,6 +31,7 @@ package UserControlled.Ultimate;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import Actions.Ultimate.RingIntakeSystemV1;
 import Actions.Ultimate.ShooterSystemV1;
@@ -40,6 +41,8 @@ import Autonomous.ColorDetector;
 import Autonomous.Location;
 import Autonomous.VuforiaHelper;
 import DriveEngine.Ultimate.UltimateNavigation;
+import SensorHandlers.LimitSwitch;
+import SensorHandlers.MagneticLimitSwitch;
 import UserControlled.GamepadController;
 import UserControlled.JoystickHandler;
 
@@ -50,15 +53,27 @@ import UserControlled.JoystickHandler;
  *
  * -------------- TLDR ---------------
  * Player One:
- *      a -
+ *      joysticks - drive base
+ *      start - slow mode
+ *      a - shoot
+ *      dpad up / down - raise / lower shooter angle
+ *      dpad left / right - bring shooter all the way down / up
+ *      right bumper - raise elevator
+ *      left bumper - lower elevator
  *
  * Player Two:
- *      b -
+ *      b - intake direction
+ *      a - intake power
+ *      dpad up / down - raise / lower wobble grabber arm
+ *      x - resets arm position for grabbing wobble goal
+ *      y - grabbing or releasing wobble goal
  */
 
 @TeleOp(name="Ultimate V1", group="Competition")
 //@Disabled
 public class UltimateV1 extends LinearOpMode {
+
+    // TODO add speed values and angles when using the wobble grabber
 
     // create objects and locally global variables here
     UltimateNavigation robot;
@@ -68,8 +83,8 @@ public class UltimateV1 extends LinearOpMode {
     RingIntakeSystemV1 intake;
     ShooterSystemV1 shooter;
     WobbleGrabberV1 grabber;
+    //ColorSensor redDetector;
 
-    ColorDetector redDetector;
 
     boolean eStop = false, slowMode = false;
 
@@ -79,6 +94,7 @@ public class UltimateV1 extends LinearOpMode {
         // also create and initialize function local variables here
 
         // initialize robot
+        // TODO get starting angle
         try {
             robot = new UltimateNavigation(hardwareMap, new Location(0, 0, 270), "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
@@ -97,14 +113,7 @@ public class UltimateV1 extends LinearOpMode {
         }
 
         // initialize red detector
-        redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
-
-//        sensors = new SensorPackage(new LIDARSensor(hardwareMap.get(DistanceSensor.class, "back"), "back"),
-//                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "left"), "left"),
-//                new LIDARSensor(hardwareMap.get(DistanceSensor.class, "right"), "right"),
-//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "liftReset"), "liftReset"),
-//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "leftArmStop"), "leftArmStop"),
-//                new LimitSwitch(hardwareMap.get(TouchSensor.class, "rightArmStop"), "rightArmStop"));
+       // redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
 
         // initialize joysticks
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
@@ -122,9 +131,14 @@ public class UltimateV1 extends LinearOpMode {
 
         waitForStart();
 
+        // puts the pinball servo on the outside
+        shooter.pinballServo.setPosition(ShooterSystemV1.PINBALL_REST);
+
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
+            telemetry.addData("Arm angle: ", grabber.arm.getDegree());
+            telemetry.update();
 
             updateEStop();
             if (!eStop) {
@@ -146,9 +160,7 @@ public class UltimateV1 extends LinearOpMode {
                     playerTwoFunctions();
                 }
 
-                // TODO this is what I was wanting. If the color detector sees enough red, the wobble goal should be grabbed
-                if (redDetector.shouldGrabWobbleGoal())
-                    grabber.grabWobbleGoal();
+                controlMiscFunctions();
             }
 
             if (eStop)
@@ -177,59 +189,78 @@ public class UltimateV1 extends LinearOpMode {
 
     private void playerOneFunctions() {
 
-        if (controllerOne.aPressed()) {
-            telemetry.addData("A", "pressed");
+        if (controllerOne.aPressed())
             shooter.shoot();
-        }
 
-        // b toggles intake direction (setting it up or down)
-        if (controllerOne.bPressed()) {
-            telemetry.addData("B", "pressed");
-            intake.toggleIntakeDirection();
-        }
+        if (controllerOne.bPressed())
+            shooter.toggleWheelPower();
 
-        if (controllerOne.yPressed()) {
-            telemetry.addData("Y", "pressed");
-            intake.toggleIntakePower();
-        }
+//        if (controllerOne.dpadUpPressed())
+//            robot.turnToHeading(UltimateNavigation.NORTH, this);
+//            robot.driveDistance(10, 15, this);
+//
+//        if (controllerOne.dpadDownPressed())
+//            robot.turnToHeading(UltimateNavigation.SOUTH, this);
+//            robot.driveDistance(10,15, this);
+//
+//        if(controllerOne.dpadLeftPressed())
+//            robot.turnToHeading(UltimateNavigation.WEST, this);
+//            robot.driveDistance(10, 15, this);
+//
+//        if (controllerOne.dpadRightPressed())
+//            robot.turnToHeading(UltimateNavigation.EAST, this);
+//            robot.driveDistance(10, 15, this);
 
-        if (controllerOne.leftBumperPressed()) {
-            telemetry.addData("Left bumper", "pressed");
-            shooter.adjustHopperAngle();
-        }
+        if (controllerOne.dpadUpPressed())
+            shooter.raiseShooter(0.05);
 
-        // left bumper lowers the arm
-        if (controllerOne.rightBumperPressed()) {
-            telemetry.addData("Right bumper", "pressed");
-            shooter.adjustShootingAngle();
-        }
+        if (controllerOne.dpadDownPressed())
+            shooter.lowerShooter(0.05);
 
-        if (controllerOne.dpadRightPressed()) {
-            telemetry.addData("Wobble Grabbed", "pressed");
-            grabber.grabWobbleGoal();
-        }
+        if(controllerOne.dpadLeftPressed())
+           shooter.setShooter(0);
 
-        if (controllerOne.dpadLeftPressed()) {
-            telemetry.addData("Wobble Released", "pressed");
-            grabber.releaseWobbleGoal();
-        }
+        if (controllerOne.dpadRightPressed())
+            shooter.setShooter(1);
 
+        if (controllerOne.rightBumperPressed())
+            shooter.raiseElevator(this);
+
+        if (controllerOne.leftBumperPressed())
+            shooter.lowerElevator(this);
+
+        if (controllerOne.dpadLeftPressed())
+            shooter.setShooter(1);
+            // todo : test (should set shooter angle to max)
+        if (controllerOne.dpadRightPressed())
+            shooter.setShooter(0);
+            // todo : test (set shooter angle to minimum)
     }
 
     private void playerTwoFunctions() {
 
-        // left trigger raises the hopper
-//        if (gamepad2.left_trigger > 0.1)
-//            shooter.adjustHopperAngle();
-//
-//        // left bumper lowers the arm
-//        if (controllerTwo.leftBumperPressed())
-//            shooter.adjustShootingAngle();
-//
-//        // right trigger and bumper
-//        if (controllerTwo.rightBumperPressed())
-//            shooter.raiseArm();
+        if (controllerTwo.xPressed())
+            grabber.lowerArm();
 
+        if (controllerTwo.yPressed())
+            grabber.grabOrReleaseWobbleGoal();
+
+        if (controllerTwo.dpadUpPressed())
+            grabber.decreaseAngle();
+
+        if (controllerTwo.dpadDownPressed())
+            grabber.addAngle();
+
+        if (controllerTwo.bPressed())
+            grabber.raiseArm();
+
+        if (controllerTwo.aPressed())
+            intake.toggleIntakePower();
+
+    }
+
+    private void controlMiscFunctions() {
+        shooter.update(this);
     }
 
     private void stopActions() {

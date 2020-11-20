@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 /**
  * Author: Ethan Fisher
- * Date: 10/26
+ * Date: 10/26/2020
  *
  * Detects rings easily
  */
@@ -15,12 +15,13 @@ public class ColorDetector {
     public static final int TARGET_WIDTH = 100;
     public static final int TARGET_HEIGHT = 100;
 
-    private enum NumRings { ZERO, ONE, FOUR }
-
     public static final int PERCENT_NUM_RINGS_REQUIRED = 70;
     public static final int TRIES_TO_GET_NUM_RINGS = 10;
 
     public static final int RED_PIXELS_REQUIRED = 100;
+
+    public static final int ONE_RING_THRESHOLD = 25;
+    public static final int FOUR_RING_THRESHOLD = 250;
 
     private int targetR;
     private int targetG;
@@ -35,22 +36,7 @@ public class ColorDetector {
         this.tolerance = tolerance;
     }
 
-    // used for getting rings
-    public int getNumRings() {
-        NumRings numRings = getNumRingsFound();
-
-        if (numRings == NumRings.FOUR) return 4;
-        if (numRings == NumRings.ONE) return 1;
-        return 0;
-    }
-
-    // TODO use this function to find the amount of red in the screen. Test how much red
-    // is a good amount to grab the wobble goal
-    public boolean shouldGrabWobbleGoal() {
-        return findNumDesiredPixels() > RED_PIXELS_REQUIRED;
-    }
-
-    private NumRings getNumRingsFound() {
+    private int getNumRingsFound() {
 
         // number of rings
         int numZero = 0;
@@ -61,9 +47,9 @@ public class ColorDetector {
         for (int i = 0; i < TRIES_TO_GET_NUM_RINGS; i++) {
             int orangePixels = findNumDesiredPixels();
 
-            if (orangePixels < 25)
+            if (orangePixels < ONE_RING_THRESHOLD)
                 numZero++;
-            else if (orangePixels < 250)
+            else if (orangePixels < FOUR_RING_THRESHOLD)
                 numOne++;
             else
                 numFour++;
@@ -71,11 +57,11 @@ public class ColorDetector {
 
         // check if the percent of rings found is enough to assume that number of rings are on the field
         if (numZero / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
-            return NumRings.ZERO;
+            return 0;
         else if (numOne / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
-            return NumRings.ONE;
+            return 1;
         else
-            return NumRings.FOUR;
+            return 4;
     }
 
     public int findNumDesiredPixels() {

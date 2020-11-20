@@ -104,6 +104,10 @@ public class MotorController extends Thread {
         }
     }
 
+    public boolean isBusy() {
+        return motor.isBusy();
+    }
+
     public int getTargetPosition() { return motor.getTargetPosition(); }
 
     private void safetySleep(long time) {
@@ -211,7 +215,7 @@ public class MotorController extends Thread {
         return (double) ticks / ticksPerRevolution * Math.PI  * wheelDiameterInInches;
     }
 
-    public void holdPosition(){
+    public void holdPosition() {
 //        if(getMotorRunMode() != DcMotor.RunMode.RUN_TO_POSITION){
 //            motor.setPower(0);
 //            try {
@@ -225,34 +229,35 @@ public class MotorController extends Thread {
 //        }
 
 //        Log.d("Hold Position", "Start");
-
-        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (!takenStartValue) {
-            startPos = motor.getCurrentPosition();
-            takenStartValue = true;
+//
+//        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        if (!takenStartValue) {
+//            startPos = motor.getCurrentPosition();
+//            takenStartValue = true;
 //            Log.d("Hold Position", "Start value taken");
-        }
-        holdController.setSp(0);
-        int distToPos = motor.getCurrentPosition() - startPos;
+//        }
+//        holdController.setSp(0);
+//        int distToPos = motor.getCurrentPosition() - startPos;
 //        Log.d("Hold Position", "KP" + holdController.getP());
 //        Log.d("Hold Position", "Distance to position" + distToPos);
-        double motorPower = holdController.calculatePID(distToPos);
+//        double motorPower = holdController.calculatePID(distToPos);
 //        Log.d("Hold Position", "Motor Power" + motorPower);
-        motor.setPower(motorPower);
+//        motor.setPower(motorPower);
+        motor.setPower(0);
     }
 
     public double getWheelDiameterInInches(){
         return wheelDiameterInInches;
     }
 
-    public int getTicksPerRevolution(){return (int)ticksPerRevolution;}
+    public int getTicksPerRevolution() { return (int)ticksPerRevolution; }
 
-    public void setMotorPower(double power){
+    public void setMotorPower(double power) {
         takenStartValue = false;
         motor.setPower(power);
     }
 
-    public void brake(){
+    public void brake() {
         takenStartValue = false;
         if(getMotorRunMode() == DcMotor.RunMode.RUN_TO_POSITION)
             setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -277,6 +282,13 @@ public class MotorController extends Thread {
         motor.setTargetPosition(targetTick);
     }
 
+    public void setPositionDegrees(double deg, double power) {
+        motor.setPower(power);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        int targetTick = (int)(deg*ticksPerDegree);
+        motor.setTargetPosition(targetTick);
+    }
+
     private void logDebug(String main, String sub){
         if(shouldLog){
             Log.d(logTag, main + ":" + sub);
@@ -290,4 +302,7 @@ public class MotorController extends Thread {
     private void logError(String main, String sub){
         Log.d(motor.getDeviceName(), logTag + ":" + main + ":" + sub);
     }
+
+    public DcMotor getMotor() { return motor; }
+    public double getTicksPerDegree() { return ticksPerDegree; }
 }

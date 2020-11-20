@@ -29,48 +29,51 @@
 
 package UserControlled;
 
-import android.util.Log;
-
+import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.Range;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import Autonomous.ColorDetector;
+import Autonomous.VuforiaHelper;
 
-import Autonomous.Location;
-import DriveEngine.Ultimate.UltimateNavigation;
-
-import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_LEFT;
-
-@TeleOp(name="Drive To Location", group="Competition")
+@TeleOp(name="Color Detector Test", group="Testers")
 //@Disabled
-public class DriveToLocationTest extends LinearOpMode {
+public class ColorDetectorTest extends LinearOpMode {
     // create objects and locally global variables here
-
-    UltimateNavigation robot;
 
     @Override
     public void runOpMode() {
+        // initialize objects and variables here
+        // also create and initialize function local variables here
+        RevColorSensorV3 colorSensor = hardwareMap.get(RevColorSensorV3.class, "redSensor");
 
-        Location startLocation = new Location(STARTING_ROBOT_LOCATION_LEFT, UltimateNavigation.NORTH);
-
-        try {
-            robot = new UltimateNavigation(hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
-        } catch (Exception e) {
-            telemetry.addData("Robot Error", e.toString());
-        }
-
+//        VuforiaHelper vuforia = new VuforiaHelper(hardwareMap);
+//        if (vuforia.getImage(100, 100) == null) {
+//            telemetry.addData("Null", "Null");
+//            telemetry.update();
+//        }
+//        ColorDetector ringDetector = new ColorDetector(vuforia, 0xFF, 0xa5, 0x00, 0x30);
+        // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
+        // nothing goes between the above and below lines
         waitForStart();
+        // should only be used for a time keeper or other small things, avoid using this space when possible
+        while (opModeIsActive()) {
+            // main code goes here
 
-        // drive forward and right
-        // TODO play around with the x and y. If that works, try changing the heading too
-        Location locationToDrive = new Location(startLocation.getX() + 30, startLocation.getY() + 30, startLocation.getHeading());
-        robot.driveToLocation(locationToDrive, UltimateNavigation.MAX_SPEED, this);
-        robot.brake();
+            telemetry.addData("Red Pixels", "" + colorSensor.red());
+            telemetry.addData("Green Pixels", "" + colorSensor.green());
+            telemetry.addData("Blue Pixels", "" + colorSensor.blue());
+
+            // telemetry and logging data goes here
+            telemetry.update();
+        }
+        // disable/kill/stop objects here
     }
     // misc functions here
 }
