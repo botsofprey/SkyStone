@@ -137,7 +137,7 @@ public class UltimateV1 extends LinearOpMode {
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
-            telemetry.addData("Motor Angle: ", grabber.arm.getDegree());
+            telemetry.addData("Arm angle: ", grabber.arm.getDegree());
             telemetry.update();
 
             updateEStop();
@@ -252,7 +252,6 @@ public class UltimateV1 extends LinearOpMode {
             grabber.addAngle();
 
         if (controllerTwo.bPressed())
-            //intake.toggleIntakeDirection();
             grabber.raiseArm();
 
         if (controllerTwo.aPressed())

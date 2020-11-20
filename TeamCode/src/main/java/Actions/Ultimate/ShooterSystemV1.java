@@ -1,5 +1,7 @@
 package Actions.Ultimate;
 
+import android.sax.StartElementListener;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -18,8 +20,8 @@ public class ShooterSystemV1 {
 
     // good
     private Servo aimServo;
-    private static final double HIGHEST_POSITION = 0;
-    private static final double LOWERED_POSITION = 1;
+    public static final double HIGHEST_POSITION = 0;
+    public static final double LOWERED_POSITION = 1;
 
     // good
     private DcMotor wheelMotor;
@@ -29,8 +31,10 @@ public class ShooterSystemV1 {
 
     // good
     private CRServo elevatorServo;
-    private static final int TOP = 0;
-    private static final int BOTTOM = 1;
+    public static final int TOP = 0;
+    public static final int BOTTOM = 1;
+    public static final int MIDDLE = 2;
+
     public int elevatorPosition = TOP;
     private MagneticLimitSwitch elevatorTopSwitch;
     private MagneticLimitSwitch elevatorBottomSwitch;
@@ -52,7 +56,7 @@ public class ShooterSystemV1 {
         pinballServo = hardwareMap.servo.get("pinballServo");
 
         wheelSpinning = false;
-        elevatorPosition = TOP;
+        elevatorPosition = MIDDLE;
         pinballAngle = PINBALL_REST;
     }
 
@@ -102,15 +106,19 @@ public class ShooterSystemV1 {
     }
 
     public void update(LinearOpMode mode) {
-        if (elevatorServo.getPower() < 0 && elevatorTopSwitch.isActivated()) {
+        if (elevatorServo.getPower() < 0 && elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
             elevatorServo.setPower(0);
-        } else if (elevatorServo.getPower() > 0 && elevatorBottomSwitch.isActivated()) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
+        } else if (elevatorServo.getPower() > 0 && elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
             elevatorPosition = BOTTOM;
             elevatorServo.setPower(0);
         } else if(Math.abs(elevatorServo.getPower()) > 0) {
-            elevatorPosition = 2;
+            elevatorPosition = MIDDLE;
         }
+
+        mode.telemetry.addData("Bottom Activated", elevatorBottomSwitch.isActivated());
+        mode.telemetry.addData("Top Activated", elevatorTopSwitch.isActivated());
+        mode.telemetry.update();
 
     }
 

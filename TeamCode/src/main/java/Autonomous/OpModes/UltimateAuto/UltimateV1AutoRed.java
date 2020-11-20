@@ -54,66 +54,68 @@ public class UltimateV1AutoRed extends LinearOpMode {
     public void runOpMode() {
 
         // initialize robot
-        UltimateAutonomous robot = null;
+        UltimateAutonomous robot;
         try {
             robot = new UltimateAutonomous(AutoAlliance.RED, this);
         } catch (Exception e) {
-            e.printStackTrace();
+            telemetry.addData("Robot Error", e.toString());
+            telemetry.update();
+            return;
         }
 
-        telemetry.addData("Robot Created", "");
-        telemetry.update();
-
-
         // get number of rings and log them
-        int numRings = 4; //robot.getRingDetector().getNumRings();
+        int numRings = 4; //robot.getRingDetector().getNumRingsFound();
         telemetry.addData("Rings Found", numRings);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // if (opModeIsActive()) goes before all of statements in case the 30 seconds is up
+        // if (shouldNotPark(startTime)) goes before all of statements in case the 30 seconds is up
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
-        // TODO the robot should start with the wobble goal
-//        // drive to the wobble goal
-//        robot.driveToWobbleGoal();
-//
+        
+        long startTime = System.currentTimeMillis();
 
         // move to the zone with the wobble goal and release it
-        if (opModeIsActive()) robot.getWobbleGrabber().grabWobbleGoal();
-        if (opModeIsActive()) robot.moveToZone(numRings);
-        if (opModeIsActive()) robot.placeWobbleGoal();
+        if (shouldNotPark(startTime)) robot.moveToZone(numRings);
+        if (shouldNotPark(startTime)) robot.dropWobbleGoal();
+        // TODO turn before placing it
+        // if (shouldNotPark(startTime)) robot.getWobbleGrabber().raiseArm();
 
         // grab the second wobble goal
-        if (opModeIsActive()) robot.driveToLeftWobbleGoal();
-        if (opModeIsActive()) robot.pickupWobbleGoal();
+//        if (shouldNotPark(startTime)) robot.driveToLeftWobbleGoal();
 
         // move it to the same zone and drop it
-        if (opModeIsActive()) robot.moveToZone(numRings);
-        if (opModeIsActive()) robot.placeWobbleGoal();
+//        if (shouldNotPark(startTime)) robot.driveToWaypoint();
+//        if (shouldNotPark(startTime)) robot.moveToZone(numRings);
+//        if (shouldNotPark(startTime)) robot.dropWobbleGoal();
 
         // move behind shot line, rotate towards powershots,  and shoot them
-        if (opModeIsActive()) robot.moveToShootLine(); // TODO still need to work on calculations for shooting into goals & powershots
-        //if (opModeIsActive()) robot.moveBehindShootLine();
-        if (opModeIsActive()) robot.turnToZero();
-        if (opModeIsActive()) robot.shootPowerShots();
+        if (shouldNotPark(startTime)) robot.moveToShootLine(); // TODO still need to work on calculations for shooting into goals & powershots
+        //if (shouldNotPark(startTime)) robot.moveBehindShootLine();
+        if (shouldNotPark(startTime)) robot.turnToZero();
+        if (shouldNotPark(startTime)) robot.shootThreeRings();
 
         // drive back to the starting rings
-        if (opModeIsActive()) robot.driveToStartingRings();
-
-        // ??? Maybe grab three rings at the end ???
-        if (opModeIsActive()) robot.grabStartingPileRings();
+//        if (shouldNotPark(startTime)) robot.driveToStartingRings();
+//
+//        // ??? Maybe grab three rings at the end ???
+//        if (shouldNotPark(startTime)) robot.grabStartingPileRings();
 
         // park on the line and stop
-        if (opModeIsActive()) robot.park();
+        robot.park();
         robot.stop();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive());
-
+    }
+    
+    public boolean shouldNotPark(long startTime) {
+//        long curTimeMillis = System.currentTimeMillis() - startTime;
+//        double curTimeSeconds = curTimeMillis / 1000.0;
+//        return curTimeSeconds < 27;
+        return true;
     }
 }
 

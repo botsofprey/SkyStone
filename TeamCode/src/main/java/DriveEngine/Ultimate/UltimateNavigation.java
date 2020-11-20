@@ -58,6 +58,7 @@ public class UltimateNavigation extends Thread {
             cameraTranslationXController, cameraOrientationController, xPositionController, yPositionController;
 
     private volatile Location myLocation;
+    private volatile double startHeading;
     private volatile HeadingVector[] wheelVectors;
     private volatile HeadingVector robotMovementVector = new HeadingVector();
     public ImuHandler orientation;
@@ -75,7 +76,7 @@ public class UltimateNavigation extends Thread {
     private HashMap<Integer, int[]>[] updateLocationInformation = new HashMap[4]; // structure: {direction, {xSensor, ySensor}}
 
     public static final int Q1 = 0, Q2 = 1, Q3 = 2, Q4 = 3,
-            NORTH = 0, SOUTH = -180, EAST = 90, WEST = -90;
+            NORTH = 0, SOUTH = 180, EAST = 90, WEST = 270;
 
     private final double HEADING_THRESHOLD = 2;
     private final double WHEEL_BASE_RADIUS = 20;
@@ -199,7 +200,7 @@ public class UltimateNavigation extends Thread {
     private double getRobotHeading() { return orientation.getOrientation(); }
 
     public Location getRobotLocation() {
-        return new Location(myLocation.getX(), myLocation.getY());
+        return new Location(myLocation.getX(), myLocation.getY(), myLocation.getHeading());
     }
 
 //    private void updateLocation() {
@@ -291,7 +292,7 @@ public class UltimateNavigation extends Thread {
 //        Log.d("Sensor Y:", shouldTranslateY ? "ENCODER" : "LIDAR");
 //    }
 
-    private void updateLocation(){
+    private void updateLocation() {
         HeadingVector travelVector = wheelVectors[0].addVectors(wheelVectors);
         travelVector = new HeadingVector(travelVector.x() / 2, travelVector.y() / 2);
         double headingOfRobot = travelVector.getHeading();
@@ -302,7 +303,8 @@ public class UltimateNavigation extends Thread {
         double deltaY = robotMovementVector.y();
         myLocation.addX(deltaX);
         myLocation.addY(deltaY);
-        Log.d("Location", "X:" + myLocation.getX() + " Y:" + myLocation.getY());
+        myLocation.setHeading(orientation.getOrientation());
+        Log.d("Location", "X:" + myLocation.getX() + " Y:" + myLocation.getY() + " Heading:" + myLocation.getHeading());
     }
     private double restrictAngle(double angleToChange, double referenceAngle) {
         while(angleToChange < referenceAngle - 180) angleToChange += 360;
@@ -1193,28 +1195,28 @@ public class UltimateNavigation extends Thread {
             Log.d("turnCorrection: ", turnCorrection + "");
 
             double[] motorVelocities = new double[4];
-            if(startLocation.getHeading() <= 45 && startLocation.getHeading() > -45) { // 0
+            if (startLocation.getHeading() <= 45 && startLocation.getHeading() > -45) { // 0
                 Log.d("dir", "0");
                 motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection;
                 motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = yCorrection - xCorrection;
                 motorVelocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection;
                 motorVelocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection - xCorrection;
 
-            } else if(startLocation.getHeading() <= 135 && startLocation.getHeading() > 45) { // 90
+            } else if (startLocation.getHeading() <= 135 && startLocation.getHeading() > 45) { // 90
                 Log.d("dir", "90");
                 motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection + xCorrection;
                 motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection;
                 motorVelocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection + xCorrection;
                 motorVelocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection + xCorrection;
 
-            } else if(startLocation.getHeading() <= -135 || startLocation.getHeading() > 135) { // 180 or -180
+            } else if (startLocation.getHeading() <= -135 || startLocation.getHeading() > 135) { // 180 or -180
                 Log.d("dir", "180");
                 motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection - xCorrection;
                 motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection + xCorrection;
                 motorVelocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection - xCorrection;
                 motorVelocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection + xCorrection;
 
-            } else if(startLocation.getHeading() <= -45 && startLocation.getHeading() > -135) { // -90
+            } else if (startLocation.getHeading() <= -45 && startLocation.getHeading() > -135) { // -90
                 Log.d("dir", "-90");
                 motorVelocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = yCorrection - xCorrection;
                 motorVelocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = -yCorrection - xCorrection;
@@ -1366,10 +1368,6 @@ public class UltimateNavigation extends Thread {
         driveToLocationPID(myLocation, targetLocation, desiredSpeed, locationTolerance, mode);
     }
 
-    public void driveToLocationPID(Location targetLocation, double desiredSpeed, double locationTolerance, double secToQuit, LinearOpMode mode) {
-        driveToLocationPID(myLocation, targetLocation, desiredSpeed, locationTolerance, secToQuit, mode);
-    }
-
     public void driveToLocation(Location targetLocation, double desiredSpeed, LinearOpMode mode){
         driveToLocation(myLocation, targetLocation, desiredSpeed, mode);
     }
@@ -1382,6 +1380,10 @@ public class UltimateNavigation extends Thread {
     public void driveToLine(Line line, double desiredSpeed, LinearOpMode mode) {
         Location closestLocation = line.getClosestLocationOnLine(myLocation);
         driveToLocation(closestLocation, desiredSpeed, mode);
+    }
+
+    public void driveToXY(Location location, double desiredSpeed, LinearOpMode mode) {
+
     }
 
     public double getDistanceFrom(Location location) {

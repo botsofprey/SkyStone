@@ -46,7 +46,7 @@ public class VuforiaHelper {
     private final float HORIZONTAL_WITH_CAMERA_TO_LEFT_POST_ROTATE_IN_DEG = 180;
     private final float WEBCAM_POST_ROTATE_IN_DEG = 0;
 
-    public VuforiaHelper(HardwareMap hw){ initVuforia(hw); }
+    public VuforiaHelper(HardwareMap hw) { initVuforia(hw); }
 
     public static VuforiaLocalizer initVuforia(HardwareMap hardwareMap) {
         try {
@@ -106,20 +106,18 @@ public class VuforiaHelper {
         targetsRoverRuckus.activate();
     }
 
-
-    /*
-        getImage
-        wantedWidth -- of the image to return
-        wantedHeight -- of the image to return
-        returns a Bitmap of what the camera sees
+    /**
+        @param wantedWidth -- of the image to return
+        @param wantedHeight -- of the image to return
+        @return a Bitmap of what the camera sees
      */
     public Bitmap getImage(int wantedWidth, int wantedHeight) {
         Image img;
         long timeStart = System.currentTimeMillis();
-        try{
+        try {
             Log.d("Get Image", "taking image");
             img = takeImage();
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         Log.d("VH IMG TAKE TIME", "" + (System.currentTimeMillis() - timeStart));
