@@ -21,17 +21,13 @@ public class ShooterSystemV1 {
 
     // good
     private Servo aimServo;
-    public static final double HIGHEST_POSITION = 0;
+    public static final double HIGHEST_POSITION = .15;
     public static final double LOWERED_POSITION = 1;
 
     // good
-    private DcMotor wheelMotor;
+    private WheelMotor wheelMotor;
     private boolean wheelSpinning;
-    private static double rpm;
-    private static long ticks;
-    private static long nanoseconds;
-    private static final double SHOOTER_ON_POWER = 1;
-    private static final double SHOOTER_OFF_POWER = 0;
+    private static final int SHOOTER_ON_RPM = 5000;
 
     // good
     private CRServo elevatorServo;
@@ -51,7 +47,7 @@ public class ShooterSystemV1 {
 
     public ShooterSystemV1(HardwareMap hardwareMap) {
         aimServo = hardwareMap.servo.get("aimServo");
-        wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
+        wheelMotor = new WheelMotor("wheelMotor", hardwareMap);
         elevatorServo = hardwareMap.crservo.get("elevatorServo");
         elevatorTopSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorTopSwitch"));
         elevatorBottomSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorBottomSwitch"));
@@ -61,33 +57,21 @@ public class ShooterSystemV1 {
         wheelSpinning = false;
         elevatorPosition = BOTTOM;
         pinballAngle = PINBALL_REST;
-        rpm = 0;
-        ticks = 0;
-        nanoseconds = System.nanoTime();
     }
 
     public void toggleWheelPower() {
         wheelSpinning = !wheelSpinning;
-        wheelMotor.setPower(wheelSpinning ? SHOOTER_ON_POWER : SHOOTER_OFF_POWER);
+        wheelMotor.setRPM(wheelSpinning ? SHOOTER_ON_RPM : 0);
     }
 
     public void turnOnShooterWheel() {
         wheelSpinning = true;
-        wheelMotor.setPower(SHOOTER_ON_POWER);
+        wheelMotor.setRPM(SHOOTER_ON_RPM);
     }
 
     public void turnOffShooterWheel() {
         wheelSpinning = false;
-        wheelMotor.setPower(SHOOTER_OFF_POWER);
-    }
-
-    public void updateShooterRPM() {
-        long currentTicks = wheelMotor.getCurrentPosition();
-        if(currentTicks != ticks) {
-            long currentNanoseconds = System.nanoTime();
-            long timeDiff = currentNanoseconds - nanoseconds;
-            double nanosecondsPerRotation = timeDiff * 28;
-        }
+        wheelMotor.setRPM(0);
     }
 
     // moves the pinball servo
@@ -116,22 +100,19 @@ public class ShooterSystemV1 {
     }
 
     public void lowerElevator() {
-        if (elevatorPosition != BOTTOM ) {
+        if (elevatorPosition != BOTTOM) {
             elevatorServo.setPower(1);
             elevatorPosition = MOVING;
         }
     }
 
-    public void stopElevator() {
-        elevatorServo.setPower(0);
-        elevatorPosition = BOTTOM;
-    }
+    public void stopElevator() { elevatorServo.setPower(0); }
 
     public void update(LinearOpMode mode) {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
             elevatorServo.setPower(0);
-        } /*else if(elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) {
+        } /*else if() { //watch out for the zero case because then the robot will think its at the bottom when its at the top
             elevatorPosition = BOTTOM;
             elevatorServo.setPower(0);
         }*/

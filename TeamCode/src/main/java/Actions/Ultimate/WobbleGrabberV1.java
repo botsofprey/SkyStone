@@ -19,7 +19,7 @@ public class WobbleGrabberV1 extends Thread {
     public MotorController arm;
 //    private RevColorSensorV3 colorSensor;
 
-    private static final double ARM_POWER_DOWN = .1;
+    private static final double ARM_POWER_DOWN = .2;
     private static final double ARM_POWER_UP = -0.25;
 
     public static final double CLAW_GRAB_ANGLE = 0.0;

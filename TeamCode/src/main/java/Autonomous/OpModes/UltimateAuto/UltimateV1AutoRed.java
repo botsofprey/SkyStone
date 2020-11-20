@@ -54,20 +54,24 @@ public class UltimateV1AutoRed extends LinearOpMode {
     public void runOpMode() {
 
         // initialize robot
-        UltimateAutonomous robot;
+        UltimateAutonomous robot = null;
         try {
             robot = new UltimateAutonomous(AutoAlliance.RED, this);
         } catch (Exception e) {
             telemetry.addData("Robot Error", e.toString());
             telemetry.update();
-            return;
+        }
+        if (robot == null) {
+            telemetry.addData("Initialization: ", "failed.");
+            telemetry.update();
         }
 
         telemetry.addData("Robot created","");
         telemetry.update();
 
         // get number of rings and log them
-        int numRings = robot.getRingDetector().getNumRingsFound();
+//        int numRings = robot.getRingDetector().getNumRingsFound();
+        int numRings = 4;
         telemetry.addData("Rings Found", numRings);
 
         telemetry.addData("Status", "Initialized");
@@ -81,6 +85,7 @@ public class UltimateV1AutoRed extends LinearOpMode {
         long startTime = System.currentTimeMillis();
 
         // move to the zone with the wobble goal and release it
+        if (shouldNotPark(startTime)) robot.getWobbleGrabber().grabWobbleGoal();
         if (shouldNotPark(startTime)) robot.moveToZone(numRings);
         if (shouldNotPark(startTime)) robot.dropWobbleGoal();
         // TODO turn before placing it
