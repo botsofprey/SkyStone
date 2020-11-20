@@ -64,7 +64,7 @@ public class UltimateV1AutoRed extends LinearOpMode {
         }
 
         // get number of rings and log them
-        int numRings = 4; //robot.getRingDetector().getNumRingsFound();
+        int numRings = robot.getRingDetector().getNumRingsFound();
         telemetry.addData("Rings Found", numRings);
 
         telemetry.addData("Status", "Initialized");

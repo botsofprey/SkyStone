@@ -31,7 +31,7 @@ public class WobbleGrabberV1 extends Thread {
 
     public boolean wobbleGrabbed;
 
-    public WobbleGrabberV1(HardwareMap hardwareMap) throws Exception {
+    public WobbleGrabberV1(HardwareMap hardwareMap) {
         claw = hardwareMap.servo.get("wobbleGrabberClaw");
 
         // don't worry about this line. Just test what's currently in the file

@@ -36,7 +36,7 @@ public class ColorDetector {
         this.tolerance = tolerance;
     }
 
-    private int getNumRingsFound() {
+    public int getNumRingsFound() {
 
         // number of rings
         int numZero = 0;
@@ -64,7 +64,7 @@ public class ColorDetector {
             return 4;
     }
 
-    public int findNumDesiredPixels() {
+    private int findNumDesiredPixels() {
 
         Bitmap image = vuforia.getImage(TARGET_WIDTH, TARGET_HEIGHT);
         if (image == null) return 0;
