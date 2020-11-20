@@ -51,8 +51,15 @@ public class UltimateAutonomous {
         this.alliance = alliance;
         this.mode = mode;
 
+        mode.telemetry.addData("D",1);
+        mode.telemetry.update();
+
         VuforiaHelper vuforia = new VuforiaHelper(mode.hardwareMap);
         ringDetector = new ColorDetector(vuforia, 0xFF, 0xa5, 0x00, 0x30);
+
+        mode.telemetry.addData("D",2);
+        mode.telemetry.update();
+
         try {
             wobbleGrabber = new WobbleGrabberV1(mode.hardwareMap);
         }
@@ -60,8 +67,14 @@ public class UltimateAutonomous {
             e.printStackTrace();
         }
 
+        mode.telemetry.addData("D",3);
+        mode.telemetry.update();
+
         shooter = new ShooterSystemV1(mode.hardwareMap);
         intake = new RingIntakeSystemV1(mode.hardwareMap);
+
+        mode.telemetry.addData("D",4);
+        mode.telemetry.update();
 
         try {
             Location startLocation = redToBlue(STARTING_ROBOT_LOCATION_RIGHT);
@@ -69,6 +82,9 @@ public class UltimateAutonomous {
         } catch (Exception e) {
             mode.telemetry.addData("Robot error", e.toString());
         }
+
+        mode.telemetry.addData("D",5);
+        mode.telemetry.update();
     }
 
     public void driveToLeftWobbleGoal() {
