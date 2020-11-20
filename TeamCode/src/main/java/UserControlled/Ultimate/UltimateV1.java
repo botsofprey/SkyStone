@@ -229,6 +229,9 @@ public class UltimateV1 extends LinearOpMode {
         if (controllerOne.leftBumperPressed())
             shooter.lowerElevator();
 
+        else if(!controllerOne.leftBumperHeld())
+            shooter.stopElevator();
+
         if (controllerOne.dpadLeftPressed())
             shooter.setShooter(1);
             // todo : test (should set shooter angle to max)

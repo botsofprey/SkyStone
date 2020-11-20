@@ -107,13 +107,16 @@ public class ShooterSystemV1 {
         }
     }
 
-    public void stopElevator() { elevatorServo.setPower(0); }
+    public void stopElevator() {
+        elevatorServo.setPower(0);
+        elevatorPosition = BOTTOM;
+    }
 
     public void update(LinearOpMode mode) {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
             elevatorServo.setPower(0);
-        } /*else if() { //watch out for the zero case because then the robot will think its at the bottom when its at the top
+        } /*else if(elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) {
             elevatorPosition = BOTTOM;
             elevatorServo.setPower(0);
         }*/
