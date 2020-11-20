@@ -223,15 +223,6 @@ public class UltimateV1 extends LinearOpMode {
         if (controllerOne.dpadRightPressed())
             shooter.setShooter(1);
 
-        if (controllerOne.rightBumperPressed())
-            shooter.raiseElevator();
-
-        if (controllerOne.leftBumperPressed())
-            shooter.lowerElevator();
-
-        else if(!controllerOne.leftBumperHeld() && shooter.elevatorPosition == shooter.MOVING)
-            shooter.stopElevator();
-
         if (controllerOne.dpadLeftPressed())
             shooter.setShooter(1);
             // todo : test (should set shooter angle to max)
@@ -259,6 +250,15 @@ public class UltimateV1 extends LinearOpMode {
 
         if (controllerTwo.aPressed())
             intake.toggleIntakePower();
+
+        if (controllerOne.rightBumperPressed())
+            shooter.raiseElevator();
+
+        if (controllerOne.leftBumperPressed())
+            shooter.lowerElevator();
+
+        else if(!controllerOne.leftBumperHeld() && shooter.elevatorPosition == shooter.MOVING)
+            shooter.stopElevator();
 
     }
 

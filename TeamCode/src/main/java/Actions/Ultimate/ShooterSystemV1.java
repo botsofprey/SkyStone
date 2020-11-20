@@ -27,6 +27,9 @@ public class ShooterSystemV1 {
     // good
     private DcMotor wheelMotor;
     private boolean wheelSpinning;
+    private static double rpm;
+    private static long ticks;
+    private static long nanoseconds;
     private static final double SHOOTER_ON_POWER = 1;
     private static final double SHOOTER_OFF_POWER = 0;
 
@@ -58,6 +61,9 @@ public class ShooterSystemV1 {
         wheelSpinning = false;
         elevatorPosition = BOTTOM;
         pinballAngle = PINBALL_REST;
+        rpm = 0;
+        ticks = 0;
+        nanoseconds = System.nanoTime();
     }
 
     public void toggleWheelPower() {
@@ -73,6 +79,15 @@ public class ShooterSystemV1 {
     public void turnOffShooterWheel() {
         wheelSpinning = false;
         wheelMotor.setPower(SHOOTER_OFF_POWER);
+    }
+
+    public void updateShooterRPM() {
+        long currentTicks = wheelMotor.getCurrentPosition();
+        if(currentTicks != ticks) {
+            long currentNanoseconds = System.nanoTime();
+            long timeDiff = currentNanoseconds - nanoseconds;
+            double nanosecondsPerRotation = timeDiff * 28;
+        }
     }
 
     // moves the pinball servo
