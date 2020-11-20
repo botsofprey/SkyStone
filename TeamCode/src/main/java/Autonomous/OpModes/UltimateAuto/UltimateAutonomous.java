@@ -145,7 +145,7 @@ public class UltimateAutonomous {
 //    }
 
     public void shootPowerShots() {
-        shooter.raiseElevator(mode);
+        shooter.raiseElevator();
         shooter.turnOnShooterWheel();
         sleep(1000);
         shooter.shoot();
@@ -209,7 +209,7 @@ public class UltimateAutonomous {
     }
 
     public void shootThreeRings() {
-        shooter.raiseElevator(mode);
+        shooter.raiseElevator();
         while(mode.opModeIsActive() && shooter.elevatorPosition != ShooterSystemV1.TOP) {
             shooter.update(mode);
         }

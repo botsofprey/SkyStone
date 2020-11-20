@@ -224,10 +224,10 @@ public class UltimateV1 extends LinearOpMode {
             shooter.setShooter(1);
 
         if (controllerOne.rightBumperPressed())
-            shooter.raiseElevator(this);
+            shooter.raiseElevator();
 
         if (controllerOne.leftBumperPressed())
-            shooter.lowerElevator(this);
+            shooter.lowerElevator();
 
         if (controllerOne.dpadLeftPressed())
             shooter.setShooter(1);

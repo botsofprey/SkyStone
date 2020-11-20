@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import SensorHandlers.MagneticLimitSwitch;
+import UserControlled.GamepadController;
 
 /**
  * Author: Ethan Fisher
@@ -33,8 +34,9 @@ public class ShooterSystemV1 {
     private CRServo elevatorServo;
     public static final int TOP = 0;
     public static final int BOTTOM = 1;
+    public static final int MOVING = 2;
 
-    public int elevatorPosition = TOP;
+    public int elevatorPosition;
     private MagneticLimitSwitch elevatorTopSwitch;
     private MagneticLimitSwitch elevatorBottomSwitch;
 
@@ -50,7 +52,6 @@ public class ShooterSystemV1 {
         elevatorServo = hardwareMap.crservo.get("elevatorServo");
         elevatorTopSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorTopSwitch"));
         elevatorBottomSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorBottomSwitch"));
-
 
         pinballServo = hardwareMap.servo.get("pinballServo");
 
@@ -76,8 +77,10 @@ public class ShooterSystemV1 {
 
     // moves the pinball servo
     public void shoot() {
-        if (pinballAngle == PINBALL_TURNED) pinballAngle = PINBALL_REST;
-        else pinballAngle = PINBALL_TURNED;
+        if (pinballAngle == PINBALL_TURNED)
+            pinballAngle = PINBALL_REST;
+        else
+            pinballAngle = PINBALL_TURNED;
 
         pinballServo.setPosition(pinballAngle);
     }
@@ -92,31 +95,32 @@ public class ShooterSystemV1 {
 
     public void setShooter(double angle) { aimServo.setPosition(angle); }
 
-    public void raiseElevator(LinearOpMode mode) {
-        if (elevatorPosition != TOP) {
+    public void raiseElevator() {
+        if (elevatorPosition != TOP)
             elevatorServo.setPower(-1);
+    }
+
+    public void lowerElevator() {
+        if (elevatorPosition != BOTTOM ) {
+            elevatorServo.setPower(1);
+            elevatorPosition = MOVING;
         }
     }
 
-    public void lowerElevator(LinearOpMode mode) {
-        if (elevatorPosition != BOTTOM) {
-            elevatorServo.setPower(1);
-        }
-    }
+    public void stopElevator() { elevatorServo.setPower(0); }
 
     public void update(LinearOpMode mode) {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
             elevatorServo.setPower(0);
-        } else if (elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
+        } /*else if() { //watch out for the zero case because then the robot will think its at the bottom when its at the top
             elevatorPosition = BOTTOM;
             elevatorServo.setPower(0);
-        }
+        }*/
 
         mode.telemetry.addData("Bottom Activated", elevatorBottomSwitch.isActivated());
         mode.telemetry.addData("Top Activated", elevatorTopSwitch.isActivated());
         mode.telemetry.update();
-
     }
 
     // TODO
