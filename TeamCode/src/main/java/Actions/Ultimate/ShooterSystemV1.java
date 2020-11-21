@@ -32,7 +32,9 @@ public class ShooterSystemV1 {
     private double rpm;
     private long prevTicks;
     private long prevTime;
-    private static final double MINIMUM_TIME_DIFFERENCE = 1000000000;
+    private int maxRPM;
+    private boolean setMaxRPM;
+    private static final double MINIMUM_TIME_DIFFERENCE = 100000000;
     private static final double SHOOTER_ON_POWER = 1;
     private static final double SHOOTER_OFF_POWER = 0;
 
@@ -68,6 +70,8 @@ public class ShooterSystemV1 {
         pinballAngle = PINBALL_REST;
         rpm = 0;
         prevTicks = 0;
+        maxRPM = 0;
+        setMaxRPM = false;
         prevTime = System.nanoTime();
     }
 
@@ -86,15 +90,25 @@ public class ShooterSystemV1 {
         wheelMotor.setPower(SHOOTER_OFF_POWER);
     }
 
+    public void setShooterRPM(int RPM) {
+        wheelMotor.setPower((double) RPM / (double) maxRPM);
+    }
+
     public void updateShooterRPM(OpMode mode) {
         int currentTicks = wheelMotor.getCurrentPosition();
         long currentTime = System.nanoTime();
+        if (prevTicks == 0) {
+            prevTicks = currentTicks;
+            prevTime = currentTime;
+        }
         double tickDiff = currentTicks - prevTicks;
         double timeDiff = currentTime - prevTime;
         if (timeDiff > MINIMUM_TIME_DIFFERENCE) {
-            mode.telemetry.addData("RPM", (tickDiff / timeDiff) * (60000000000.0 / 28.0));
+            rpm = (tickDiff / timeDiff) * (60000000000.0 / 28.0);
             prevTicks = currentTicks;
             prevTime = currentTime;
+            if(setMaxRPM)
+                maxRPM = (int)rpm;
         }
     }
 
@@ -143,10 +157,16 @@ public class ShooterSystemV1 {
             elevatorServo.setPower(0);
         }
 
-
         mode.telemetry.addData("Bottom Activated", elevatorBottomSwitch.isActivated());
         mode.telemetry.addData("Top Activated", elevatorTopSwitch.isActivated());
-        updateShooterRPM(mode);
+
+        if (maxRPM == 0 && wheelMotor.getPower() == 1 && rpm == 0)
+            updateShooterRPM(mode);
+        else if (maxRPM == 0 && wheelMotor.getPower() == 1) {
+            updateShooterRPM(mode);
+            setMaxRPM = true;
+        } else if (maxRPM != 0)
+            updateShooterRPM(mode);
     }
 
     // TODO
