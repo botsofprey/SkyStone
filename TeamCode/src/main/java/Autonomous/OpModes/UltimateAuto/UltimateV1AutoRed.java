@@ -54,7 +54,7 @@ public class UltimateV1AutoRed extends LinearOpMode {
     public void runOpMode() {
 
         // initialize robot
-        UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, this);
+        final UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, this);
 
         telemetry.addData("Robot created","");
         telemetry.update();

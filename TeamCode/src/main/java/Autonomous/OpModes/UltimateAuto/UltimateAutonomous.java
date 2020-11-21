@@ -1,5 +1,8 @@
 package Autonomous.OpModes.UltimateAuto;
 
+import android.graphics.Bitmap;
+import android.net.IpSecManager;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -24,6 +27,7 @@ import static Autonomous.ConfigVariables.RING_CHECKPOINT;
 import static Autonomous.ConfigVariables.RING_DETECTION_POINT;
 import static Autonomous.ConfigVariables.SHOOTING_LINE_POINT;
 //import static Autonomous.ConfigVariables.SHOOT_LINE;
+import static Autonomous.ConfigVariables.SHOOTING_LINE_WAYPOINT;
 import static Autonomous.ConfigVariables.STARTING_RING_PILE;
 import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
 import static Autonomous.ConfigVariables.ZONE_WAYPOINT;
@@ -147,6 +151,10 @@ public class UltimateAutonomous {
 
       public void moveToShootLine() {
 //        Location target = new Location(SHOOTING_LINE_POINT);
+//          if(numRings == 1) {
+//              driveToLocation(SHOOTING_LINE_WAYPOINT);
+//          }
+          driveToLocation(new Location(robot.getRobotLocation().getX(), SHOOTING_LINE_POINT.getY(), UltimateNavigation.SOUTH));
         driveToLocation(SHOOTING_LINE_POINT);
         sleep(500);
         robot.turnToHeading(UltimateNavigation.NORTH, mode);
@@ -195,7 +203,10 @@ public class UltimateAutonomous {
 
 
     public void waitForArm() {
-        while(mode.opModeIsActive() && wobbleGrabber.armIsBusy());
+        while(mode.opModeIsActive() && wobbleGrabber.armIsBusy()) {
+            mode.telemetry.addData("Arm Angle", "" + wobbleGrabber.arm.getDegree());
+            mode.telemetry.update();
+        }
     }
 
     public void dropWobbleGoal() {
@@ -206,12 +217,12 @@ public class UltimateAutonomous {
 //        wobbleGrabber.setArmAngle(80); // Slowly lowering the arm rather than slamming down goal
 //        waitForArm();
 //        sleep(200);
+//        wobbleGrabber.lowerArm();
         wobbleGrabber.lowerArm();
         waitForArm();
-        sleep(1000);
         wobbleGrabber.releaseWobbleGoal();
-        sleep(1000);
-        wobbleGrabber.setArmAngle(60);
+        wobbleGrabber.raiseToVertical();
+        waitForArm();
         robot.turnToHeading(180, mode);
     }
 
@@ -225,15 +236,12 @@ public class UltimateAutonomous {
     }
 
     public void shootThreeRings() {
-        shooter.raiseElevator();
-        while(mode.opModeIsActive()) {
-            shooter.update(mode);
-        }
+
         shooter.shoot(); // Initally retracts indexer
         shooter.setShooter(ShooterSystemV1.HIGHEST_POSITION);
         shooter.turnOnShooterWheel();
-        for(int i = 0; i <= 3; i++){
-            sleep(1000); // Wait for shooter wheel to spin up
+        sleep(1500);
+        for(int i = 0; i <= 3; i++) {
             shooter.shoot(); // Index ring into shooter
             sleep(500); // Wait for index
             shooter.shoot(); // Retract indexer
@@ -241,8 +249,6 @@ public class UltimateAutonomous {
         }
         shooter.turnOffShooterWheel();
         shooter.setShooter(ShooterSystemV1.LOWERED_POSITION);
-        while(mode.opModeIsActive() && shooter.elevatorPosition != ShooterSystemV1.BOTTOM)
-            shooter.update(mode);
         // Once sensors are functional, lower elevator
     }
 

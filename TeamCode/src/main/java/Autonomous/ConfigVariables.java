@@ -61,8 +61,8 @@ public class ConfigVariables {
     public static final Location RED_FOUNDATION_STACK_LEFT = new Location(20+9+4, 37.5, 270);
     public static final Location BLUE_FOUNDATION_CENTER = new Location(-24-10-5, 49.5, 90);
 
-    public static final Location RED_ZONE_ONE = new Location(53, 0, UltimateNavigation.SOUTH);
-    public static final Location RED_ZONE_TWO = new Location(29, 24, UltimateNavigation.SOUTH);
+    public static final Location RED_ZONE_ONE = new Location(50, 8, UltimateNavigation.SOUTH);
+    public static final Location RED_ZONE_TWO = new Location(27, 34, UltimateNavigation.SOUTH);
     public static final Location RED_ZONE_THREE = new Location(46, 60, UltimateNavigation.SOUTH);
     public static final Location ZONE_WAYPOINT = new Location(12, 60, UltimateNavigation.SOUTH);
 
@@ -72,7 +72,8 @@ public class ConfigVariables {
 
 //    public static final HorizontalLine SHOOT_LINE = new HorizontalLine(new Location(-120, 30, UltimateNavigation.SOUTH), 240);
     public static final Location PARKING_LOCATION = new Location(42, 10, UltimateNavigation.NORTH);
-    public static final Location SHOOTING_LINE_POINT = new Location(46, 2, UltimateNavigation.SOUTH);
+    public static final Location SHOOTING_LINE_POINT = new Location(44, 4, UltimateNavigation.SOUTH);
+    public static final Location SHOOTING_LINE_WAYPOINT = new Location(22, 30, UltimateNavigation.SOUTH);
     public static final Location CENTER = new Location(0,0, UltimateNavigation.SOUTH);
 
     public static final Location RED_WOBBLE_GOAL_LEFT_CHECKPOINT = new Location(14, -32, UltimateNavigation.SOUTH);

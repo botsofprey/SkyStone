@@ -35,8 +35,8 @@ public class ShooterSystemV1 {
     public static final int BOTTOM = 1;
     public static final int MIDDLE = 2;
     public int elevatorPosition;
-    private MagneticLimitSwitch elevatorTopSwitch;
-    private MagneticLimitSwitch elevatorBottomSwitch;
+    private volatile MagneticLimitSwitch elevatorTopSwitch;
+    private volatile MagneticLimitSwitch elevatorBottomSwitch;
 
     // good
     public Servo pinballServo;

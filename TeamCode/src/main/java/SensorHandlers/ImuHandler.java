@@ -78,7 +78,7 @@ public class ImuHandler extends Thread {
     }
 
     private void initIMU(String name, HardwareMap hardwareMap){
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        final BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         //parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
@@ -100,6 +100,15 @@ public class ImuHandler extends Thread {
 //        imu.startAccelerationIntegration(new Position(), new Velocity(), 100);
         Log.d("IMU Status", imu.getSystemStatus().toString());
         Log.d("IMU Calibration", imu.getCalibrationStatus().toString());
+
+//        Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                imu.initialize(parameters);
+//            }
+//        });
+//        thread.start();
+
         updateIMU();
     }
 

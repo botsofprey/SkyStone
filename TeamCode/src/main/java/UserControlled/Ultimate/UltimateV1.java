@@ -224,16 +224,19 @@ public class UltimateV1 extends LinearOpMode {
             grabber.grabOrReleaseWobbleGoal();
 
         if (controller.dpadUpPressed())
-            grabber.decreaseAngle();
+            grabber.increaseAngle();
 
         if (controller.dpadDownPressed())
-            grabber.addAngle();
+            grabber.decreaseAngle();
 
         if (controller.bPressed())
             grabber.raiseArm();
 
         if (controller.aPressed())
             intake.toggleIntakePower();
+
+        if (controller.startPressed())
+            grabber.raiseToVertical();
 
         if (controller.rightBumperPressed())
             shooter.raiseElevator();
