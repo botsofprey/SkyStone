@@ -4,6 +4,7 @@ import android.sax.StartElementListener;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -28,11 +29,10 @@ public class ShooterSystemV1 {
     // good
     private DcMotor wheelMotor;
     private boolean wheelSpinning;
-    private static double rpm;
-    private static long ticks;
-    private static long nanoseconds;
-    private static int iterator;
-    private static double[] rpmMeasurements;
+    private double rpm;
+    private long prevTicks;
+    private long prevTime;
+    private static final double MINIMUM_TIME_DIFFERENCE = 1000000000;
     private static final double SHOOTER_ON_POWER = 1;
     private static final double SHOOTER_OFF_POWER = 0;
 
@@ -52,47 +52,23 @@ public class ShooterSystemV1 {
     public static final double PINBALL_TURNED = 1;
     public static final double PINBALL_REST = 0;
 
-    public ShooterSystemV1(HardwareMap hardwareMap) {
-//        aimServo = hardwareMap.servo.get("aimServo");
-        wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
-//        elevatorServo = hardwareMap.crservo.get("elevatorServo");
-//        elevatorTopSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorTopSwitch"));
-//        elevatorBottomSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorBottomSwitch"));
+    private double output = 0;
 
-//        pinballServo = hardwareMap.servo.get("pinballServo");
+    public ShooterSystemV1(HardwareMap hardwareMap) {
+        aimServo = hardwareMap.servo.get("aimServo");
+        wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
+        elevatorServo = hardwareMap.crservo.get("elevatorServo");
+        elevatorTopSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorTopSwitch"));
+        elevatorBottomSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorBottomSwitch"));
+
+        pinballServo = hardwareMap.servo.get("pinballServo");
 
         wheelSpinning = false;
         elevatorPosition = BOTTOM;
         pinballAngle = PINBALL_REST;
         rpm = 0;
-        ticks = 0;
-        nanoseconds = System.nanoTime();
-        iterator = 0;
-        rpmMeasurements = new double[1024];
-        for(int i = 0; i < 1024; i++)
-            rpmMeasurements[i] = 0;
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {//runs in a different thread for faster response time
-                long currentTicks = wheelMotor.getCurrentPosition();
-                long currentNanoseconds = System.nanoTime();
-                if(currentTicks != ticks) {//only calculate if ticks have changed to avoid outputting 0
-                    double timeDiff = currentNanoseconds - nanoseconds;
-                    double nanosecondsPerRotation = timeDiff / (currentTicks - ticks) * 28;//28 encoder ticks per rotation
-                    double minutesPerRotation = nanosecondsPerRotation / 60000000000.0;
-                    rpmMeasurements[iterator] = 1.0 / minutesPerRotation;
-                    iterator++;
-                    iterator %= 1024;//store current measurements
-                    ticks = currentTicks;
-                    nanoseconds = currentNanoseconds;
-                    double temp = 0;
-                    for(int i = 0; i < 1024; i++)//average the last 1024 rpm measurements
-                        temp += rpmMeasurements[i];
-                    rpm = temp / 1024.0;
-                }
-            }
-        }).start();
+        prevTicks = 0;
+        prevTime = System.nanoTime();
     }
 
     public void toggleWheelPower() {
@@ -110,16 +86,15 @@ public class ShooterSystemV1 {
         wheelMotor.setPower(SHOOTER_OFF_POWER);
     }
 
-    public void updateShooterRPM() {
-        long currentTicks = wheelMotor.getCurrentPosition();
-        long currentNanoseconds = System.nanoTime();
-        if(currentTicks != ticks) {//only calculate if ticks have changed to avoid outputting 0
-            long timeDiff = currentNanoseconds - nanoseconds;
-            double nanosecondsPerRotation = timeDiff * 28;//28 encoder ticks per rotation
-            double minutesPerRotation = nanosecondsPerRotation / 60000000000.0;
-            rpm = 1.0 / minutesPerRotation;
-            ticks = currentTicks;
-            nanoseconds = currentNanoseconds;
+    public void updateShooterRPM(OpMode mode) {
+        int currentTicks = wheelMotor.getCurrentPosition();
+        long currentTime = System.nanoTime();
+        double tickDiff = currentTicks - prevTicks;
+        double timeDiff = currentTime - prevTime;
+        if (timeDiff > MINIMUM_TIME_DIFFERENCE) {
+            mode.telemetry.addData("RPM", (tickDiff / timeDiff) * (60000000000.0 / 28.0));
+            prevTicks = currentTicks;
+            prevTime = currentTime;
         }
     }
 
@@ -158,6 +133,7 @@ public class ShooterSystemV1 {
         elevatorServo.setPower(0);
     }
 
+    long startTime;
     public void update(LinearOpMode mode) {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
@@ -167,9 +143,10 @@ public class ShooterSystemV1 {
             elevatorServo.setPower(0);
         }
 
-        mode.telemetry.addData("RPM", rpm);
+
         mode.telemetry.addData("Bottom Activated", elevatorBottomSwitch.isActivated());
         mode.telemetry.addData("Top Activated", elevatorTopSwitch.isActivated());
+        updateShooterRPM(mode);
     }
 
     // TODO

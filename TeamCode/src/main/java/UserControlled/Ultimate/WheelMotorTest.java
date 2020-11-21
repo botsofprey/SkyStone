@@ -62,9 +62,15 @@ public class WheelMotorTest extends LinearOpMode {
     public void runOpMode() {
         shoot = new ShooterSystemV1(hardwareMap);
 
+        telemetry.addData("Status", "initialized");
+        telemetry.update();
+
+        waitForStart();
+
         shoot.turnOnShooterWheel();
 
-        while (true) {
+        while (opModeIsActive()) {
+            shoot.update(this);
             telemetry.update();
         }
     }
