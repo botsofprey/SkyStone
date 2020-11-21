@@ -40,7 +40,7 @@ public class ShooterSystemV1 {
     private CRServo elevatorServo;
     public static final int TOP = 0;
     public static final int BOTTOM = 1;
-//    public static final int MOVING = 2;
+    public static final int MIDDLE = 2;
 
     public int elevatorPosition;
     private MagneticLimitSwitch elevatorTopSwitch;
