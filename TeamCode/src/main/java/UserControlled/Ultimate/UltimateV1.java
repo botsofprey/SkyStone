@@ -56,15 +56,14 @@ import UserControlled.JoystickHandler;
  *      joysticks - drive base
  *      start - slow mode
  *      a - shoot
- *      dpad up / down - raise / lower shooter angle
- *      dpad left / right - bring shooter all the way down / up
+ *      dpad up and down - raise and lower shooter angle
  *      right bumper - raise elevator
  *      left bumper - lower elevator
  *
  * Player Two:
  *      b - intake direction
  *      a - intake power
- *      dpad up / down - raise / lower wobble grabber arm
+ *      dpad up and down - raise and lower wobble grabber arm
  *      x - resets arm position for grabbing wobble goal
  *      y - grabbing or releasing wobble goal
  */
@@ -83,8 +82,8 @@ public class UltimateV1 extends LinearOpMode {
     RingIntakeSystemV1 intake;
     ShooterSystemV1 shooter;
     WobbleGrabberV1 grabber;
-    //ColorSensor redDetector;
 
+//    ColorDetector redDetector;
 
     boolean eStop = false, slowMode = false;
 
@@ -113,7 +112,7 @@ public class UltimateV1 extends LinearOpMode {
         }
 
         // initialize red detector
-       // redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
+//        redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
 
         // initialize joysticks
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
@@ -137,8 +136,6 @@ public class UltimateV1 extends LinearOpMode {
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
-            telemetry.addData("Arm angle: ", grabber.arm.getDegree());
-            telemetry.update();
 
             updateEStop();
             if (!eStop) {
@@ -195,40 +192,17 @@ public class UltimateV1 extends LinearOpMode {
         if (controllerOne.bPressed())
             shooter.toggleWheelPower();
 
-//        if (controllerOne.dpadUpPressed())
-//            robot.turnToHeading(UltimateNavigation.NORTH, this);
-//            robot.driveDistance(10, 15, this);
-//
-//        if (controllerOne.dpadDownPressed())
-//            robot.turnToHeading(UltimateNavigation.SOUTH, this);
-//            robot.driveDistance(10,15, this);
-//
-//        if(controllerOne.dpadLeftPressed())
-//            robot.turnToHeading(UltimateNavigation.WEST, this);
-//            robot.driveDistance(10, 15, this);
-//
-//        if (controllerOne.dpadRightPressed())
-//            robot.turnToHeading(UltimateNavigation.EAST, this);
-//            robot.driveDistance(10, 15, this);
-
         if (controllerOne.dpadUpPressed())
             shooter.raiseShooter(0.05);
 
         if (controllerOne.dpadDownPressed())
             shooter.lowerShooter(0.05);
 
-        if(controllerOne.dpadLeftPressed())
-           shooter.setShooter(0);
+        if (controllerOne.rightBumperPressed())
+            shooter.raiseElevator();
 
-        if (controllerOne.dpadRightPressed())
-            shooter.setShooter(1);
-
-        if (controllerOne.dpadLeftPressed())
-            shooter.setShooter(1);
-            // todo : test (should set shooter angle to max)
-        if (controllerOne.dpadRightPressed())
-            shooter.setShooter(0);
-            // todo : test (set shooter angle to minimum)
+        if (controllerOne.leftBumperPressed())
+            shooter.lowerElevator();
     }
 
     private void playerTwoFunctions() {
@@ -240,25 +214,16 @@ public class UltimateV1 extends LinearOpMode {
             grabber.grabOrReleaseWobbleGoal();
 
         if (controllerTwo.dpadUpPressed())
-            grabber.decreaseAngle();
+            grabber.addAngle(30, 0.2);
 
         if (controllerTwo.dpadDownPressed())
-            grabber.addAngle();
+            grabber.addAngle(-30, 0.2);
 
         if (controllerTwo.bPressed())
-            grabber.raiseArm();
+            intake.toggleIntakeDirection();
 
         if (controllerTwo.aPressed())
             intake.toggleIntakePower();
-
-        if (controllerOne.rightBumperPressed())
-            shooter.raiseElevator();
-
-        if (controllerOne.leftBumperPressed())
-            shooter.lowerElevator();
-
-        else if(!controllerOne.leftBumperHeld() && shooter.elevatorPosition == shooter.MOVING)
-            shooter.stopElevator();
 
     }
 

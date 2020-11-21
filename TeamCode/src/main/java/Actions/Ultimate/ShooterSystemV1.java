@@ -40,7 +40,7 @@ public class ShooterSystemV1 {
     private CRServo elevatorServo;
     public static final int TOP = 0;
     public static final int BOTTOM = 1;
-    public static final int MOVING = 2;
+//    public static final int MOVING = 2;
 
     public int elevatorPosition;
     private MagneticLimitSwitch elevatorTopSwitch;
@@ -151,28 +151,25 @@ public class ShooterSystemV1 {
     public void lowerElevator() {
         if (elevatorPosition != BOTTOM ) {
             elevatorServo.setPower(1);
-            elevatorPosition = MOVING;
         }
     }
 
     public void stopElevator() {
         elevatorServo.setPower(0);
-        elevatorPosition = BOTTOM;
     }
 
     public void update(LinearOpMode mode) {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
             elevatorServo.setPower(0);
-        } /*else if(elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) {
+        } else if (elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) {
             elevatorPosition = BOTTOM;
             elevatorServo.setPower(0);
-        }*/
+        }
 
         mode.telemetry.addData("RPM", rpm);
         mode.telemetry.addData("Bottom Activated", elevatorBottomSwitch.isActivated());
         mode.telemetry.addData("Top Activated", elevatorTopSwitch.isActivated());
-        mode.telemetry.update();
     }
 
     // TODO

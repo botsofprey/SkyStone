@@ -19,8 +19,8 @@ public class WobbleGrabberV1 extends Thread {
     public MotorController arm;
 //    private RevColorSensorV3 colorSensor;
 
-    private static final double ARM_POWER_DOWN = .1;
-    private static final double ARM_POWER_UP = -0.25;
+    public static final double ARM_POWER_DOWN = .1;
+    public static final double ARM_POWER_UP = -0.25;
 
     public static final double CLAW_GRAB_ANGLE = 0.0;
     public static final double CLAW_RELEASE_ANGLE = .9;
@@ -64,8 +64,8 @@ public class WobbleGrabberV1 extends Thread {
         arm.setPositionDegrees(arm.getDegree() + ANGLE_INCREMENT, ARM_POWER_DOWN);
     }
 
-    public void addAngle() {
-        arm.setPositionDegrees(arm.getDegree() - ANGLE_INCREMENT, ARM_POWER_UP);
+    public void addAngle(double power, double angleIncrement) {
+        arm.setPositionDegrees(arm.getDegree() - angleIncrement, power);
     }
 
     public void setArmAngle(double angle) {
