@@ -34,6 +34,7 @@ import android.graphics.Bitmap;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import Autonomous.ColorDetector;
 import Autonomous.VuforiaHelper;
 
 @TeleOp(name="Vuforia Test", group="Testers")
@@ -46,6 +47,8 @@ public class VuforiaTest extends LinearOpMode {
         // initialize objects and variables here
         // also create and initialize function local variables here
         VuforiaHelper vuforia = new VuforiaHelper(hardwareMap);
+        ColorDetector ringDetector = ColorDetector.ringDetector(vuforia);
+        GamepadController controller = new GamepadController(gamepad1);
 
         // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
@@ -55,9 +58,20 @@ public class VuforiaTest extends LinearOpMode {
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
-            Bitmap image = vuforia.getImage(100, 100);
-            telemetry.addData("Image", image == null ? "Null" : "Not null");
-            // telemetry and logging data goes here
+            telemetry.addData("Orange pixels", "" + ringDetector.findNumDesiredPixels());
+            telemetry.addData("R", "" + ringDetector.targetR);
+            telemetry.addData("G", "" + ringDetector.targetG);
+            telemetry.addData("B", "" + ringDetector.targetB);
+
+            controller.update(gamepad1);
+
+            if (controller.aHeld()) ringDetector.targetR++;
+            if (controller.bHeld()) ringDetector.targetR--;
+            if (controller.dpadUpHeld()) ringDetector.targetG++;
+            if (controller.dpadDownHeld()) ringDetector.targetG--;
+            if (controller.leftBumperHeld()) ringDetector.targetB++;
+            if (controller.rightBumperHeld()) ringDetector.targetB--;
+
             telemetry.update();
         }
         // disable/kill/stop objects here

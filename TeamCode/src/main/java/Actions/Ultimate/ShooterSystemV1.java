@@ -33,8 +33,7 @@ public class ShooterSystemV1 {
     private CRServo elevatorServo;
     public static final int TOP = 0;
     public static final int BOTTOM = 1;
-    public static final int MOVING = 2;
-
+    public static final int MIDDLE = 2;
     public int elevatorPosition;
     private MagneticLimitSwitch elevatorTopSwitch;
     private MagneticLimitSwitch elevatorBottomSwitch;
@@ -100,10 +99,8 @@ public class ShooterSystemV1 {
     }
 
     public void lowerElevator() {
-        if (elevatorPosition != BOTTOM) {
+        if (elevatorPosition != BOTTOM)
             elevatorServo.setPower(1);
-            elevatorPosition = MOVING;
-        }
     }
 
     public void stopElevator() { elevatorServo.setPower(0); }
@@ -112,10 +109,12 @@ public class ShooterSystemV1 {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
             elevatorServo.setPower(0);
-        } /*else if() { //watch out for the zero case because then the robot will think its at the bottom when its at the top
+        } else if (elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
             elevatorPosition = BOTTOM;
             elevatorServo.setPower(0);
-        }*/
+        }
+        if (!elevatorTopSwitch.isActivated() && !elevatorBottomSwitch.isActivated())
+            elevatorPosition = MIDDLE;
 
         mode.telemetry.addData("Bottom Activated", elevatorBottomSwitch.isActivated());
         mode.telemetry.addData("Top Activated", elevatorTopSwitch.isActivated());

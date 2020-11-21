@@ -56,14 +56,15 @@ import UserControlled.JoystickHandler;
  *      joysticks - drive base
  *      start - slow mode
  *      a - shoot
- *      dpad up and down - raise and lower shooter angle
+ *      dpad up / down - raise / lower shooter angle
+ *      dpad left / right - bring shooter all the way down / up
  *      right bumper - raise elevator
  *      left bumper - lower elevator
  *
  * Player Two:
  *      b - intake direction
  *      a - intake power
- *      dpad up and down - raise and lower wobble grabber arm
+ *      dpad up / down - raise / lower wobble grabber arm
  *      x - resets arm position for grabbing wobble goal
  *      y - grabbing or releasing wobble goal
  */
@@ -82,8 +83,8 @@ public class UltimateV1 extends LinearOpMode {
     RingIntakeSystemV1 intake;
     ShooterSystemV1 shooter;
     WobbleGrabberV1 grabber;
+    //ColorSensor redDetector;
 
-//    ColorDetector redDetector;
 
     boolean eStop = false, slowMode = false;
 
@@ -112,7 +113,7 @@ public class UltimateV1 extends LinearOpMode {
         }
 
         // initialize red detector
-//        redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
+       // redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
 
         // initialize joysticks
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
@@ -136,6 +137,8 @@ public class UltimateV1 extends LinearOpMode {
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
+            telemetry.addData("Arm angle: ", grabber.arm.getDegree());
+            telemetry.update();
 
             updateEStop();
             if (!eStop) {
@@ -153,8 +156,8 @@ public class UltimateV1 extends LinearOpMode {
                     controllerOne.update(gamepad1);
                     controllerTwo.update(gamepad2);
 
-                    playerOneFunctions();
-                    playerTwoFunctions();
+                    playerOneFunctions(controllerOne);
+                    playerTwoFunctions(controllerTwo);
                 }
 
                 controlMiscFunctions();
@@ -184,47 +187,59 @@ public class UltimateV1 extends LinearOpMode {
             robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
     }
 
-    private void playerOneFunctions() {
+    private void playerOneFunctions(GamepadController controller) {
 
-        if (controllerOne.aPressed())
+        if (controller.aPressed())
             shooter.shoot();
 
-        if (controllerOne.bPressed())
+        if (controller.bPressed())
             shooter.toggleWheelPower();
 
-        if (controllerOne.dpadUpPressed())
+        if (controller.dpadUpPressed())
             shooter.raiseShooter(0.05);
 
-        if (controllerOne.dpadDownPressed())
+        if (controller.dpadDownPressed())
             shooter.lowerShooter(0.05);
 
-        if (controllerOne.rightBumperPressed())
-            shooter.raiseElevator();
+        if (controller.dpadLeftPressed())
+           shooter.setShooter(0);
 
-        if (controllerOne.leftBumperPressed())
-            shooter.lowerElevator();
+        if (controller.dpadRightPressed())
+            shooter.setShooter(1);
+
+        if (controller.dpadLeftPressed())
+            shooter.setShooter(1);
+
+        if (controller.dpadRightPressed())
+            shooter.setShooter(0);
+
     }
 
-    private void playerTwoFunctions() {
+    private void playerTwoFunctions(GamepadController controller) {
 
-        if (controllerTwo.xPressed())
+        if (controller.xPressed())
             grabber.lowerArm();
 
-        if (controllerTwo.yPressed())
+        if (controller.yPressed())
             grabber.grabOrReleaseWobbleGoal();
 
-        if (controllerTwo.dpadUpPressed())
-            grabber.addAngle(30, 0.2);
+        if (controller.dpadUpPressed())
+            grabber.decreaseAngle();
 
-        if (controllerTwo.dpadDownPressed())
-            grabber.addAngle(-30, 0.2);
+        if (controller.dpadDownPressed())
+            grabber.addAngle();
 
-        if (controllerTwo.bPressed())
-            intake.toggleIntakeDirection();
+        if (controller.bPressed())
+            grabber.raiseArm();
 
-        if (controllerTwo.aPressed())
+        if (controller.aPressed())
             intake.toggleIntakePower();
 
+        if (controller.rightBumperPressed())
+            shooter.raiseElevator();
+
+        if (controller.leftBumperPressed())
+            shooter.lowerElevator();
     }
 
     private void controlMiscFunctions() {

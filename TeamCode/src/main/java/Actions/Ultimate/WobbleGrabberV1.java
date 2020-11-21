@@ -2,6 +2,7 @@ package Actions.Ultimate;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -19,15 +20,15 @@ public class WobbleGrabberV1 extends Thread {
     public MotorController arm;
 //    private RevColorSensorV3 colorSensor;
 
-    private static final double ARM_POWER_DOWN = .2;
-    private static final double ARM_POWER_UP = -0.25;
+    private static final double ARM_POWER_DOWN = -.2;
+    private static final double ARM_POWER_UP = 0.25;
 
     public static final double CLAW_GRAB_ANGLE = 0.0;
     public static final double CLAW_RELEASE_ANGLE = .9;
     public static final double ANGLE_INCREMENT = 25;
-    public static final double LOWERED_ANGLE = 150;
+    public static final double LOWERED_ANGLE = -170;
     public static final double RAISED_ANGLE = 0;
-    public static final double LIFTED_ANGLE = 130;
+    public static final double LIFTED_ANGLE = -130;
 
     public boolean wobbleGrabbed;
 
@@ -38,6 +39,7 @@ public class WobbleGrabberV1 extends Thread {
 
         try {
             arm = new MotorController("wobbleGrabberArm", "ActionConfig/WobbleArmConfig.json", hardwareMap);
+            arm.setDirection(DcMotorSimple.Direction.REVERSE);
         } catch (Exception e) {
             e.printStackTrace();
         }

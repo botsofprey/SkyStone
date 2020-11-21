@@ -66,19 +66,17 @@ public class ConfigVariables {
     public static final Location RED_ZONE_THREE = new Location(46, 60, UltimateNavigation.SOUTH);
     public static final Location ZONE_WAYPOINT = new Location(12, 60, UltimateNavigation.SOUTH);
 
-//    public static final Location RED_ZONE_ONE = new Location(48, 12);
-//    public static final Location RED_ZONE_TWO = new Location(24, 36);
-//    public static final Location RED_ZONE_THREE = new Location(48, 60);
-
+    public static final Location RING_DETECTION_POINT= new Location(52, -20, UltimateNavigation.SOUTH);
+    public static final Location RING_CHECKPOINT = new Location (52, -10, UltimateNavigation.SOUTH);
     public static final Location STARTING_RING_PILE = new Location(36, -24, UltimateNavigation.SOUTH);
 
 //    public static final HorizontalLine SHOOT_LINE = new HorizontalLine(new Location(-120, 30, UltimateNavigation.SOUTH), 240);
     public static final Location PARKING_LOCATION = new Location(42, 10, UltimateNavigation.NORTH);
     public static final Location SHOOTING_LINE_POINT = new Location(46, 2, UltimateNavigation.SOUTH);
-    public static final Location CENTER = new Location(0,0);
+    public static final Location CENTER = new Location(0,0, UltimateNavigation.SOUTH);
 
     public static final Location RED_WOBBLE_GOAL_LEFT_CHECKPOINT = new Location(14, -32, UltimateNavigation.SOUTH);
-    public static final Location RED_WOBBLE_GOAL_LEFT = new Location(14, -31);
+    public static final Location RED_WOBBLE_GOAL_LEFT = new Location(14, -31, UltimateNavigation.SOUTH);
     public static final Location RED_WOBBLE_GOAL_RIGHT = new Location(56, -31, UltimateNavigation.SOUTH);
 
     public static final Location STARTING_ROBOT_LOCATION_LEFT = new Location(24, -60, UltimateNavigation.SOUTH);

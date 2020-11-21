@@ -73,7 +73,7 @@ public class VuforiaHelper {
             case PHONE_CAMERA:
                 try {
                     VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters();
-                    params.vuforiaLicenseKey = LICENSE_KEY_EXTERNAL_CAMERA;
+                    params.vuforiaLicenseKey = LICENSE_KEY_NO_EXTERNAL_CAMERA;
                     params.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
                     params.cameraName = UnknownCameraNameImpl.forUnknown();
 //                    params.cameraName =
