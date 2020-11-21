@@ -53,13 +53,13 @@ public class ShooterSystemV1 {
     public static final double PINBALL_REST = 0;
 
     public ShooterSystemV1(HardwareMap hardwareMap) {
-        aimServo = hardwareMap.servo.get("aimServo");
+//        aimServo = hardwareMap.servo.get("aimServo");
         wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
-        elevatorServo = hardwareMap.crservo.get("elevatorServo");
-        elevatorTopSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorTopSwitch"));
-        elevatorBottomSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorBottomSwitch"));
+//        elevatorServo = hardwareMap.crservo.get("elevatorServo");
+//        elevatorTopSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorTopSwitch"));
+//        elevatorBottomSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorBottomSwitch"));
 
-        pinballServo = hardwareMap.servo.get("pinballServo");
+//        pinballServo = hardwareMap.servo.get("pinballServo");
 
         wheelSpinning = false;
         elevatorPosition = BOTTOM;
@@ -74,7 +74,7 @@ public class ShooterSystemV1 {
 
         new Thread(new Runnable() {
             @Override
-            public void run() {
+            public void run() {//runs in a different thread for faster response time
                 long currentTicks = wheelMotor.getCurrentPosition();
                 long currentNanoseconds = System.nanoTime();
                 if(currentTicks != ticks) {//only calculate if ticks have changed to avoid outputting 0
@@ -83,11 +83,11 @@ public class ShooterSystemV1 {
                     double minutesPerRotation = nanosecondsPerRotation / 60000000000.0;
                     rpmMeasurements[iterator] = 1.0 / minutesPerRotation;
                     iterator++;
-                    iterator %= 1024;
+                    iterator %= 1024;//store current measurements
                     ticks = currentTicks;
                     nanoseconds = currentNanoseconds;
                     double temp = 0;
-                    for(int i = 0; i < 1024; i++)
+                    for(int i = 0; i < 1024; i++)//average the last 1024 rpm measurements
                         temp += rpmMeasurements[i];
                     rpm = temp / 1024.0;
                 }
