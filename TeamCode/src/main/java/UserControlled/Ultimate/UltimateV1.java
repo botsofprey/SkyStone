@@ -103,6 +103,8 @@ public class UltimateV1 extends LinearOpMode {
         }
 
         // initialize systems
+        intake = new RingIntakeSystemV1(hardwareMap);
+        shooter = new ShooterSystemV1(hardwareMap);
         try {
             intake = new RingIntakeSystemV1(hardwareMap);
             shooter = new ShooterSystemV1(hardwareMap);
