@@ -36,7 +36,7 @@ public class ShooterSystemV1 {
     private static final double MINIMUM_TIME_DIFFERENCE = 100000000;
     private static final double SHOOTER_ON_POWER = 1;
     private static final double SHOOTER_OFF_POWER = 0;
-    private static final int SHOOTER_ON_RPM = 5000;
+    private static final int SHOOTER_ON_RPM = 5400;//90 rps
 
     // good
     private CRServo elevatorServo;
@@ -132,6 +132,8 @@ public class ShooterSystemV1 {
         }
         if (!elevatorTopSwitch.isActivated() && !elevatorBottomSwitch.isActivated())
             elevatorPosition = MIDDLE;
+
+        wheelMotor.updateShooterRPM(mode);
 
         mode.telemetry.addData("Bottom Activated", elevatorBottomSwitch.isActivated());
         mode.telemetry.addData("Top Activated", elevatorTopSwitch.isActivated());
