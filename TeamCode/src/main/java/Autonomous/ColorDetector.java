@@ -12,20 +12,25 @@ import android.graphics.Bitmap;
 public class ColorDetector {
 
     private VuforiaHelper vuforia;
-    public static final int TARGET_WIDTH = 100;
-    public static final int TARGET_HEIGHT = 100;
+    public static final int TARGET_WIDTH = 125;
+    public static final int TARGET_HEIGHT = 125;
 
-    private enum NumRings { ZERO, ONE, FOUR }
-
-    public static final int PERCENT_NUM_RINGS_REQUIRED = 70;
-    public static final int TRIES_TO_GET_NUM_RINGS = 10;
+    public static final int PERCENT_NUM_RINGS_REQUIRED = 60;
+    public static final int TRIES_TO_GET_NUM_RINGS = 50;
 
     public static final int RED_PIXELS_REQUIRED = 100;
 
-    private int targetR;
-    private int targetG;
-    private int targetB;
-    private int tolerance;
+    public static final int ONE_RING_THRESHOLD = 145;
+    public static final int FOUR_RING_THRESHOLD = 170;
+
+    public int targetR;
+    public int targetG;
+    public int targetB;
+    public int tolerance;
+
+    public static ColorDetector ringDetector(VuforiaHelper vuforia) {
+        return new ColorDetector(vuforia, 171, 132, 0, 0x50);
+    }
 
     public ColorDetector(VuforiaHelper vuforia, int targetR, int targetG, int targetB, int tolerance) {
         this.vuforia = vuforia;
@@ -35,22 +40,10 @@ public class ColorDetector {
         this.tolerance = tolerance;
     }
 
-    // used for getting rings
-    public int getNumRings() {
-        NumRings numRings = getNumRingsFound();
-
-        if (numRings == NumRings.FOUR) return 4;
-        if (numRings == NumRings.ONE) return 1;
-        return 0;
-    }
-
-    // TODO use this function to find the amount of red in the screen. Test how much red
-    // is a good amount to grab the wobble goal
-    public boolean shouldGrabWobbleGoal() { return findNumDesiredPixels() > RED_PIXELS_REQUIRED; }
-
-    private NumRings getNumRingsFound() {
+    public int getNumRingsFound() {
 
         // number of rings
+        int numRings = 4;
         int numZero = 0;
         int numOne = 0;
         int numFour = 0;
@@ -58,22 +51,39 @@ public class ColorDetector {
         // read 10 times or something like that
         for (int i = 0; i < TRIES_TO_GET_NUM_RINGS; i++) {
             int orangePixels = findNumDesiredPixels();
-
-            if (orangePixels < 25)
+            if (orangePixels <= ONE_RING_THRESHOLD) {
                 numZero++;
-            else if (orangePixels < 250)
+//                numRings = 0;
+            }
+            else if (orangePixels < FOUR_RING_THRESHOLD) {
                 numOne++;
-            else
+//                numRings = 1;
+            }
+            else {
                 numFour++;
+//                numRings = 4;
+            }
         }
+//        return numRings;
 
-        // check if the percent of rings found is enough to assume that number of rings are on the field
-        if (numZero / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
-            return NumRings.ZERO;
-        else if (numOne / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
-            return NumRings.ONE;
+        if (numZero >= numOne && numZero >= numFour)
+            return 0;
+
+        else if (numOne >= numZero && numOne >= numFour)
+            return 1;
+
         else
-            return NumRings.FOUR;
+            return 4;
+
+//        int largestRingCount = numZero > numOne ? ( numZero > numFour ? numZero : numFour ) : (numOne > numFour ? numOne : numFour);
+//        return largestRingCount;
+        // check if the percent of rings found is enough to assume that number of rings are on the field
+//        if (numZero / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
+//            return 0;
+//        else if (numOne / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
+//            return 1;
+//        else
+//            return 4;
     }
 
     public int findNumDesiredPixels() {

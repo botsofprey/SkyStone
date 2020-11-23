@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import Autonomous.AutoAlliance;
 import DriveEngine.Ultimate.UltimateNavigation;
 
-//import static Autonomous.ConfigVariables.CENTER;
+import static Autonomous.ConfigVariables.RING_CHECKPOINT;
 
 /*
     Author: Ethan Fisher
@@ -54,66 +54,78 @@ public class UltimateV1AutoRed extends LinearOpMode {
     public void runOpMode() {
 
         // initialize robot
-        UltimateAutonomous robot = null;
-        try {
-            robot = new UltimateAutonomous(AutoAlliance.RED, this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        final UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, this);
 
-        telemetry.addData("Robot Created", "");
+        telemetry.addData("Robot created","");
         telemetry.update();
-
 
         // get number of rings and log them
-        int numRings = 4; //robot.getRingDetector().getNumRings();
-        telemetry.addData("Rings Found", numRings);
-
+//        int numRings = robot.getRingDetector().getNumRingsFound();
+//        int numRings = robot.distanceRingsDetected();
+//        telemetry.addData("Rings Found", numRings);
+//        int numRings = robot.getRingDetector().getNumRingsFound();
         telemetry.addData("Status", "Initialized");
+//        telemetry.addData("Rings Detected:", numRings);
         telemetry.update();
 
-        // if (opModeIsActive()) goes before all of statements in case the 30 seconds is up
+        // if (shouldNotPark(startTime)) goes before all of statements in case the 30 seconds is up
 
         // Wait for the game to start (driver presses PLAY)
+//        while(!opModeIsActive()) {
+//            numRings = robot.distanceRingsDetected();
+//            telemetry.addData("Rings Found", numRings);
+//            telemetry.update();
+//        }
         waitForStart();
 
-        // TODO the robot should start with the wobble goal
-//        // drive to the wobble goal
-//        robot.driveToWobbleGoal();
-//
+        long startTime = System.currentTimeMillis();
 
         // move to the zone with the wobble goal and release it
-        if (opModeIsActive()) robot.getWobbleGrabber().grabWobbleGoal();
-        if (opModeIsActive()) robot.moveToZone(numRings);
-        if (opModeIsActive()) robot.placeWobbleGoal();
+        if (shouldNotPark(startTime)) robot.getShooter().raiseElevator();
+        if (shouldNotPark(startTime)) robot.getWobbleGrabber().grabWobbleGoal();
+        if (shouldNotPark(startTime)) robot.driveToRingCheckpoint();
+        sleep(1000);
+        int numRings = robot.distanceRingsDetected();
+        telemetry.addData("Rings Detected:", numRings);
+        telemetry.update();
+        if (shouldNotPark(startTime)) robot.driveToLocation(RING_CHECKPOINT);
+        if (shouldNotPark(startTime)) robot.moveToZone(numRings);
+        if (shouldNotPark(startTime)) robot.dropWobbleGoal();
+        // if (shouldNotPark(startTime)) robot.getWobbleGrabber().raiseArm();
 
         // grab the second wobble goal
-        if (opModeIsActive()) robot.driveToLeftWobbleGoal();
-        if (opModeIsActive()) robot.pickupWobbleGoal();
+//        if (shouldNotPark(startTime)) robot.driveToLeftWobbleGoal();
 
         // move it to the same zone and drop it
-        if (opModeIsActive()) robot.moveToZone(numRings);
-        if (opModeIsActive()) robot.placeWobbleGoal();
+//        if (shouldNotPark(startTime)) robot.driveToWaypoint();
+//        if (shouldNotPark(startTime)) robot.moveToZone(numRings);
+//        if (shouldNotPark(startTime)) robot.dropWobbleGoal();
 
         // move behind shot line, rotate towards powershots,  and shoot them
-        if (opModeIsActive()) robot.moveToShootLine(); // TODO still need to work on calculations for shooting into goals & powershots
-        //if (opModeIsActive()) robot.moveBehindShootLine();
-        if (opModeIsActive()) robot.turnToZero();
-        if (opModeIsActive()) robot.shootPowerShots();
+        if (shouldNotPark(startTime)) robot.moveToShootLine(); // TODO still need to work on calculations for shooting into goals & powershots
+        //if (shouldNotPark(startTime)) robot.moveBehindShootLine();
+        if (shouldNotPark(startTime)) robot.turnToZero();
+        if (shouldNotPark(startTime)) robot.shootThreeRings();
 
         // drive back to the starting rings
-        if (opModeIsActive()) robot.driveToStartingRings();
-
-        // ??? Maybe grab three rings at the end ???
-        if (opModeIsActive()) robot.grabStartingPileRings();
+//        if (shouldNotPark(startTime)) robot.driveToStartingRings();
+//
+//        // ??? Maybe grab three rings at the end ???
+//        if (shouldNotPark(startTime)) robot.grabStartingPileRings();
 
         // park on the line and stop
-        if (opModeIsActive()) robot.park();
+        robot.park();
         robot.stop();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive());
-
+    }
+    
+    public boolean shouldNotPark(long startTime) {
+//        long curTimeMillis = System.currentTimeMillis() - startTime;
+//        double curTimeSeconds = curTimeMillis / 1000.0;
+//        return curTimeSeconds < 27;
+        return true;
     }
 }
 

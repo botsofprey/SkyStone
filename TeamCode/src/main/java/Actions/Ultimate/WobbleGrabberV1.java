@@ -1,12 +1,8 @@
 package Actions.Ultimate;
 
-import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 
 import MotorControllers.MotorController;
 
@@ -18,76 +14,81 @@ import MotorControllers.MotorController;
  */
 public class WobbleGrabberV1 extends Thread {
 
-    // TODO test grabbing
-
     public Servo claw;
     public MotorController arm;
-    //private RevColorSensorV3 redSensor;
+//    private RevColorSensorV3 colorSensor;
 
-    private static final double ARM_POWER_DOWN = -0.35;
-    private static final double ARM_POWER_UP = 0.35;
-
-    private static final long ARM_TICKS_PER_SECOND = 300;
-
-    private static final int ARM_DOWN_TICKS = 240;
-    private static final int ARM_UP_TICKS = 0;
+    private static final double ARM_POWER_DOWN = -.2;
+    private static final double ARM_POWER_UP = .25;
 
     public static final double CLAW_GRAB_ANGLE = 0.0;
-    public static final double CLAW_RELEASE_ANGLE = 0.5;
+    public static final double CLAW_RELEASE_ANGLE = .9;
     public static final double ANGLE_INCREMENT = 25;
-    public static final double LOWERED_ANGLE = -170;
-    public static final double RAISED_ANGLE = -25;
-
-    public static final int PIXELS_FOR_WOBBLE_GRAB = 0;
+    public static final double VERTICAL = 50;
+    public static final double LOWERED_ANGLE = 170;
+    public static final double RAISED_ANGLE = 0;
+    public static final double LIFTED_ANGLE = 130;
 
     public boolean wobbleGrabbed;
 
-    public WobbleGrabberV1(HardwareMap hardwareMap) throws Exception {
+    public WobbleGrabberV1(HardwareMap hardwareMap) {
         claw = hardwareMap.servo.get("wobbleGrabberClaw");
 
         // don't worry about this line. Just test what's currently in the file
-        arm = new MotorController("wobbleGrabberArm", "ActionConfig/WobbleArmConfig.json", hardwareMap);
+
+        try {
+            arm = new MotorController("wobbleGrabberArm", "ActionConfig/WobbleArmConfig.json", hardwareMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        //redSensor = hardwareMap.get(RevColorSensorV3.class, "redSensor");
+
+//        colorSensor = hardwareMap.get(RevColorSensorV3.class, "redSensor");
 
         wobbleGrabbed = false;
     }
 
     public void lowerArm() {
-//        arm.setTicksPerSecondVelocity(ARM_TICKS_PER_SECOND);
         arm.setPositionDegrees(LOWERED_ANGLE, ARM_POWER_DOWN); // Brooks said motor speed was too fast, thus the 3/4 power but can be adjusted later
     }
 
+    public void liftArm() {
+        arm.setPositionDegrees(LIFTED_ANGLE, ARM_POWER_UP);
+    }
+
     public void raiseArm() {
-//        arm.setTicksPerSecondVelocity(ARM_TICKS_PER_SECOND);
         arm.setPositionDegrees(RAISED_ANGLE, ARM_POWER_UP); // Brooks said motor speed was too fast, thus the 3/4 power but can be adjusted later
     }
 
-    //    public void toggleArmPosition() {
-//       arm.setTicksPerSecondVelocity(ARM_TICKS_PER_SECOND);
-//       arm.setPositionDegrees(LOWERED_ANGLE, (3*ARM_POWER_DOWN)/4); // Brooks said motor speed was too fast, thus the 3/4 power but can be adjusted later
-//        if (arm.getDegree() == 150) {
-//
-//        }
-//
-//        else if(arm.getDegree() == )
-//    }
+    public void raiseToVertical() {
+        arm.setPositionDegrees(VERTICAL, ARM_POWER_UP);
+    }
 
-
-    public void decreaseAngle(){
+    public void decreaseAngle() {
         arm.setPositionDegrees(arm.getDegree() + ANGLE_INCREMENT, ARM_POWER_DOWN);
     }
-    public void addAngle() {
+
+    public void increaseAngle() {
         arm.setPositionDegrees(arm.getDegree() - ANGLE_INCREMENT, ARM_POWER_UP);
+    }
+
+    public void setArmAngle(double angle) {
+        if (arm.getDegree() - angle > 0) {
+            arm.setPositionDegrees(angle, ARM_POWER_UP);
+        }
+        else {
+            arm.setPositionDegrees(angle, ARM_POWER_DOWN);
+        }
     }
 
     public void grabWobbleGoal() { claw.setPosition(CLAW_GRAB_ANGLE); }
     public void releaseWobbleGoal() { claw.setPosition(CLAW_RELEASE_ANGLE); }
 
-
     public void grabOrReleaseWobbleGoal() {
-        if (wobbleGrabbed) releaseWobbleGoal();
-        else grabWobbleGoal();
+        if (wobbleGrabbed)
+            releaseWobbleGoal();
+        else
+            grabWobbleGoal();
         wobbleGrabbed = !wobbleGrabbed;
     }
 
@@ -95,6 +96,8 @@ public class WobbleGrabberV1 extends Thread {
         return arm.isBusy();
     }
 
-//    public int getRedPixels() { return redSensor.red(); }
+//    public boolean shouldGrabWobbleGoal() {
+//        return colorSensor.red() > 200 && colorSensor.blue() < 100 && colorSensor.green() < 100;
+//    }
 
 }
