@@ -71,8 +71,8 @@ public class UltimateNavigation extends Thread {
 
     private volatile Location IMUDistance = new Location(0, 0);
 
-//    private LIDARSensor[] distanceSensors;
-    public static final int LEFT_SENSOR = 0, BACK_SENSOR = 1, RIGHT_SENSOR = 2, DRIVE_BASE = 3, FRONT_SENSOR = 4;
+    private LIDARSensor[] distanceSensors;
+    private static final int LEFT_SENSOR = 0, BACK_SENSOR = 1, RIGHT_SENSOR = 2, DRIVE_BASE = 3, FRONT_SENSOR = 4;
     private HashMap<Integer, int[]>[] updateLocationInformation = new HashMap[4]; // structure: {direction, {xSensor, ySensor}}
 
     public static final int Q1 = 0, Q2 = 1, Q3 = 2, Q4 = 3,
@@ -90,7 +90,7 @@ public class UltimateNavigation extends Thread {
 
     // TODO fix this class
 
-    public UltimateNavigation(HardwareMap hw, Location startLocation, String configFile, boolean ignoreInitialSensorLocation) throws Exception {
+    public UltimateNavigation(HardwareMap hw, Location startLocation, String configFile, boolean ignoreInitialSensorLocation) {
         hardwareMap = hw;
         initializeUsingConfigFile(configFile);
         orientationOffset = startLocation.getHeading();
@@ -133,7 +133,7 @@ public class UltimateNavigation extends Thread {
         }).start();
     }
 
-    public UltimateNavigation(HardwareMap hw, Location startLocation, String configFile) throws Exception {
+    public UltimateNavigation(HardwareMap hw, Location startLocation, String configFile) {
         this(hw, startLocation, configFile, false);
     }
 

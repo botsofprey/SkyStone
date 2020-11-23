@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import Autonomous.AutoAlliance;
 import DriveEngine.Ultimate.UltimateNavigation;
 
-//import static Autonomous.ConfigVariables.CENTER;
+import static Autonomous.ConfigVariables.RING_CHECKPOINT;
 
 /*
     Author: Ethan Fisher
@@ -54,36 +54,43 @@ public class UltimateV1AutoRed extends LinearOpMode {
     public void runOpMode() {
 
         // initialize robot
-        UltimateAutonomous robot;
-        try {
-            robot = new UltimateAutonomous(AutoAlliance.RED, this);
-        } catch (Exception e) {
-            telemetry.addData("Robot Error", e.toString());
-            telemetry.update();
-            return;
-        }
+        final UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, this);
 
         telemetry.addData("Robot created","");
         telemetry.update();
 
         // get number of rings and log them
-        int numRings = robot.getRingDetector().getNumRingsFound();
-        telemetry.addData("Rings Found", numRings);
-
+//        int numRings = robot.getRingDetector().getNumRingsFound();
+//        int numRings = robot.distanceRingsDetected();
+//        telemetry.addData("Rings Found", numRings);
+//        int numRings = robot.getRingDetector().getNumRingsFound();
         telemetry.addData("Status", "Initialized");
+//        telemetry.addData("Rings Detected:", numRings);
         telemetry.update();
 
         // if (shouldNotPark(startTime)) goes before all of statements in case the 30 seconds is up
 
         // Wait for the game to start (driver presses PLAY)
+//        while(!opModeIsActive()) {
+//            numRings = robot.distanceRingsDetected();
+//            telemetry.addData("Rings Found", numRings);
+//            telemetry.update();
+//        }
         waitForStart();
-        
+
         long startTime = System.currentTimeMillis();
 
         // move to the zone with the wobble goal and release it
+        if (shouldNotPark(startTime)) robot.getShooter().raiseElevator();
+        if (shouldNotPark(startTime)) robot.getWobbleGrabber().grabWobbleGoal();
+        if (shouldNotPark(startTime)) robot.driveToRingCheckpoint();
+        sleep(1000);
+        int numRings = robot.distanceRingsDetected();
+        telemetry.addData("Rings Detected:", numRings);
+        telemetry.update();
+        if (shouldNotPark(startTime)) robot.driveToLocation(RING_CHECKPOINT);
         if (shouldNotPark(startTime)) robot.moveToZone(numRings);
         if (shouldNotPark(startTime)) robot.dropWobbleGoal();
-        // TODO turn before placing it
         // if (shouldNotPark(startTime)) robot.getWobbleGrabber().raiseArm();
 
         // grab the second wobble goal

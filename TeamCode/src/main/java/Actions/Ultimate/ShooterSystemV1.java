@@ -1,7 +1,6 @@
 package Actions.Ultimate;
 
 import android.sax.StartElementListener;
-import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -23,11 +22,11 @@ public class ShooterSystemV1 {
 
     // good
     private Servo aimServo;
-    public static final double HIGHEST_POSITION = 0;
+    public static final double HIGHEST_POSITION = .15;
     public static final double LOWERED_POSITION = 1;
 
     // good
-    private DcMotor wheelMotor;
+    private WheelMotor wheelMotor;
     private boolean wheelSpinning;
     private double rpm;
     private long prevTicks;
@@ -37,16 +36,16 @@ public class ShooterSystemV1 {
     private static final double MINIMUM_TIME_DIFFERENCE = 100000000;
     private static final double SHOOTER_ON_POWER = 1;
     private static final double SHOOTER_OFF_POWER = 0;
+    private static final int SHOOTER_ON_RPM = 5000;
 
     // good
     private CRServo elevatorServo;
     public static final int TOP = 0;
     public static final int BOTTOM = 1;
     public static final int MIDDLE = 2;
-
     public int elevatorPosition;
-    private MagneticLimitSwitch elevatorTopSwitch;
-    private MagneticLimitSwitch elevatorBottomSwitch;
+    private volatile MagneticLimitSwitch elevatorTopSwitch;
+    private volatile MagneticLimitSwitch elevatorBottomSwitch;
 
     // good
     public Servo pinballServo;
@@ -58,7 +57,7 @@ public class ShooterSystemV1 {
 
     public ShooterSystemV1(HardwareMap hardwareMap) {
         aimServo = hardwareMap.servo.get("aimServo");
-        wheelMotor = hardwareMap.dcMotor.get("wheelMotor");
+        wheelMotor = new WheelMotor("wheelMotor", hardwareMap);
         elevatorServo = hardwareMap.crservo.get("elevatorServo");
         elevatorTopSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorTopSwitch"));
         elevatorBottomSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorBottomSwitch"));
@@ -77,39 +76,17 @@ public class ShooterSystemV1 {
 
     public void toggleWheelPower() {
         wheelSpinning = !wheelSpinning;
-        wheelMotor.setPower(wheelSpinning ? SHOOTER_ON_POWER : SHOOTER_OFF_POWER);
+        wheelMotor.setRPM(wheelSpinning ? SHOOTER_ON_RPM : 0);
     }
 
     public void turnOnShooterWheel() {
         wheelSpinning = true;
-        wheelMotor.setPower(SHOOTER_ON_POWER);
+        wheelMotor.setRPM(SHOOTER_ON_RPM);
     }
 
     public void turnOffShooterWheel() {
         wheelSpinning = false;
-        wheelMotor.setPower(SHOOTER_OFF_POWER);
-    }
-
-    public void setShooterRPM(int RPM) {
-        wheelMotor.setPower((double) RPM / (double) maxRPM);
-    }
-
-    public void updateShooterRPM(OpMode mode) {
-        int currentTicks = wheelMotor.getCurrentPosition();
-        long currentTime = System.nanoTime();
-        if (prevTicks == 0) {
-            prevTicks = currentTicks;
-            prevTime = currentTime;
-        }
-        double tickDiff = currentTicks - prevTicks;
-        double timeDiff = currentTime - prevTime;
-        if (timeDiff > MINIMUM_TIME_DIFFERENCE) {
-            rpm = (tickDiff / timeDiff) * (60000000000.0 / 28.0);
-            prevTicks = currentTicks;
-            prevTime = currentTime;
-            if(setMaxRPM)
-                maxRPM = (int)rpm;
-        }
+        wheelMotor.setRPM(0);
     }
 
     // moves the pinball servo
@@ -138,35 +115,27 @@ public class ShooterSystemV1 {
     }
 
     public void lowerElevator() {
-        if (elevatorPosition != BOTTOM ) {
+        if (elevatorPosition != BOTTOM)
             elevatorServo.setPower(1);
-        }
     }
 
-    public void stopElevator() {
-        elevatorServo.setPower(0);
-    }
+    public void stopElevator() { elevatorServo.setPower(0); }
 
     long startTime;
     public void update(LinearOpMode mode) {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
             elevatorServo.setPower(0);
-        } else if (elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) {
+        } else if (elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
             elevatorPosition = BOTTOM;
             elevatorServo.setPower(0);
         }
+        if (!elevatorTopSwitch.isActivated() && !elevatorBottomSwitch.isActivated())
+            elevatorPosition = MIDDLE;
 
         mode.telemetry.addData("Bottom Activated", elevatorBottomSwitch.isActivated());
         mode.telemetry.addData("Top Activated", elevatorTopSwitch.isActivated());
-
-        if (maxRPM == 0 && wheelMotor.getPower() == 1 && rpm == 0)
-            updateShooterRPM(mode);
-        else if (maxRPM == 0 && wheelMotor.getPower() == 1) {
-            updateShooterRPM(mode);
-            setMaxRPM = true;
-        } else if (maxRPM != 0)
-            updateShooterRPM(mode);
+        mode.telemetry.update();
     }
 
     // TODO
