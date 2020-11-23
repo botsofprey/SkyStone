@@ -69,7 +69,7 @@ public class UltimateV1 extends LinearOpMode {
             e.printStackTrace();
         }
 
-        // intitialize systems
+        // initialize systems
         intake = new RingIntakeSystemV1(hardwareMap);
         shooter = new ShooterSystemV1(hardwareMap);
         try {
@@ -139,11 +139,10 @@ public class UltimateV1 extends LinearOpMode {
     }
 
     private void controlDrive() {
-        // TODO uncomment this if the robot is working. Right now, I want you to focus on the intake, shooter, and wobble grabber
-//        double drivePower = slowMode ? leftStick.magnitude() / 3 : leftStick.magnitude();
-//        double turnPower = slowMode ? rightStick.x() / 4 : rightStick.x();
-//        if (!eStop)
-//            robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
+        double drivePower = slowMode ? leftStick.magnitude() / 3 : leftStick.magnitude();
+        double turnPower = slowMode ? rightStick.x() / 4 : rightStick.x();
+        if (!eStop)
+            robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
     }
 
     private void playerOneFunctions() {
