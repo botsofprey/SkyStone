@@ -29,14 +29,8 @@
 
 package UserControlled;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import Autonomous.ConfigVariables;
 import Autonomous.Location;
@@ -44,7 +38,6 @@ import DriveEngine.Ultimate.UltimateNavigation;
 
 import static Autonomous.ConfigVariables.CENTER;
 import static Autonomous.ConfigVariables.RED_WOBBLE_GOAL_LEFT;
-import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_LEFT;
 import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
 
 @TeleOp(name="Drive To Location Test", group="Competition")
@@ -72,9 +65,10 @@ public class DriveToLocationTest extends LinearOpMode {
 
         // drive forward and right
         // TODO play around with the x and y. If that works, try changing the heading too
-        robot.driveToLocationPID(RED_WOBBLE_GOAL_LEFT, UltimateNavigation.MAX_SPEED, this);
-        robot.driveToLocationPID(ConfigVariables.RED_ZONE_ONE, UltimateNavigation.MAX_SPEED, this);
-        robot.driveToLocationPID(CENTER, UltimateNavigation.MAX_SPEED, this);
+        double driveSpeed = UltimateNavigation.MAX_SPEED;
+        robot.driveToLocationPID(RED_WOBBLE_GOAL_LEFT, driveSpeed, this);
+        robot.driveToLocationPID(ConfigVariables.RED_ZONE_ONE, driveSpeed, this);
+        robot.driveToLocationPID(CENTER, driveSpeed, this);
     }
     // misc functions here
 }

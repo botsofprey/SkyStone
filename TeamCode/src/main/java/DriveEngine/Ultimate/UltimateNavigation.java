@@ -1377,18 +1377,14 @@ public class UltimateNavigation extends Thread {
     }
 
     // TODO check this
-    public void driveToLine(Line line, double desiredSpeed, LinearOpMode mode) {
-        Location closestLocation = line.getClosestLocationOnLine(myLocation);
-        driveToLocation(closestLocation, desiredSpeed, mode);
-    }
+//    public void driveToLine(Line line, double desiredSpeed, LinearOpMode mode) {
+//        Location closestLocation = line.getClosestLocationOnLine(myLocation);
+//        driveToLocation(closestLocation, desiredSpeed, mode);
+//    }
 
     public void driveToXY(Location location, double desiredSpeed, LinearOpMode mode) {
-
-    }
-
-    public double getDistanceFrom(Location location) {
-//        This is called the distance formula, Jordan. Remember the song?
-        return myLocation.distanceToLocation(location);
+        location.setHeading(orientation.getOrientation());
+        driveToLocationPID(location, desiredSpeed, mode);
     }
 
     public void navigatePath(Location[] paths, double desiredSpeed, LinearOpMode mode) {

@@ -139,7 +139,7 @@ public class UltimateV1 extends LinearOpMode {
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
-            telemetry.addData("Arm angle: ", grabber.arm.getDegree());
+            telemetry.addData("Shooter angle: ", "" + shooter.aimServo.getPosition());
             telemetry.update();
 
             updateEStop();
@@ -220,7 +220,7 @@ public class UltimateV1 extends LinearOpMode {
     private void playerTwoFunctions(GamepadController controller) {
 
         if (controller.xPressed())
-            grabber.lowerArm();
+            shooter.toggleWheelPower();
 
         if (controller.yPressed())
             grabber.grabOrReleaseWobbleGoal();
@@ -232,16 +232,16 @@ public class UltimateV1 extends LinearOpMode {
             grabber.decreaseAngle();
 
         if (controller.bPressed())
-            grabber.raiseArm();
+            intake.toggleIntake();
 
         if (controller.aPressed())
-            intake.toggleIntakePower();
+            intake.toggleOuttake();
 
         if (controller.startPressed())
             grabber.raiseToVertical();
 
         if (controller.rightBumperPressed())
-            shooter.raiseElevator();
+            shooter.keepElevatorAtTop();
 
         if (controller.leftBumperPressed())
             shooter.lowerElevator();

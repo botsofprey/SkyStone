@@ -15,13 +15,10 @@ public class ColorDetector {
     public static final int TARGET_WIDTH = 125;
     public static final int TARGET_HEIGHT = 125;
 
-    public static final int PERCENT_NUM_RINGS_REQUIRED = 60;
-    public static final int TRIES_TO_GET_NUM_RINGS = 50;
+    public static final int TRIES_TO_GET_NUM_RINGS = 25;
 
-    public static final int RED_PIXELS_REQUIRED = 100;
-
-    public static final int ONE_RING_THRESHOLD = 145;
-    public static final int FOUR_RING_THRESHOLD = 170;
+    public static final int ONE_RING_THRESHOLD = 45;
+    public static final int FOUR_RING_THRESHOLD = 140;
 
     public int targetR;
     public int targetG;
@@ -29,7 +26,7 @@ public class ColorDetector {
     public int tolerance;
 
     public static ColorDetector ringDetector(VuforiaHelper vuforia) {
-        return new ColorDetector(vuforia, 171, 132, 0, 0x50);
+        return new ColorDetector(vuforia, 172, 93, 0, 50);
     }
 
     public ColorDetector(VuforiaHelper vuforia, int targetR, int targetG, int targetB, int tolerance) {
@@ -41,6 +38,10 @@ public class ColorDetector {
     }
 
     public int getNumRingsFound() {
+        return getNumRingsFound(TRIES_TO_GET_NUM_RINGS);
+    }
+
+    public int getNumRingsFound(int numTries) {
 
         // number of rings
         int numRings = 4;
@@ -49,22 +50,18 @@ public class ColorDetector {
         int numFour = 0;
 
         // read 10 times or something like that
-        for (int i = 0; i < TRIES_TO_GET_NUM_RINGS; i++) {
+        for (int i = 0; i < numTries; i++) {
             int orangePixels = findNumDesiredPixels();
-            if (orangePixels <= ONE_RING_THRESHOLD) {
+            if (orangePixels <= ONE_RING_THRESHOLD)
                 numZero++;
-//                numRings = 0;
-            }
-            else if (orangePixels < FOUR_RING_THRESHOLD) {
+
+            else if (orangePixels < FOUR_RING_THRESHOLD)
                 numOne++;
-//                numRings = 1;
-            }
-            else {
+
+            else
                 numFour++;
-//                numRings = 4;
-            }
+
         }
-//        return numRings;
 
         if (numZero >= numOne && numZero >= numFour)
             return 0;

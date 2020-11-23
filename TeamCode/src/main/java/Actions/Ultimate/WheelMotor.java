@@ -1,32 +1,31 @@
 package Actions.Ultimate;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class WheelMotor {
 
-    public static final boolean debug = true;
+    private boolean debug;
 
     public DcMotor motor;
-    private boolean wheelSpinning;
     private double rpm;
     private double targetRPM;
     private long prevTicks;
     private long prevTime;
-    private static final int maxRPM = 6000;
+    private static final int MAX_RPM = 6000;
     private static final double MINIMUM_TIME_DIFFERENCE = 100000000;
-    private static final double adjustmentRate = 2;
+    private static final double ADJUSTMENT_RATE = 2;
 
-    public WheelMotor(String name, HardwareMap hardwareMap) {
+    public WheelMotor(String name, HardwareMap hardwareMap, boolean debug) {
         motor = hardwareMap.dcMotor.get(name);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         targetRPM = 0;
+        this.debug = debug;
     }
 
     public void setRPM(int RPM) {
-        motor.setPower((double) RPM / (double) maxRPM);
+        motor.setPower(RPM / (double) MAX_RPM);
         targetRPM = RPM;
     }
 
@@ -45,15 +44,19 @@ public class WheelMotor {
             prevTime = currentTime;
             if (debug) {
                 mode.telemetry.addData("RPM", rpm);
+                mode.telemetry.update();
             }
-            adjustRPM(mode);
+            adjustRPM();
         }
     }
 
-    private void adjustRPM(OpMode mode) {
+    private void adjustRPM() {
         double rpmDif = targetRPM - rpm;
-        double powerDif = rpmDif / (maxRPM * adjustmentRate);
+        double powerDif = rpmDif / (MAX_RPM * ADJUSTMENT_RATE);
         double newPower = motor.getPower() + powerDif;
+
+        if (targetRPM == 0) motor.setPower(0);
+
         motor.setPower(newPower);
     }
 }

@@ -22,7 +22,27 @@ public class RingIntakeSystemV1 {
     public void toggleIntakePower() {
         // Turn intake motor on or off
         intakeOn = !intakeOn;
-        intakeMotor.setPower((intakeOn ? MOTOR_POWER : 0) * (intakeReversed ? -1 : 1));
+        intakeMotor.setPower((intakeOn ? MOTOR_POWER : 0) * (intakeReversed ? -1 : MOTOR_POWER));
+    }
+
+    public void toggleIntake() {
+        if(intakeOn) {
+            toggleIntakePower();
+        }
+        else {
+            intakeOn = true;
+            intakeMotor.setPower(MOTOR_POWER);
+        }
+    }
+
+    public void toggleOuttake() {
+        if(intakeOn) {
+            toggleIntakePower();
+        }
+        else {
+            intakeOn = true;
+            intakeMotor.setPower(-(MOTOR_POWER));
+        }
     }
 
     public void toggleIntakeDirection() {

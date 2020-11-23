@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import Autonomous.AutoAlliance;
 import DriveEngine.Ultimate.UltimateNavigation;
 
+import static Autonomous.ConfigVariables.RED_ZONE_ONE;
 import static Autonomous.ConfigVariables.RING_CHECKPOINT;
 
 /*
@@ -54,44 +55,33 @@ public class UltimateV1AutoRed extends LinearOpMode {
     public void runOpMode() {
 
         // initialize robot
-        final UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, this);
-
-        telemetry.addData("Robot created","");
-        telemetry.update();
+        UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, this);
 
         // get number of rings and log them
-//        int numRings = robot.getRingDetector().getNumRingsFound();
-//        int numRings = robot.distanceRingsDetected();
-//        telemetry.addData("Rings Found", numRings);
-//        int numRings = robot.getRingDetector().getNumRingsFound();
+//        int numRings = robot.detectNumRings();
         telemetry.addData("Status", "Initialized");
-//        telemetry.addData("Rings Detected:", numRings);
         telemetry.update();
 
         // if (shouldNotPark(startTime)) goes before all of statements in case the 30 seconds is up
 
-        // Wait for the game to start (driver presses PLAY)
-//        while(!opModeIsActive()) {
-//            numRings = robot.distanceRingsDetected();
-//            telemetry.addData("Rings Found", numRings);
-//            telemetry.update();
-//        }
         waitForStart();
+        robot.getShooter().keepElevatorAtTop();
+        robot.getShooter().shoot();
 
         long startTime = System.currentTimeMillis();
 
         // move to the zone with the wobble goal and release it
-        if (shouldNotPark(startTime)) robot.getShooter().raiseElevator();
+        // TODO IF RUNNING V2 TEST: Switch the involved locations to UltimateNavigation.EAST including starting location
+//        if (shouldNotPark(startTime)) robot.wobbleGrabberV2Test(); // This is just a really quick test for the new side gripper system
         if (shouldNotPark(startTime)) robot.getWobbleGrabber().grabWobbleGoal();
         if (shouldNotPark(startTime)) robot.driveToRingCheckpoint();
-        sleep(1000);
-        int numRings = robot.distanceRingsDetected();
-        telemetry.addData("Rings Detected:", numRings);
+        int numRings = robot.detectNumRings();
+        telemetry.addData("Rings Found", numRings);
         telemetry.update();
-        if (shouldNotPark(startTime)) robot.driveToLocation(RING_CHECKPOINT);
-        if (shouldNotPark(startTime)) robot.moveToZone(numRings);
+        if (shouldNotPark(startTime)) robot.driveToLocation(RED_ZONE_ONE);
+        if (shouldNotPark(startTime) && numRings != 0) robot.moveToZone(numRings);
         if (shouldNotPark(startTime)) robot.dropWobbleGoal();
-        // if (shouldNotPark(startTime)) robot.getWobbleGrabber().raiseArm();
+         if (shouldNotPark(startTime)) robot.getWobbleGrabber().raiseArm();
 
         // grab the second wobble goal
 //        if (shouldNotPark(startTime)) robot.driveToLeftWobbleGoal();
@@ -104,8 +94,8 @@ public class UltimateV1AutoRed extends LinearOpMode {
         // move behind shot line, rotate towards powershots,  and shoot them
         if (shouldNotPark(startTime)) robot.moveToShootLine(); // TODO still need to work on calculations for shooting into goals & powershots
         //if (shouldNotPark(startTime)) robot.moveBehindShootLine();
-        if (shouldNotPark(startTime)) robot.turnToZero();
         if (shouldNotPark(startTime)) robot.shootThreeRings();
+//        if (shouldNotPark(startTime)) robot.shootPowerShots();
 
         // drive back to the starting rings
 //        if (shouldNotPark(startTime)) robot.driveToStartingRings();
@@ -122,10 +112,9 @@ public class UltimateV1AutoRed extends LinearOpMode {
     }
     
     public boolean shouldNotPark(long startTime) {
-//        long curTimeMillis = System.currentTimeMillis() - startTime;
-//        double curTimeSeconds = curTimeMillis / 1000.0;
-//        return curTimeSeconds < 27;
-        return true;
+        long curTimeMillis = System.currentTimeMillis() - startTime;
+        double curTimeSeconds = curTimeMillis / 1000.0;
+        return opModeIsActive() && curTimeSeconds < 28;
     }
 }
 

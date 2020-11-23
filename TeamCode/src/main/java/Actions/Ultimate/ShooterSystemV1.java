@@ -3,7 +3,6 @@ package Actions.Ultimate;
 import android.sax.StartElementListener;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -21,22 +20,15 @@ import UserControlled.GamepadController;
 public class ShooterSystemV1 {
 
     // good
-    private Servo aimServo;
+    public Servo aimServo;
     public static final double HIGHEST_POSITION = .15;
+    public static final double POWER_SHOT_POSITION = 0.45;
     public static final double LOWERED_POSITION = 1;
 
     // good
     private WheelMotor wheelMotor;
     private boolean wheelSpinning;
-    private double rpm;
-    private long prevTicks;
-    private long prevTime;
-    private int maxRPM;
-    private boolean setMaxRPM;
-    private static final double MINIMUM_TIME_DIFFERENCE = 100000000;
-    private static final double SHOOTER_ON_POWER = 1;
-    private static final double SHOOTER_OFF_POWER = 0;
-    private static final int SHOOTER_ON_RPM = 5400;//90 rps
+    private static final int SHOOTER_ON_RPM = 5000;
 
     // good
     private CRServo elevatorServo;
@@ -44,6 +36,7 @@ public class ShooterSystemV1 {
     public static final int BOTTOM = 1;
     public static final int MIDDLE = 2;
     public int elevatorPosition;
+    public boolean stayAtTop;
     private volatile MagneticLimitSwitch elevatorTopSwitch;
     private volatile MagneticLimitSwitch elevatorBottomSwitch;
 
@@ -53,11 +46,9 @@ public class ShooterSystemV1 {
     public static final double PINBALL_TURNED = 1;
     public static final double PINBALL_REST = 0;
 
-    private double output = 0;
-
     public ShooterSystemV1(HardwareMap hardwareMap) {
         aimServo = hardwareMap.servo.get("aimServo");
-        wheelMotor = new WheelMotor("wheelMotor", hardwareMap);
+        wheelMotor = new WheelMotor("wheelMotor", hardwareMap, true);
         elevatorServo = hardwareMap.crservo.get("elevatorServo");
         elevatorTopSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorTopSwitch"));
         elevatorBottomSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorBottomSwitch"));
@@ -67,11 +58,7 @@ public class ShooterSystemV1 {
         wheelSpinning = false;
         elevatorPosition = BOTTOM;
         pinballAngle = PINBALL_REST;
-        rpm = 0;
-        prevTicks = 0;
-        maxRPM = 0;
-        setMaxRPM = false;
-        prevTime = System.nanoTime();
+        stayAtTop = false;
     }
 
     public void toggleWheelPower() {
@@ -115,13 +102,18 @@ public class ShooterSystemV1 {
     }
 
     public void lowerElevator() {
+        stayAtTop = false;
         if (elevatorPosition != BOTTOM)
             elevatorServo.setPower(1);
     }
 
+    public void keepElevatorAtTop() {
+        stayAtTop = true;
+        raiseElevator();
+    }
+
     public void stopElevator() { elevatorServo.setPower(0); }
 
-    long startTime;
     public void update(LinearOpMode mode) {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
@@ -129,15 +121,12 @@ public class ShooterSystemV1 {
         } else if (elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
             elevatorPosition = BOTTOM;
             elevatorServo.setPower(0);
-        }
+        } else if (!elevatorTopSwitch.isActivated() && stayAtTop)
+            elevatorServo.setPower(-1);
         if (!elevatorTopSwitch.isActivated() && !elevatorBottomSwitch.isActivated())
             elevatorPosition = MIDDLE;
 
         wheelMotor.updateShooterRPM(mode);
-
-        mode.telemetry.addData("Bottom Activated", elevatorBottomSwitch.isActivated());
-        mode.telemetry.addData("Top Activated", elevatorTopSwitch.isActivated());
-        mode.telemetry.update();
     }
 
     // TODO

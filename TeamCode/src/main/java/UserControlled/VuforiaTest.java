@@ -62,6 +62,8 @@ public class VuforiaTest extends LinearOpMode {
             telemetry.addData("R", "" + ringDetector.targetR);
             telemetry.addData("G", "" + ringDetector.targetG);
             telemetry.addData("B", "" + ringDetector.targetB);
+            telemetry.addData("Tolerance", "" + ringDetector.tolerance);
+            telemetry.addData("Num Rings", "" + ringDetector.getNumRingsFound(1));
 
             controller.update(gamepad1);
 
@@ -71,6 +73,8 @@ public class VuforiaTest extends LinearOpMode {
             if (controller.dpadDownHeld()) ringDetector.targetG--;
             if (controller.leftBumperHeld()) ringDetector.targetB++;
             if (controller.rightBumperHeld()) ringDetector.targetB--;
+            if (controller.xHeld()) ringDetector.tolerance++;
+            if (controller.yHeld()) ringDetector.tolerance--;
 
             telemetry.update();
         }
