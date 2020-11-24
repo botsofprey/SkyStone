@@ -1,5 +1,7 @@
 package Actions.Ultimate;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -45,6 +47,7 @@ public class WheelMotor {
             if (debug) {
                 mode.telemetry.addData("RPM", rpm);
                 mode.telemetry.update();
+                Log.d("RPM", String.valueOf(rpm));
             }
             adjustRPM();
         }
