@@ -25,7 +25,7 @@ public class WobbleGrabberV1 extends Thread {
     public static final double CLAW_RELEASE_ANGLE = .9;
     public static final double ANGLE_INCREMENT = 25;
     public static final double VERTICAL = 50;
-    public static final double LOWERED_ANGLE = 170;
+    public static final double LOWERED_ANGLE = 155;
     public static final double RAISED_ANGLE = 0;
     public static final double LIFTED_ANGLE = 130;
 

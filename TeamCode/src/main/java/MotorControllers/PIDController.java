@@ -23,7 +23,7 @@ public class PIDController {
     private long timeAtLastCalculation = 0;
     private double I_CAP = 0;
 
-    public PIDController(double kp, double ki, double kd){
+    public PIDController(double kp, double ki, double kd) {
         Kp = kp;
         Ki = ki;
         Kd = kd;

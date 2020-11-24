@@ -83,8 +83,6 @@ public class UltimateV1 extends LinearOpMode {
     RingIntakeSystemV1 intake;
     ShooterSystemV1 shooter;
     WobbleGrabberV1 grabber;
-    //ColorSensor redDetector;
-
 
     boolean eStop = false, slowMode = false;
 
@@ -104,18 +102,8 @@ public class UltimateV1 extends LinearOpMode {
 
         // initialize systems
         intake = new RingIntakeSystemV1(hardwareMap);
-        shooter = new ShooterSystemV1(hardwareMap);
-        try {
-            intake = new RingIntakeSystemV1(hardwareMap);
-            shooter = new ShooterSystemV1(hardwareMap);
-            grabber = new WobbleGrabberV1(hardwareMap);
-        } catch (Exception e) {
-            telemetry.addData("Systems Error", e.toString());
-            telemetry.update();
-        }
-
-        // initialize red detector
-       // redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
+        shooter = new ShooterSystemV1(hardwareMap, this);
+        grabber = new WobbleGrabberV1(hardwareMap);
 
         // initialize joysticks
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
@@ -139,8 +127,8 @@ public class UltimateV1 extends LinearOpMode {
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
-            telemetry.addData("Shooter angle: ", "" + shooter.aimServo.getPosition());
-            telemetry.update();
+//            telemetry.addData("Shooter angle: ", "" + shooter.aimServo.getPosition());
+//            telemetry.update();
 
             updateEStop();
             if (!eStop) {
@@ -202,12 +190,12 @@ public class UltimateV1 extends LinearOpMode {
 
         if (controller.dpadDownPressed())
             shooter.lowerShooter(0.05);
-
-        if (controller.dpadLeftPressed())
-           shooter.setShooter(0);
-
-        if (controller.dpadRightPressed())
-            shooter.setShooter(1);
+//
+//        if (controller.dpadLeftPressed())
+//           shooter.setShooter(0);
+//
+//        if (controller.dpadRightPressed())
+//            shooter.setShooter(1);
 
         if (controller.dpadLeftPressed())
             shooter.setShooter(1);
@@ -248,7 +236,7 @@ public class UltimateV1 extends LinearOpMode {
     }
 
     private void controlMiscFunctions() {
-        shooter.update(this);
+        shooter.update();
     }
 
     private void stopActions() {

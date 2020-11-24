@@ -32,14 +32,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package Autonomous.OpModes.UltimateAuto;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Autonomous.AutoAlliance;
 import Autonomous.Location;
 import DriveEngine.Ultimate.UltimateNavigation;
 
-import static Autonomous.ConfigVariables.RED_ZONE_ONE;
+import static Autonomous.ConfigVariables.SHOOTING_LINE_POINT;
 import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
 
 /*
@@ -48,17 +48,17 @@ import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
 
     An opmode for the Ultimate Goal Autonomous
  */
-@Autonomous(name="UltimateV1Auto", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@Autonomous(name="Ultimate Auto North Test", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class UltimateV1AutoRed extends LinearOpMode {
+public class UltimateAutoNorthTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
 
         // initialize robot
         Location startLocation = STARTING_ROBOT_LOCATION_RIGHT;
-        startLocation.setHeading(UltimateNavigation.SOUTH);
-        UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, startLocation, this);
+        startLocation.setHeading(UltimateNavigation.NORTH);
+        final UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, startLocation, this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -66,46 +66,47 @@ public class UltimateV1AutoRed extends LinearOpMode {
         // if (shouldNotPark(startTime)) goes before all of statements in case the 30 seconds is up
 
         waitForStart();
+
+        final long startTime = System.currentTimeMillis();
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (opModeIsActive()) {
+                    if (!shouldNotPark(startTime)) {
+                        robot.park();
+                        robot.stop();
+                    }
+                }
+            }
+        }).start();
+        
         robot.getShooter().keepElevatorAtTop();
         robot.getShooter().shoot();
 
-        long startTime = System.currentTimeMillis();
-
-        // move to the zone with the wobble goal and release it
-        // TODO IF RUNNING V2 TEST: Switch the involved locations to UltimateNavigation.EAST including starting location
-//        if (shouldNotPark(startTime)) robot.wobbleGrabberV2Test(); // This is just a really quick test for the new side gripper system
-        if (shouldNotPark(startTime)) robot.getWobbleGrabber().grabWobbleGoal();
-
-        if (shouldNotPark(startTime)) robot.driveToLocationOnInitHeading(RED_ZONE_ONE);
-
+        robot.getWobbleGrabber().grabWobbleGoal();
+        robot.getWobbleGrabber().lowerArm();
+        robot.driveToRingCheckpoint();
+        
         int numRings = robot.detectNumRings();
         Location ringZone = robot.getZone(numRings);
         telemetry.addData("Rings Found", numRings);
         telemetry.update();
+        
+        robot.driveToLocationOnInitHeading(SHOOTING_LINE_POINT);
+        robot.shootThreeRings();
+        
+        robot.driveToLocationOnInitHeading(ringZone);
+        robot.dropWobbleGoal();
+        robot.getWobbleGrabber().raiseArm();
+        
+        robot.driveToLeftWobbleGoal();
+        robot.robot.turnToHeading(UltimateNavigation.SOUTH, this);
+        robot.pickupWobbleGoal();
+        robot.driveToLocationOnHeading(ringZone, UltimateNavigation.SOUTH);
+        robot.dropWobbleGoal();
 
-        if (shouldNotPark(startTime) && numRings != 0) robot.driveToLocationOnInitHeading(ringZone);
-        if (shouldNotPark(startTime)) robot.dropWobbleGoal();
-        if (shouldNotPark(startTime)) robot.getWobbleGrabber().raiseArm();
-
-        // grab the second wobble goal
-//        if (shouldNotPark(startTime)) robot.driveToLeftWobbleGoal();
-
-        // move it to the same zone and drop it
-//        if (shouldNotPark(startTime)) robot.driveToWaypoint();
-//        if (shouldNotPark(startTime)) robot.moveToZone(numRings);
-//        if (shouldNotPark(startTime)) robot.dropWobbleGoal();
-
-        // move behind shot line, rotate towards powershots,  and shoot them
-        if (shouldNotPark(startTime)) robot.moveToShootLocation(); // TODO still need to work on calculations for shooting into goals & powershots
-        //if (shouldNotPark(startTime)) robot.moveBehindShootLine();
-        if (shouldNotPark(startTime)) robot.shootThreeRings();
-//        if (shouldNotPark(startTime)) robot.shootPowerShots();
-
-        // drive back to the starting rings
-//        if (shouldNotPark(startTime)) robot.driveToStartingRings();
-//
-//        // ??? Maybe grab three rings at the end ???
-//        if (shouldNotPark(startTime)) robot.grabStartingPileRings();
+        // TODO pick up starting pile
 
         // park on the line and stop
         robot.park();

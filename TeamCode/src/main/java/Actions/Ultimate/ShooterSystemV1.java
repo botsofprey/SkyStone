@@ -1,15 +1,11 @@
 package Actions.Ultimate;
 
-import android.sax.StartElementListener;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import SensorHandlers.MagneticLimitSwitch;
-import UserControlled.GamepadController;
 
 /**
  * Author: Ethan Fisher
@@ -21,14 +17,16 @@ public class ShooterSystemV1 {
 
     // good
     public Servo aimServo;
-    public static final double HIGHEST_POSITION = .15;
+    public static final double HIGHEST_POSITION = 0;
     public static final double POWER_SHOT_POSITION = 0.45;
+//    public static final double HIGHEST_POSITION = 0;
+//    public static final double POWER_SHOT_POSITION = 0.2;
     public static final double LOWERED_POSITION = 1;
 
     // good
-    private WheelMotor wheelMotor;
+    public WheelMotor wheelMotor;
     private boolean wheelSpinning;
-    private static final int SHOOTER_ON_RPM = 5000;
+    private static final int SHOOTER_ON_RPM = 4200;
 
     // good
     private CRServo elevatorServo;
@@ -46,9 +44,9 @@ public class ShooterSystemV1 {
     public static final double PINBALL_TURNED = 1;
     public static final double PINBALL_REST = 0;
 
-    public ShooterSystemV1(HardwareMap hardwareMap) {
+    public ShooterSystemV1(HardwareMap hardwareMap, LinearOpMode mode) {
         aimServo = hardwareMap.servo.get("aimServo");
-        wheelMotor = new WheelMotor("wheelMotor", hardwareMap, true);
+        wheelMotor = new WheelMotor("wheelMotor", hardwareMap, mode);
         elevatorServo = hardwareMap.crservo.get("elevatorServo");
         elevatorTopSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorTopSwitch"));
         elevatorBottomSwitch = new MagneticLimitSwitch(hardwareMap.digitalChannel.get("elevatorBottomSwitch"));
@@ -114,7 +112,7 @@ public class ShooterSystemV1 {
 
     public void stopElevator() { elevatorServo.setPower(0); }
 
-    public void update(LinearOpMode mode) {
+    public void update() {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
             elevatorServo.setPower(0);
@@ -126,7 +124,7 @@ public class ShooterSystemV1 {
         if (!elevatorTopSwitch.isActivated() && !elevatorBottomSwitch.isActivated())
             elevatorPosition = MIDDLE;
 
-        wheelMotor.updateShooterRPM(mode);
+        wheelMotor.updateShooterRPM();
     }
 
     // TODO
