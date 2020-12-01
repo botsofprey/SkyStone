@@ -39,7 +39,7 @@ import Autonomous.AutoAlliance;
 import Autonomous.Location;
 import DriveEngine.Ultimate.UltimateNavigation;
 
-import static Autonomous.ConfigVariables.RED_ZONE_ONE;
+import static Autonomous.ConfigVariables.RING_DETECTION_POINT;
 import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
 
 /*
@@ -76,7 +76,7 @@ public class UltimateV1AutoRed extends LinearOpMode {
 //        if (shouldNotPark(startTime)) robot.wobbleGrabberV2Test(); // This is just a really quick test for the new side gripper system
         if (shouldNotPark(startTime)) robot.getWobbleGrabber().grabWobbleGoal();
 
-        if (shouldNotPark(startTime)) robot.driveToLocationOnInitHeading(RED_ZONE_ONE);
+        if (shouldNotPark(startTime)) robot.driveToLocationOnInitHeading(RING_DETECTION_POINT);
 
         int numRings = robot.detectNumRings();
         Location ringZone = robot.getZone(numRings);
