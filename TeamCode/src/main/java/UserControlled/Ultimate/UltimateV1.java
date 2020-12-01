@@ -191,17 +191,17 @@ public class UltimateV1 extends LinearOpMode {
 
         if (controllerOne.bPressed()) {
             robot.turnToLocation(ConfigVariables.POWER_SHOT_RIGHT, this);
-
+            //TODO make a function to set rpm to shoot ring at a certain velocity then run it here
         }
 
         if (controllerOne.xPressed()) {
             robot.turnToLocation(ConfigVariables.POWER_SHOT_LEFT, this);
-
+            //TODO make a function to set rpm to shoot ring at a certain velocity then run it here
         }
 
         if (controllerOne.yPressed()) {
             robot.turnToLocation(ConfigVariables.POWER_SHOT_MIDDLE, this);
-
+            //TODO make a function to set rpm to shoot ring at a certain velocity then run it here
         }
 
         if (controller.dpadUpPressed())
@@ -221,7 +221,7 @@ public class UltimateV1 extends LinearOpMode {
 
         if(controllerOne.rightTriggerPressed()) {
             robot.turnToLocation(ConfigVariables.TOP_GOAL, this);
-
+            //TODO make a function to set rpm to shoot ring at a certain velocity then run it here
         }
     }
 
