@@ -38,6 +38,7 @@ import Actions.Ultimate.ShooterSystemV1;
 import Actions.Ultimate.WobbleGrabberV1;
 import Actions.WobbleGrabberCaidenTest;
 import Autonomous.ColorDetector;
+import Autonomous.ConfigVariables;
 import Autonomous.Location;
 import Autonomous.VuforiaHelper;
 import DriveEngine.Ultimate.UltimateNavigation;
@@ -56,16 +57,20 @@ import UserControlled.JoystickHandler;
  *      joysticks - drive base
  *      start - slow mode
  *      a - shoot
+ *      b - aim to right power shot
+ *      x - aim to left power shot
+ *      y - aim to middle power shot
  *      dpad up and down - raise and lower shooter angle
  *      right bumper - raise elevator
  *      left bumper - lower elevator
+ *      right trigger - aim to top goal
  *
  * Player Two:
  *      b - intake direction
  *      a - intake power
- *      dpad up and down - raise and lower wobble grabber arm
  *      x - resets arm position for grabbing wobble goal
  *      y - grabbing or releasing wobble goal
+ *      dpad up and down - raise and lower wobble grabber arm
  */
 
 @TeleOp(name="Ultimate V1", group="Competition")
@@ -145,6 +150,7 @@ public class UltimateV1 extends LinearOpMode {
                     slowMode = !slowMode;
 
                 updateEStop();
+
                 controlDrive();
 
                 updateEStop();
@@ -189,8 +195,20 @@ public class UltimateV1 extends LinearOpMode {
         if (controllerOne.aPressed())
             shooter.shoot();
 
-        if (controllerOne.bPressed())
-            shooter.toggleWheelPower();
+        if (controllerOne.bPressed()) {
+            robot.turnToLocation(ConfigVariables.POWER_SHOT_RIGHT, this);
+
+        }
+
+        if (controllerOne.xPressed()) {
+            robot.turnToLocation(ConfigVariables.POWER_SHOT_LEFT, this);
+
+        }
+
+        if (controllerOne.yPressed()) {
+            robot.turnToLocation(ConfigVariables.POWER_SHOT_MIDDLE, this);
+
+        }
 
         if (controllerOne.dpadUpPressed())
             shooter.raiseShooter(0.05);
@@ -203,6 +221,11 @@ public class UltimateV1 extends LinearOpMode {
 
         if (controllerOne.leftBumperPressed())
             shooter.lowerElevator();
+
+        if(controllerOne.rightTriggerPressed()) {
+            robot.turnToLocation(ConfigVariables.TOP_GOAL, this);
+
+        }
     }
 
     private void playerTwoFunctions() {

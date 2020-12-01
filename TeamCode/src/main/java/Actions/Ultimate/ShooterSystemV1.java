@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import Autonomous.ConfigVariables;
 import SensorHandlers.MagneticLimitSwitch;
 import UserControlled.GamepadController;
 
@@ -167,6 +168,15 @@ public class ShooterSystemV1 {
             setMaxRPM = true;
         } else if (maxRPM != 0)
             updateShooterRPM(mode);
+    }
+
+    public double calculateRingVelocity(double xDistance, double yDistance) {
+        double temp0 = yDistance - xDistance * Math.tan(ConfigVariables.SHOOTER_ANGLE);
+        if (temp0 < 0)
+            return 0;
+        double temp1 = Math.sqrt(-4.9 * xDistance * temp0);
+        double velocity = Math.cos(ConfigVariables.SHOOTER_ANGLE) / temp1;
+        return velocity;
     }
 
     // TODO
