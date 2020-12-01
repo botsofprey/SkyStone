@@ -1036,8 +1036,7 @@ public class UltimateNavigation extends Thread {
     public void turnToLocation(Location target, LinearOpMode mode) {
         double relativeX = target.getX() - myLocation.getX();
         double relativeY = target.getY() - myLocation.getY();
-        double slope = relativeY / relativeX;
-        double angle = Math.toDegrees(Math.atan(slope));
+        double angle = Math.toDegrees(Math.atan2(relativeY, relativeX));
         turnToHeading(angle, mode);
     }
 
