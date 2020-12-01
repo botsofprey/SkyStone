@@ -84,13 +84,19 @@ public class ConfigVariables {
     public static final Location STARTING_ROBOT_LOCATION_RIGHT = new Location(52, -60);
 
     // TODO find these locations
+    public static final Location POWER_SHOT_LEFT = new Location(4, 72);
+    public static final Location POWER_SHOT_MIDDLE = new Location(12, 72);
+    public static final Location POWER_SHOT_RIGHT = new Location(20, 72);
+    public static final double POWER_SHOT_HEIGHT_CM = 77;
+
+    public static final Location TOP_GOAL = new Location(36, 72);
+    public static final double TOP_GOAL_HEIGHT_CM = 90;
+
+    public static final double SHOOTER_ANGLE = 27;
+  
     public static final Location POWER_SHOT_LEFT_ON_LINE = new Location(9, 0);
     public static final Location POWER_SHOT_MIDDLE_ON_LINE = new Location(18, 0);
     public static final Location POWER_SHOT_RIGHT_ON_LINE = new Location(27, 0);
-//    public static final double POWER_SHOT_HEIGHT_CM = 0;
-
-//    public static final Location TOP_GOAL = new Location(0, 0);
-//    public static final double TOP_GOAL_HEIGHT_CM = 0;
 
     public static final Rectangle VALID_Y_SENSOR_READ_AREA_1_RED = new Rectangle(34, 48, 12, 48);
     public static final Rectangle VALID_Y_SENSOR_READ_AREA_2_RED = new Rectangle(34, -48, 12, 48);

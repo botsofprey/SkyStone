@@ -1033,6 +1033,14 @@ public class UltimateNavigation extends Thread {
         applyMotorPowers(powers);
     }
 
+    public void turnToLocation(Location target, LinearOpMode mode) {
+        double relativeX = target.getX() - myLocation.getX();
+        double relativeY = target.getY() - myLocation.getY();
+        double slope = relativeY / relativeX;
+        double angle = Math.toDegrees(Math.atan(slope));
+        turnToHeading(angle, mode);
+    }
+
     public void applyMotorVelocities(double [] velocities) {
         for (MotorController motor : driveMotors)
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
