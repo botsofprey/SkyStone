@@ -50,8 +50,9 @@ public class VuforiaHelper {
 
     public static VuforiaLocalizer initVuforia(HardwareMap hardwareMap) {
         try {
-            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-            VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+//            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//            VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+            VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters();
             params.vuforiaLicenseKey = LICENSE_KEY_EXTERNAL_CAMERA;
             params.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
             params.useExtendedTracking = false;
@@ -72,14 +73,13 @@ public class VuforiaHelper {
             case PHONE_CAMERA:
                 try {
                     VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters();
-                    params.vuforiaLicenseKey = LICENSE_KEY_EXTERNAL_CAMERA;
+                    params.vuforiaLicenseKey = LICENSE_KEY_NO_EXTERNAL_CAMERA;
                     params.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
                     params.cameraName = UnknownCameraNameImpl.forUnknown();
 //                    params.cameraName =
                     vuLoc = ClassFactory.getInstance().createVuforia(params);
                     Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
                     vuLoc.setFrameQueueCapacity(1); //tells VuforiaLocalizer to only store one frame at a time
-
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -118,6 +118,7 @@ public class VuforiaHelper {
             Log.d("Get Image", "taking image");
             img = takeImage();
         } catch (Exception e) {
+            Log.d("Error", e.toString());
             throw new RuntimeException(e);
         }
         Log.d("VH IMG TAKE TIME", "" + (System.currentTimeMillis() - timeStart));
@@ -163,6 +164,7 @@ public class VuforiaHelper {
     private Image takeImage() throws InterruptedException {
         Image img = null;
         VuforiaLocalizer.CloseableFrame frame = vuLoc.getFrameQueue().take(); //takes the frame at the head of the queue
+
         long numImages = frame.getNumImages();
         Log.d("Take Image", "getting frames");
         for (int i = 0; i < numImages; i++) {

@@ -60,7 +60,8 @@ import UserControlled.JoystickHandler;
  *      b - aim to right power shot
  *      x - aim to left power shot
  *      y - aim to middle power shot
- *      dpad up and down - raise and lower shooter angle
+ *      dpad up / down - raise / lower shooter angle
+ *      dpad left / right - bring shooter all the way down / up
  *      right bumper - raise elevator
  *      left bumper - lower elevator
  *      right trigger - aim to top goal
@@ -68,6 +69,7 @@ import UserControlled.JoystickHandler;
  * Player Two:
  *      b - intake direction
  *      a - intake power
+ *      dpad up / down - raise / lower wobble grabber arm
  *      x - resets arm position for grabbing wobble goal
  *      y - grabbing or releasing wobble goal
  *      dpad up and down - raise and lower wobble grabber arm
@@ -88,8 +90,6 @@ public class UltimateV1 extends LinearOpMode {
     ShooterSystemV1 shooter;
     WobbleGrabberV1 grabber;
 
-//    ColorDetector redDetector;
-
     boolean eStop = false, slowMode = false;
 
     @Override
@@ -107,17 +107,9 @@ public class UltimateV1 extends LinearOpMode {
         }
 
         // initialize systems
-        try {
-            intake = new RingIntakeSystemV1(hardwareMap);
-            shooter = new ShooterSystemV1(hardwareMap);
-            grabber = new WobbleGrabberV1(hardwareMap);
-        } catch (Exception e) {
-            telemetry.addData("Systems Error", e.toString());
-            telemetry.update();
-        }
-
-        // initialize red detector
-//        redDetector = new ColorDetector(new VuforiaHelper(hardwareMap), 0xFF, 0x00, 0x00, 0x22);
+        intake = new RingIntakeSystemV1(hardwareMap);
+        shooter = new ShooterSystemV1(hardwareMap, this);
+        grabber = new WobbleGrabberV1(hardwareMap);
 
         // initialize joysticks
         leftStick = new JoystickHandler(gamepad1, JoystickHandler.LEFT_JOYSTICK);
@@ -141,6 +133,8 @@ public class UltimateV1 extends LinearOpMode {
         // should only be used for a time keeper or other small things, avoid using this space when possible
         while (opModeIsActive()) {
             // main code goes here
+//            telemetry.addData("Shooter angle: ", "" + shooter.aimServo.getPosition());
+//            telemetry.update();
 
             updateEStop();
             if (!eStop) {
@@ -159,8 +153,8 @@ public class UltimateV1 extends LinearOpMode {
                     controllerOne.update(gamepad1);
                     controllerTwo.update(gamepad2);
 
-                    playerOneFunctions();
-                    playerTwoFunctions();
+                    playerOneFunctions(controllerOne);
+                    playerTwoFunctions(controllerTwo);
                 }
 
                 controlMiscFunctions();
@@ -190,9 +184,9 @@ public class UltimateV1 extends LinearOpMode {
             robot.driveOnHeadingWithTurning(leftStick.angle(), drivePower, turnPower);
     }
 
-    private void playerOneFunctions() {
+    private void playerOneFunctions(GamepadController controller) {
 
-        if (controllerOne.aPressed())
+        if (controller.aPressed())
             shooter.shoot();
 
         if (controllerOne.bPressed()) {
@@ -210,14 +204,23 @@ public class UltimateV1 extends LinearOpMode {
 
         }
 
-        if (controllerOne.dpadUpPressed())
+        if (controller.dpadUpPressed())
             shooter.raiseShooter(0.05);
 
-        if (controllerOne.dpadDownPressed())
+        if (controller.dpadDownPressed())
             shooter.lowerShooter(0.05);
+//
+//        if (controller.dpadLeftPressed())
+//           shooter.setShooter(0);
+//
+//        if (controller.dpadRightPressed())
+//            shooter.setShooter(1);
 
-        if (controllerOne.rightBumperPressed())
-            shooter.raiseElevator();
+        if (controller.dpadLeftPressed())
+            shooter.setShooter(1);
+
+        if (controller.dpadRightPressed())
+            shooter.setShooter(0);
 
         if (controllerOne.leftBumperPressed())
             shooter.lowerElevator();
@@ -228,30 +231,38 @@ public class UltimateV1 extends LinearOpMode {
         }
     }
 
-    private void playerTwoFunctions() {
+    private void playerTwoFunctions(GamepadController controller) {
 
-        if (controllerTwo.xPressed())
-            grabber.lowerArm();
+        if (controller.xPressed())
+            shooter.toggleWheelPower();
 
-        if (controllerTwo.yPressed())
+        if (controller.yPressed())
             grabber.grabOrReleaseWobbleGoal();
 
-        if (controllerTwo.dpadUpPressed())
-            grabber.addAngle(30, 0.2);
+        if (controller.dpadUpPressed())
+            grabber.increaseAngle();
 
-        if (controllerTwo.dpadDownPressed())
-            grabber.addAngle(-30, 0.2);
+        if (controller.dpadDownPressed())
+            grabber.decreaseAngle();
 
-        if (controllerTwo.bPressed())
-            intake.toggleIntakeDirection();
+        if (controller.bPressed())
+            intake.toggleIntake();
 
-        if (controllerTwo.aPressed())
-            intake.toggleIntakePower();
+        if (controller.aPressed())
+            intake.toggleOuttake();
 
+        if (controller.startPressed())
+            grabber.raiseToVertical();
+
+        if (controller.rightBumperPressed())
+            shooter.keepElevatorAtTop();
+
+        if (controller.leftBumperPressed())
+            shooter.lowerElevator();
     }
 
     private void controlMiscFunctions() {
-        shooter.update(this);
+        shooter.update();
     }
 
     private void stopActions() {

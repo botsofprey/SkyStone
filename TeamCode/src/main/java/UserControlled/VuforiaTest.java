@@ -29,46 +29,56 @@
 
 package UserControlled;
 
+import android.graphics.Bitmap;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import Autonomous.ConfigVariables;
-import Autonomous.Location;
-import DriveEngine.Ultimate.UltimateNavigation;
+import Autonomous.ColorDetector;
+import Autonomous.VuforiaHelper;
 
-import static Autonomous.ConfigVariables.CENTER;
-import static Autonomous.ConfigVariables.RED_WOBBLE_GOAL_LEFT;
-import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
-
-@TeleOp(name="Drive To Location Test", group="Competition")
+@TeleOp(name="Vuforia Test", group="Testers")
 //@Disabled
-public class DriveToLocationTest extends LinearOpMode {
+public class VuforiaTest extends LinearOpMode {
     // create objects and locally global variables here
-
-    UltimateNavigation robot;
 
     @Override
     public void runOpMode() {
+        // initialize objects and variables here
+        // also create and initialize function local variables here
+        VuforiaHelper vuforia = new VuforiaHelper(hardwareMap);
+        ColorDetector ringDetector = ColorDetector.ringDetector(vuforia);
+        GamepadController controller = new GamepadController(gamepad1);
 
-        Location startLocation = new Location(STARTING_ROBOT_LOCATION_RIGHT, UltimateNavigation.SOUTH);
-
-        try {
-            robot = new UltimateNavigation(hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
-        } catch (Exception e) {
-            telemetry.addData("Robot Error", e.toString());
-        }
-
+        // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
+        // nothing goes between the above and below lines
         waitForStart();
+        // should only be used for a time keeper or other small things, avoid using this space when possible
+        while (opModeIsActive()) {
+            // main code goes here
+            telemetry.addData("Orange pixels", "" + ringDetector.findNumDesiredPixels());
+            telemetry.addData("R", "" + ringDetector.targetR);
+            telemetry.addData("G", "" + ringDetector.targetG);
+            telemetry.addData("B", "" + ringDetector.targetB);
+            telemetry.addData("Tolerance", "" + ringDetector.tolerance);
+            telemetry.addData("Num Rings", "" + ringDetector.getNumRingsFound(1));
 
-        // drive forward and right
-        // TODO play around with the x and y. If that works, try changing the heading too
-        double driveSpeed = UltimateNavigation.MAX_SPEED;
-        robot.driveToLocationPID(RED_WOBBLE_GOAL_LEFT, driveSpeed, this);
-        robot.driveToLocationPID(ConfigVariables.RED_ZONE_ONE, driveSpeed, this);
-        robot.driveToLocationPID(CENTER, driveSpeed, this);
+            controller.update(gamepad1);
+
+            if (controller.aHeld()) ringDetector.targetR++;
+            if (controller.bHeld()) ringDetector.targetR--;
+            if (controller.dpadUpHeld()) ringDetector.targetG++;
+            if (controller.dpadDownHeld()) ringDetector.targetG--;
+            if (controller.leftBumperHeld()) ringDetector.targetB++;
+            if (controller.rightBumperHeld()) ringDetector.targetB--;
+            if (controller.xHeld()) ringDetector.tolerance++;
+            if (controller.yHeld()) ringDetector.tolerance--;
+
+            telemetry.update();
+        }
+        // disable/kill/stop objects here
     }
     // misc functions here
 }

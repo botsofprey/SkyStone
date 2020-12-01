@@ -12,21 +12,22 @@ import android.graphics.Bitmap;
 public class ColorDetector {
 
     private VuforiaHelper vuforia;
-    public static final int TARGET_WIDTH = 100;
-    public static final int TARGET_HEIGHT = 100;
+    public static final int TARGET_WIDTH = 125;
+    public static final int TARGET_HEIGHT = 125;
 
-    public static final int PERCENT_NUM_RINGS_REQUIRED = 70;
-    public static final int TRIES_TO_GET_NUM_RINGS = 10;
+    public static final int TRIES_TO_GET_NUM_RINGS = 25;
 
-    public static final int RED_PIXELS_REQUIRED = 100;
+    public static final int ONE_RING_THRESHOLD = 45;
+    public static final int FOUR_RING_THRESHOLD = 140;
 
-    public static final int ONE_RING_THRESHOLD = 25;
-    public static final int FOUR_RING_THRESHOLD = 250;
+    public int targetR;
+    public int targetG;
+    public int targetB;
+    public int tolerance;
 
-    private int targetR;
-    private int targetG;
-    private int targetB;
-    private int tolerance;
+    public static ColorDetector ringDetector(VuforiaHelper vuforia) {
+        return new ColorDetector(vuforia, 172, 93, 0, 50);
+    }
 
     public ColorDetector(VuforiaHelper vuforia, int targetR, int targetG, int targetB, int tolerance) {
         this.vuforia = vuforia;
@@ -37,34 +38,52 @@ public class ColorDetector {
     }
 
     public int getNumRingsFound() {
+        return getNumRingsFound(TRIES_TO_GET_NUM_RINGS);
+    }
+
+    public int getNumRingsFound(int numTries) {
 
         // number of rings
+        int numRings = 4;
         int numZero = 0;
         int numOne = 0;
         int numFour = 0;
 
         // read 10 times or something like that
-        for (int i = 0; i < TRIES_TO_GET_NUM_RINGS; i++) {
+        for (int i = 0; i < numTries; i++) {
             int orangePixels = findNumDesiredPixels();
-
-            if (orangePixels < ONE_RING_THRESHOLD)
+            if (orangePixels <= ONE_RING_THRESHOLD)
                 numZero++;
+
             else if (orangePixels < FOUR_RING_THRESHOLD)
                 numOne++;
+
             else
                 numFour++;
+
         }
 
-        // check if the percent of rings found is enough to assume that number of rings are on the field
-        if (numZero / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
+        if (numZero >= numOne && numZero >= numFour)
             return 0;
-        else if (numOne / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
+
+        else if (numOne >= numZero && numOne >= numFour)
             return 1;
+
         else
             return 4;
+
+//        int largestRingCount = numZero > numOne ? ( numZero > numFour ? numZero : numFour ) : (numOne > numFour ? numOne : numFour);
+//        return largestRingCount;
+        // check if the percent of rings found is enough to assume that number of rings are on the field
+//        if (numZero / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
+//            return 0;
+//        else if (numOne / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
+//            return 1;
+//        else
+//            return 4;
     }
 
-    private int findNumDesiredPixels() {
+    public int findNumDesiredPixels() {
 
         Bitmap image = vuforia.getImage(TARGET_WIDTH, TARGET_HEIGHT);
         if (image == null) return 0;

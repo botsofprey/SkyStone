@@ -29,46 +29,44 @@
 
 package UserControlled;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.util.Range;
 
-import Autonomous.ConfigVariables;
-import Autonomous.Location;
-import DriveEngine.Ultimate.UltimateNavigation;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import static Autonomous.ConfigVariables.CENTER;
-import static Autonomous.ConfigVariables.RED_WOBBLE_GOAL_LEFT;
-import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
+import SensorHandlers.LIDARSensor;
 
-@TeleOp(name="Drive To Location Test", group="Competition")
+@TeleOp(name="Lidar Sensor Test", group="Testers")
 //@Disabled
-public class DriveToLocationTest extends LinearOpMode {
+public class LIDARSensorTest extends LinearOpMode {
     // create objects and locally global variables here
-
-    UltimateNavigation robot;
 
     @Override
     public void runOpMode() {
+        // also create and initialize function local variables here
+        DistanceSensor bottomSensor = hardwareMap.get(DistanceSensor.class, "bottomSensor");
+        DistanceSensor topSensor = hardwareMap.get(DistanceSensor.class, "topSensor");
 
-        Location startLocation = new Location(STARTING_ROBOT_LOCATION_RIGHT, UltimateNavigation.SOUTH);
-
-        try {
-            robot = new UltimateNavigation(hardwareMap, startLocation, "RobotConfig/UltimateV1.json");
-        } catch (Exception e) {
-            telemetry.addData("Robot Error", e.toString());
-        }
-
+        // add any other useful telemetry data or logging data here
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
+        // nothing goes between the above and below lines
         waitForStart();
+        // should only be used for a time keeper or other small things, avoid using this space when possible
+        while (opModeIsActive()) {
 
-        // drive forward and right
-        // TODO play around with the x and y. If that works, try changing the heading too
-        double driveSpeed = UltimateNavigation.MAX_SPEED;
-        robot.driveToLocationPID(RED_WOBBLE_GOAL_LEFT, driveSpeed, this);
-        robot.driveToLocationPID(ConfigVariables.RED_ZONE_ONE, driveSpeed, this);
-        robot.driveToLocationPID(CENTER, driveSpeed, this);
+            telemetry.addData("Top Distance", topSensor.getDistance(DistanceUnit.INCH));
+            telemetry.addData("Bottom Distance", bottomSensor.getDistance(DistanceUnit.INCH));
+
+            // telemetry and logging data goes here
+            telemetry.update();
+        }
+        // disable/kill/stop objects here
     }
     // misc functions here
 }
