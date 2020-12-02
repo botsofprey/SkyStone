@@ -58,6 +58,7 @@ public class WheelMotor {
             rpm = (tickDiff / (double) timeDiff) * (NANOS_PER_MINUTE / TICKS_PER_ROTATION);
             prevTicks = currentTicks;
             prevTime = currentTime;
+            mode.telemetry.addData("RPM", rpm);
             Log.d("RPM", "" + rpm);
             adjustRPM();
         }
