@@ -122,10 +122,11 @@ public class ShooterSystemV1 {
             elevatorServo.setPower(0);
         } else if (!elevatorTopSwitch.isActivated() && stayAtTop)
             elevatorServo.setPower(-1);
+
         if (!elevatorTopSwitch.isActivated() && !elevatorBottomSwitch.isActivated())
             elevatorPosition = MIDDLE;
 
-        wheelMotor.updateShooterRPM();
+//        wheelMotor.updateShooterRPM();
     }
 
     public double calculateRingVelocity(double xDistance, double yDistance) {
@@ -133,8 +134,7 @@ public class ShooterSystemV1 {
         if (temp0 < 0)
             return 0;
         double temp1 = Math.sqrt(-4.9 * xDistance * temp0);
-        double velocity = Math.cos(ConfigVariables.SHOOTER_ANGLE) / temp1;
-        return velocity;
+        return Math.cos(ConfigVariables.SHOOTER_ANGLE) / temp1;
     }
 
     // TODO

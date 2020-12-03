@@ -85,7 +85,6 @@ public class UltimateNavigation extends Thread {
     private final double BR_WHEEL_HEADING_OFFSET = 45;
     private final double BL_WHEEL_HEADING_OFFSET = 315;
 
-    private double acceleration = 0;
     private HardwareMap hardwareMap;
 
     // TODO fix this class
@@ -121,7 +120,7 @@ public class UltimateNavigation extends Thread {
                 }
                 while (shouldRun) {
                     try {
-                        if (loggingData) updateData();
+                        updateData();
                     }
                     catch (Exception e) {
                         shouldRun = false;
@@ -955,10 +954,10 @@ public class UltimateNavigation extends Thread {
         double rps;
         double distanceFromHeading = 0;
         distanceFromHeading = desiredHeading - curHeading;
-        if(distanceFromHeading > 180) distanceFromHeading -= 360;
-        else if(distanceFromHeading < -180) distanceFromHeading += 360;
-        if(distanceFromHeading >= 0 && distanceFromHeading <= 180) {
-            while(Math.abs(distanceFromHeading) > HEADING_THRESHOLD && mode.opModeIsActive()) {
+        if (distanceFromHeading > 180) distanceFromHeading -= 360;
+        else if (distanceFromHeading < -180) distanceFromHeading += 360;
+        if (distanceFromHeading >= 0 && distanceFromHeading <= 180) {
+            while (Math.abs(distanceFromHeading) > HEADING_THRESHOLD && mode.opModeIsActive()) {
                 //heading always positive
                 rps = turnController.calculatePID(distanceFromHeading);
                 turn(-rps);
@@ -968,10 +967,9 @@ public class UltimateNavigation extends Thread {
                 if(distanceFromHeading > 180) distanceFromHeading = distanceFromHeading - 360;
                 else if(distanceFromHeading < -180) distanceFromHeading = 360 + distanceFromHeading;
             }
-            brake();
         }
-        else if((distanceFromHeading <= 360 && distanceFromHeading >= 180) || distanceFromHeading < 0) {
-            while(Math.abs(distanceFromHeading) > HEADING_THRESHOLD && mode.opModeIsActive()) {
+        else if ((distanceFromHeading <= 360 && distanceFromHeading >= 180) || distanceFromHeading < 0) {
+            while (Math.abs(distanceFromHeading) > HEADING_THRESHOLD && mode.opModeIsActive()) {
                 //heading always positive
                 rps = turnController.calculatePID(distanceFromHeading);
                 turn(-rps);
@@ -981,9 +979,8 @@ public class UltimateNavigation extends Thread {
                 if(distanceFromHeading > 180) distanceFromHeading -= 360;
                 else if(distanceFromHeading < -180) distanceFromHeading += 360;
             }
-            brake();
         }
-
+        brake();
     }
 
     public void turnToHeading(double desiredHeading, double tolerance, LinearOpMode mode){
@@ -1021,25 +1018,21 @@ public class UltimateNavigation extends Thread {
             }
             brake();
         }
-
     }
 
-    public void setDrivePower(double power) {
-        double[] powers = new double[4];
-        for(int i = 0; i < 4; i++){
-            powers[i] = power;
-        }
-        applyMotorPowers(powers);
-    }
+    public void setDrivePower(double power) { applyMotorPowers(new double[] { power, power, power, power }); }
 
     public void turnToLocation(Location target, LinearOpMode mode) {
-        double relativeX = target.getX() - myLocation.getX();
-        double relativeY = target.getY() - myLocation.getY();
-        double angle = 180 - Math.toDegrees(Math.atan(relativeY / relativeX));
+        double dx = target.getX() - myLocation.getX();
+        double dy = target.getY() - myLocation.getY();
+        double angle = -90 - Math.toDegrees(Math.atan(-dy / Math.abs(dx)));
+        if (dx > 0)
+            angle *= -1;
         turnToHeading(angle, mode);
+        mode.telemetry.addData("Angle to turn", angle + "");
     }
 
-    public void applyMotorVelocities(double [] velocities) {
+    public void applyMotorVelocities(double[] velocities) {
         for (MotorController motor : driveMotors)
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -1049,7 +1042,7 @@ public class UltimateNavigation extends Thread {
         driveMotors[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR].setInchesPerSecondVelocity(velocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR]);
     }
 
-    public void applyMotorPowers(double [] powers) {
+    public void applyMotorPowers(double[] powers) {
         for (MotorController motor : driveMotors)
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

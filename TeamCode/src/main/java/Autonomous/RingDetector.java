@@ -28,7 +28,7 @@ public class RingDetector extends Thread {
                     Log.d("Distance:", "" + top.getDistance() + ", " + bottom.getDistance());
                 }
             }
-        });
+        }).start();
     }
 
     public int getNumRings() {

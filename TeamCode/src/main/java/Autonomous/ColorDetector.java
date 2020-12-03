@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 
 public class ColorDetector {
 
-    private VuforiaHelper vuforia;
     public static final int TARGET_WIDTH = 125;
     public static final int TARGET_HEIGHT = 125;
 
@@ -20,6 +19,7 @@ public class ColorDetector {
     public static final int ONE_RING_THRESHOLD = 45;
     public static final int FOUR_RING_THRESHOLD = 140;
 
+    private VuforiaHelper vuforia;
     public int targetR;
     public int targetG;
     public int targetB;
@@ -44,7 +44,6 @@ public class ColorDetector {
     public int getNumRingsFound(int numTries) {
 
         // number of rings
-        int numRings = 4;
         int numZero = 0;
         int numOne = 0;
         int numFour = 0;
@@ -52,12 +51,11 @@ public class ColorDetector {
         // read 10 times or something like that
         for (int i = 0; i < numTries; i++) {
             int orangePixels = findNumDesiredPixels();
+
             if (orangePixels <= ONE_RING_THRESHOLD)
                 numZero++;
-
             else if (orangePixels < FOUR_RING_THRESHOLD)
                 numOne++;
-
             else
                 numFour++;
 
@@ -65,22 +63,9 @@ public class ColorDetector {
 
         if (numZero >= numOne && numZero >= numFour)
             return 0;
-
-        else if (numOne >= numZero && numOne >= numFour)
+        if (numOne >= numZero && numOne >= numFour)
             return 1;
-
-        else
-            return 4;
-
-//        int largestRingCount = numZero > numOne ? ( numZero > numFour ? numZero : numFour ) : (numOne > numFour ? numOne : numFour);
-//        return largestRingCount;
-        // check if the percent of rings found is enough to assume that number of rings are on the field
-//        if (numZero / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
-//            return 0;
-//        else if (numOne / (double)TRIES_TO_GET_NUM_RINGS >= PERCENT_NUM_RINGS_REQUIRED)
-//            return 1;
-//        else
-//            return 4;
+        return 4;
     }
 
     public int findNumDesiredPixels() {

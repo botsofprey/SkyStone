@@ -37,8 +37,6 @@ import static Autonomous.ConfigVariables.ZONE_WAYPOINT;
  */
 public class UltimateAutonomous {
 
-    // TODO test this class
-
     private final AutoAlliance alliance;
     private final LinearOpMode mode;
 
@@ -162,13 +160,13 @@ public class UltimateAutonomous {
         shooter.shoot();
         sleep(1000);
 
-        driveToLocationOnHeading(POWER_SHOT_MIDDLE_ON_LINE, UltimateNavigation.NORTH);
+//        driveToLocationOnHeading(POWER_SHOT_MIDDLE_ON_LINE, UltimateNavigation.NORTH);
         shooter.shoot();
         sleep(1000);
         shooter.shoot();
         sleep(1000);
 
-        driveToLocationOnHeading(POWER_SHOT_RIGHT_ON_LINE, UltimateNavigation.NORTH);
+//        driveToLocationOnHeading(POWER_SHOT_RIGHT_ON_LINE, UltimateNavigation.NORTH);
         shooter.shoot();
         sleep(1000);
         shooter.shoot();
@@ -198,9 +196,7 @@ public class UltimateAutonomous {
 //        intake.turnOff();
 //    }
 
-    public void waitForArm() {
-        while(mode.opModeIsActive() && wobbleGrabber.armIsBusy());
-    }
+    public void waitForArm() { while(mode.opModeIsActive() && wobbleGrabber.armIsBusy()); }
 
     public void dropWobbleGoal() {
         robot.turnToHeading(135, mode);
@@ -224,7 +220,6 @@ public class UltimateAutonomous {
     }
 
     public void shootThreeRings() {
-
         shooter.setShooter(ShooterSystemV1.HIGHEST_POSITION);
         shooter.turnOnShooterWheel();
         sleep(1500);
@@ -236,27 +231,29 @@ public class UltimateAutonomous {
         }
         shooter.turnOffShooterWheel();
         shooter.setShooter(ShooterSystemV1.LOWERED_POSITION);
-        // Once sensors are functional, lower elevator
         shooter.lowerElevator();
     }
 
-    public int detectNumRings() {
-//        if (bottomSensor.getDistance() <= BOTTOM_RING_TOLERANCE && topSensor.getDistance() <= TOP_RING_TOLERANCE)
-//            return 4;
-//        else if (bottomSensor.getDistance() <= BOTTOM_RING_TOLERANCE && topSensor.getDistance() >= TOP_RING_TOLERANCE)
-//            return 1;
-//        else
-//            return 0;
-        return ringDetector.getNumRings();
+    public void grabStartingPileRings() {
+        turnToInitHeading();
+        intake.turnOn();
+
+        driveDistance(20, UltimateNavigation.NORTH);
+        mode.sleep(2000);
+        robot.brake();
+
+        intake.turnOff();
+        turnToInitHeading();
     }
 
-    // converts red to blue. If it is blue, nothing happens
+    // converts red to blue. If it is red, nothing happens
     public Location redToBlue(Location location) {
         if (alliance == AutoAlliance.BLUE)
             return new Location(-location.getX(), location.getY(), 360 - location.getHeading());
-        else
-            return location;
+        return location;
     }
+
+    public int detectNumRings() { return ringDetector.getNumRings(); }
 
     public void stop() { robot.stopNavigation(); }
     public void sleep(long milliseconds) { mode.sleep(milliseconds); }
@@ -264,8 +261,9 @@ public class UltimateAutonomous {
 
     public void turnToZero() { robot.turnToHeading(UltimateNavigation.NORTH, mode); }
     public void turnToInitHeading() { robot.turnToHeading(startHeading, mode); }
+    public void turnToHeading(double heading) { robot.turnToHeading(heading, mode); }
 
-    public void driveToZoneWaypoint() { driveToLocationOnInitHeading(ZONE_WAYPOINT); }
+//    public void driveToZoneWaypoint() { driveToLocationOnInitHeading(ZONE_WAYPOINT); }
     public void driveToLocationOnInitHeading(Location location) {
         driveToLocationOnHeading(location, startHeading);
     }

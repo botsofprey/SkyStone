@@ -9,6 +9,6 @@ package Autonomous;
  */
 public interface GeoLocator {
     //meant to contain all code necessary to determine location of robot
-    public Location getLocation();
-    public void setBaseLocation(Location location);
+    Location getLocation();
+    void setBaseLocation(Location location);
 }

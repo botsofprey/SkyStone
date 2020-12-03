@@ -100,7 +100,7 @@ public class UltimateV1 extends LinearOpMode {
         // initialize robot
         // TODO get starting angle
         try {
-            robot = new UltimateNavigation(hardwareMap, new Location(0, 0, 270), "RobotConfig/UltimateV1.json");
+            robot = new UltimateNavigation(hardwareMap, new Location(0, 0, 0), "RobotConfig/UltimateV1.json");
         } catch (Exception e) {
             telemetry.addData("Robot Error", e.toString());
             telemetry.update();

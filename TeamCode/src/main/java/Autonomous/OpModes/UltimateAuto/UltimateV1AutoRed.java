@@ -41,7 +41,6 @@ import DriveEngine.Ultimate.UltimateNavigation;
 
 import static Autonomous.ConfigVariables.RING_DETECTION_POINT;
 import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
-
 /*
     Author: Ethan Fisher
     Date: 10/29/2020
@@ -52,62 +51,63 @@ import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
 //@Disabled
 public class UltimateV1AutoRed extends LinearOpMode {
 
+    volatile boolean shouldRun = true;
+
     @Override
     public void runOpMode() {
 
         // initialize robot
         Location startLocation = STARTING_ROBOT_LOCATION_RIGHT;
         startLocation.setHeading(UltimateNavigation.SOUTH);
-        UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, startLocation, this);
+        final UltimateAutonomous robot = new UltimateAutonomous(AutoAlliance.RED, startLocation, this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // if (shouldNotPark(startTime)) goes before all of statements in case the 30 seconds is up
+        //  goes before all of statements in case the 30 seconds is up
 
         waitForStart();
+
         robot.getShooter().keepElevatorAtTop();
         robot.getShooter().shoot();
 
-        long startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
 
-        // move to the zone with the wobble goal and release it
-        // TODO IF RUNNING V2 TEST: Switch the involved locations to UltimateNavigation.EAST including starting location
-//        if (shouldNotPark(startTime)) robot.wobbleGrabberV2Test(); // This is just a really quick test for the new side gripper system
-        if (shouldNotPark(startTime)) robot.getWobbleGrabber().grabWobbleGoal();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (shouldRun && opModeIsActive()) {
+                    if (!shouldNotPark(startTime)) {
+                        robot.park();
+                        robot.stop();
+                        shouldRun = true;
+                    }
+                }
+            }
+        }).start();
 
-        if (shouldNotPark(startTime)) robot.driveToLocationOnInitHeading(RING_DETECTION_POINT);
+         robot.getWobbleGrabber().grabWobbleGoal();
+
+         robot.driveToLocationOnInitHeading(RING_DETECTION_POINT);
 
         int numRings = robot.detectNumRings();
         Location ringZone = robot.getZone(numRings);
         telemetry.addData("Rings Found", numRings);
         telemetry.update();
 
-        if (shouldNotPark(startTime)) robot.driveToLocationOnInitHeading(ringZone);
-        if (shouldNotPark(startTime)) robot.dropWobbleGoal();
-        if (shouldNotPark(startTime)) robot.getWobbleGrabber().raiseArm();
+        robot.driveToLocationOnInitHeading(ringZone);
+        robot.dropWobbleGoal();
+        robot.getWobbleGrabber().raiseArm();
 
-        // grab the second wobble goal
-//        if (shouldNotPark(startTime)) robot.driveToLeftWobbleGoal();
+        // move behind shot line, rotate towards goal, and shoot
+        robot.moveToShootLocation();
+        robot.shootPowerShots();
 
-        // move it to the same zone and drop it
-//        if (shouldNotPark(startTime)) robot.driveToWaypoint();
-//        if (shouldNotPark(startTime)) robot.moveToZone(numRings);
-//        if (shouldNotPark(startTime)) robot.dropWobbleGoal();
-
-        // move behind shot line, rotate towards powershots,  and shoot them
-        if (shouldNotPark(startTime)) robot.moveToShootLocation(); // TODO still need to work on calculations for shooting into goals & powershots
-        //if (shouldNotPark(startTime)) robot.moveBehindShootLine();
-        if (shouldNotPark(startTime)) robot.shootThreeRings();
-//        if (shouldNotPark(startTime)) robot.shootPowerShots();
-
-        // drive back to the starting rings
-//        if (shouldNotPark(startTime)) robot.driveToStartingRings();
-//
-//        // ??? Maybe grab three rings at the end ???
-//        if (shouldNotPark(startTime)) robot.grabStartingPileRings();
+//        if (numRings != 0)
+//            robot.grabStartingPileRings();
 
         // park on the line and stop
+        shouldRun = false;
         robot.park();
         robot.stop();
 
