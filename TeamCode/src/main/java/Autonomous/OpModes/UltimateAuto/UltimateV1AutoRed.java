@@ -79,11 +79,16 @@ public class UltimateV1AutoRed extends LinearOpMode {
         if (shouldNotPark(startTime)) robot.driveToLocationOnInitHeading(RING_DETECTION_POINT);
 
         int numRings = robot.detectNumRings();
+
+        //TODO delete this; these are debug lines
+        telemetry.update();
+        robot.stop();
+
         Location ringZone = robot.getZone(numRings);
         telemetry.addData("Rings Found", numRings);
         telemetry.update();
 
-        if (shouldNotPark(startTime) && numRings != 0) robot.driveToLocationOnInitHeading(ringZone);
+        if (shouldNotPark(startTime)) robot.driveToLocationOnInitHeading(ringZone);
         if (shouldNotPark(startTime)) robot.dropWobbleGoal();
         if (shouldNotPark(startTime)) robot.getWobbleGrabber().raiseArm();
 
