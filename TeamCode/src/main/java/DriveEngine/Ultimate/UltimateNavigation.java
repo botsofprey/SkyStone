@@ -336,7 +336,6 @@ public class UltimateNavigation extends Thread {
 
         getRobotHeading();
         wheelVectors = getWheelVectors();
-        // TODO uncomment
         updateLocation();
         updateIMUTrackedDistance();
     }
@@ -1036,7 +1035,7 @@ public class UltimateNavigation extends Thread {
     public void turnToLocation(Location target, LinearOpMode mode) {
         double relativeX = target.getX() - myLocation.getX();
         double relativeY = target.getY() - myLocation.getY();
-        double angle = 180 - Math.toDegrees(Math.atan2(relativeY, relativeX));
+        double angle = 180 - Math.toDegrees(Math.atan(relativeY / relativeX));
         turnToHeading(angle, mode);
     }
 
