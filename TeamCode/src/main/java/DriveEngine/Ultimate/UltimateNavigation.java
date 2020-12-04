@@ -765,12 +765,10 @@ public class UltimateNavigation extends Thread {
 
     double[] determineMotorVelocitiesToDriveOnHeading(double heading, double desiredVelocity) {
         double[] velocities = new double[4];
-        double sinVelocity = desiredVelocity * Math.sin(Math.toRadians(heading + 45));
-        double cosVelocity = desiredVelocity * Math.cos(Math.toRadians(heading + 45));
-        velocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = sinVelocity;
-        velocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = cosVelocity;
-        velocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = sinVelocity;
-        velocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = cosVelocity;
+        velocities[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredVelocity * Math.sin(Math.toRadians(heading + 45));
+        velocities[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredVelocity * Math.cos(Math.toRadians(heading + 45));
+        velocities[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredVelocity * Math.sin(Math.toRadians(heading + 45));
+        velocities[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredVelocity * Math.cos(Math.toRadians(heading + 45));
         return velocities;
     }
 
@@ -791,16 +789,18 @@ public class UltimateNavigation extends Thread {
     }
 
     private double[] calculatePowersToDriveOnHeading(double heading, double desiredPower){
-        double[] powers = new double[] { 0, 0, 0, 0 };
-        if (desiredPower == 0)
+        double[] powers = new double[4];
+        if(desiredPower == 0){
+            for(int i = 0; i < powers.length; i ++){
+                powers[i] = 0;
+            }
             return powers;
-
-        double sinPower = desiredPower * Math.sin(Math.toRadians(heading + 45));
-        double cosPower = desiredPower * Math.cos(Math.toRadians(heading + 45));
-        powers[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = sinPower;
-        powers[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = cosPower;
-        powers[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = sinPower;
-        powers[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = cosPower;
+        }
+        powers[FRONT_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredPower * Math.sin(Math.toRadians(heading + 45));
+        powers[FRONT_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredPower * Math.cos(Math.toRadians(heading + 45));
+        powers[BACK_RIGHT_HOLONOMIC_DRIVE_MOTOR] = desiredPower * Math.sin(Math.toRadians(heading + 45));
+        powers[BACK_LEFT_HOLONOMIC_DRIVE_MOTOR] = desiredPower * Math.cos(Math.toRadians(heading + 45));
+        //Log.d("MotorPow","" + powers[0]);
         return powers;
     }
 

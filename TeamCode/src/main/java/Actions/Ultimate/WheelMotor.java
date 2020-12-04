@@ -17,7 +17,7 @@ public class WheelMotor {
     private long prevTicks;
     private long prevTime;
 
-    private static final int MAX_RPM = 6000;
+    private static final double MAX_RPM = 6000;
     private static final double MINIMUM_TIME_DIFFERENCE = 100000000;// 1/10 of a second
     private static final long NANOS_PER_MINUTE = 60000000000L;
     private static final double TICKS_PER_ROTATION = 28;
@@ -27,7 +27,7 @@ public class WheelMotor {
 
     public WheelMotor(String name, HardwareMap hardwareMap, final LinearOpMode mode) {
         motor = hardwareMap.dcMotor.get(name);
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         targetRPM = 0;
 
 //        rpmController = new PIDController(0.1, 0.1, 0);
