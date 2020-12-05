@@ -81,7 +81,7 @@ public class UltimateAutoNorthTest extends LinearOpMode {
             }
         }).start();
         
-        robot.getShooter().keepElevatorAtTop();
+//        robot.getShooter().keepElevatorAtTop();
         robot.getShooter().shoot();
 
         robot.getWobbleGrabber().grabWobbleGoal();

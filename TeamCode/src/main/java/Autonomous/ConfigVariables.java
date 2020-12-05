@@ -94,9 +94,9 @@ public class ConfigVariables {
 
     public static final double SHOOTER_ANGLE = 27;
   
-    public static final Location POWER_SHOT_LEFT_ON_LINE = new Location(9, 0);
-    public static final Location POWER_SHOT_MIDDLE_ON_LINE = new Location(18, 0);
-    public static final Location POWER_SHOT_RIGHT_ON_LINE = new Location(27, 0);
+    public static final Location POWER_SHOT_LEFT_ON_LINE = new Location(4, 0);
+    public static final Location POWER_SHOT_MIDDLE_ON_LINE = new Location(12, 0);
+    public static final Location POWER_SHOT_RIGHT_ON_LINE = new Location(20, 0);
 
     public static final Rectangle VALID_Y_SENSOR_READ_AREA_1_RED = new Rectangle(34, 48, 12, 48);
     public static final Rectangle VALID_Y_SENSOR_READ_AREA_2_RED = new Rectangle(34, -48, 12, 48);

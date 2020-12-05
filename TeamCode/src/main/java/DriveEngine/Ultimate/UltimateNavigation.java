@@ -1022,6 +1022,16 @@ public class UltimateNavigation extends Thread {
 
     public void setDrivePower(double power) { applyMotorPowers(new double[] { power, power, power, power }); }
 
+    public void turnToShoot(Location target, LinearOpMode mode) {
+        double dx = target.getX() - myLocation.getX();
+        double dy = target.getY() - myLocation.getY();
+        double angle = -77 - Math.toDegrees(Math.atan(-dy / Math.abs(dx)));
+        if (dx > 0)
+            angle *= -1;
+        turnToHeading(angle, mode);
+        mode.telemetry.addData("Angle to turn", angle + "");
+    }
+
     public void turnToLocation(Location target, LinearOpMode mode) {
         double dx = target.getX() - myLocation.getX();
         double dy = target.getY() - myLocation.getY();
@@ -1029,7 +1039,7 @@ public class UltimateNavigation extends Thread {
         if (dx > 0)
             angle *= -1;
         turnToHeading(angle, mode);
-        mode.telemetry.addData("Angle to turn", angle + "");
+//        mode.telemetry.addData("Angle to turn", angle + "");
     }
 
     public void applyMotorVelocities(double[] velocities) {

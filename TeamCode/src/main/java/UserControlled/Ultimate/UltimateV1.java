@@ -190,16 +190,16 @@ public class UltimateV1 extends LinearOpMode {
             shooter.shoot();
 
         if (controller.dpadUpPressed())
-            robot.turnToLocation(ConfigVariables.TOP_GOAL, this);  // set angle to aim at the top goal
+            robot.turnToShoot(ConfigVariables.TOP_GOAL, this);  // set angle to aim at the top goal
 
         if (controller.dpadDownPressed())
-            robot.turnToLocation(ConfigVariables.POWER_SHOT_MIDDLE, this); // set angle to center power shot
+            robot.turnToShoot(ConfigVariables.POWER_SHOT_MIDDLE, this); // set angle to center power shot
 
         if (controller.dpadLeftPressed())
-            robot.turnToLocation(ConfigVariables.POWER_SHOT_LEFT, this); // set angle to left power shot
+            robot.turnToShoot(ConfigVariables.POWER_SHOT_LEFT, this); // set angle to left power shot
 
         if (controller.dpadRightPressed())
-            robot.turnToLocation(ConfigVariables.POWER_SHOT_RIGHT, this); // set angle to right power shot
+            robot.turnToShoot(ConfigVariables.POWER_SHOT_RIGHT, this); // set angle to right power shot
 
         if (controllerOne.leftBumperPressed())
             shooter.lowerElevator();
@@ -237,6 +237,9 @@ public class UltimateV1 extends LinearOpMode {
 
     private void controlMiscFunctions() {
         shooter.update();
+        telemetry.addData("SHooerer pors", shooter.wheelMotor.motor.getCurrentPosition() + "");
+        telemetry.addData("SHooerer powier", shooter.wheelMotor.motor.getPower() + "");
+        telemetry.addData("SHooerer rpkm", shooter.wheelMotor.curRPM + "");
     }
 
     private void stopActions() {

@@ -159,7 +159,7 @@ public class ImuHandler extends Thread {
         return newAngles;
     }
 
-    public void stopIMU(){
+    public void stopIMU() {
         shouldRun = false;
     }
 

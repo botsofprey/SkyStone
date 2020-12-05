@@ -15,8 +15,11 @@ import DriveEngine.Ultimate.UltimateNavigation;
 import SensorHandlers.LIDARSensor;
 
 import static Autonomous.ConfigVariables.PARKING_LOCATION;
+import static Autonomous.ConfigVariables.POWER_SHOT_LEFT;
 import static Autonomous.ConfigVariables.POWER_SHOT_LEFT_ON_LINE;
+import static Autonomous.ConfigVariables.POWER_SHOT_MIDDLE;
 import static Autonomous.ConfigVariables.POWER_SHOT_MIDDLE_ON_LINE;
+import static Autonomous.ConfigVariables.POWER_SHOT_RIGHT;
 import static Autonomous.ConfigVariables.POWER_SHOT_RIGHT_ON_LINE;
 import static Autonomous.ConfigVariables.RED_WOBBLE_GOAL_LEFT;
 import static Autonomous.ConfigVariables.RED_WOBBLE_GOAL_LEFT_CHECKPOINT;
@@ -69,14 +72,6 @@ public class UltimateAutonomous {
         bottomSensor = new LIDARSensor(mode.hardwareMap.get(DistanceSensor.class, "bottomSensor"), "bottomSensor");
 
         ringDetector = new RingDetector(topSensor, bottomSensor);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(mode.opModeIsActive())
-                    shooter.wheelMotor.updateShooterRPM();
-            }
-        }).start();
     }
 
     public void driveToLeftWobbleGoal() {
@@ -148,17 +143,21 @@ public class UltimateAutonomous {
 //    }
 
     public void shootPowerShots() {
-        driveToLocationOnInitHeading(POWER_SHOT_LEFT_ON_LINE);
+        driveToLocationOnInitHeading(POWER_SHOT_MIDDLE_ON_LINE);
         turnToZero();
 
         shooter.turnOnShooterWheel();
         shooter.setShooter(ShooterSystemV1.POWER_SHOT_POSITION);
 
+        robot.turnToShoot(POWER_SHOT_LEFT, mode);
+
         sleep(1000);
         shooter.shoot();
         sleep(1000);
         shooter.shoot();
         sleep(1000);
+
+        robot.turnToShoot(POWER_SHOT_MIDDLE, mode);
 
 //        driveToLocationOnHeading(POWER_SHOT_MIDDLE_ON_LINE, UltimateNavigation.NORTH);
         shooter.shoot();
@@ -166,11 +165,15 @@ public class UltimateAutonomous {
         shooter.shoot();
         sleep(1000);
 
+        robot.turnToShoot(POWER_SHOT_RIGHT, mode);
+
 //        driveToLocationOnHeading(POWER_SHOT_RIGHT_ON_LINE, UltimateNavigation.NORTH);
         shooter.shoot();
         sleep(1000);
         shooter.shoot();
         sleep(1000);
+
+        mode.telemetry.update();
 
         // TODO turn instead of moving position
 
@@ -222,11 +225,16 @@ public class UltimateAutonomous {
     public void shootThreeRings() {
         shooter.setShooter(ShooterSystemV1.HIGHEST_POSITION);
         shooter.turnOnShooterWheel();
+//        shooter.keepElevatorAtTop();
+        shooter.update();
         sleep(1500);
         for  (int i = 0; i <= 3; i++) {
+//            shooter.keepElevatorAtTop();
             shooter.shoot(); // Index ring into shooter
+            shooter.update();
             sleep(500); // Wait for index
             shooter.shoot(); // Retract indexer
+            shooter.update();
             sleep(750); // Wait for retract
         }
         shooter.turnOffShooterWheel();

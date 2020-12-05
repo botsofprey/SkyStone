@@ -32,6 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package Autonomous.OpModes.UltimateAuto;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -77,10 +79,17 @@ public class UltimateV1AutoRed extends LinearOpMode {
             @Override
             public void run() {
                 while (shouldRun && opModeIsActive()) {
-                    if (!shouldNotPark(startTime)) {
-                        robot.park();
-                        robot.stop();
-                        shouldRun = true;
+                    try {
+                        robot.getShooter().update();
+
+                        if (!shouldNotPark(startTime)) {
+                            robot.park();
+                            robot.stop();
+                            shouldRun = true;
+                        }
+                    }
+                    catch(Exception e){
+                        Log.d("Thread Exception Found:", e.toString());
                     }
                 }
             }
@@ -94,15 +103,21 @@ public class UltimateV1AutoRed extends LinearOpMode {
         Location ringZone = robot.getZone(numRings);
         telemetry.addData("Rings Found", numRings);
         telemetry.update();
+//        if (numRings == 0)
+//            robot.driveToLocationOnInitHeading(ringZone);
+        if (numRings == 1)
+            robot.driveToLocationOnInitHeading(new Location(48, 0, 180));
 
         robot.driveToLocationOnInitHeading(ringZone);
         robot.dropWobbleGoal();
-        robot.getWobbleGrabber().raiseArm();
+        robot.getWobbleGrabber().raiseToVertical();
 
         // move behind shot line, rotate towards goal, and shoot
         robot.moveToShootLocation();
-        robot.shootPowerShots();
-
+//        robot.getShooter().raiseElevator();
+        robot.getShooter().keepElevatorAtTop();
+//        robot.shootPowerShots();
+        robot.shootThreeRings();
 //        if (numRings != 0)
 //            robot.grabStartingPileRings();
 
@@ -121,4 +136,3 @@ public class UltimateV1AutoRed extends LinearOpMode {
         return opModeIsActive() && curTimeSeconds < 28;
     }
 }
-

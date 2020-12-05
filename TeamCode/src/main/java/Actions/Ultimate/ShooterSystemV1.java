@@ -14,15 +14,13 @@ import SensorHandlers.MagneticLimitSwitch;
  *
  * Used for shooting rings
  */
-public class ShooterSystemV1 {
+public class ShooterSystemV1 extends Thread {
 
-    // good
     public Servo aimServo;
     public static final double HIGHEST_POSITION = 0;
     public static final double POWER_SHOT_POSITION = 0.45;
-//    public static final double HIGHEST_POSITION = 0;
-//    public static final double POWER_SHOT_POSITION = 0.2;
     public static final double LOWERED_POSITION = 1;
+    final double ANGLE_INCREMENT = 0.05;
 
     // good
     public WheelMotor wheelMotor;
@@ -45,7 +43,7 @@ public class ShooterSystemV1 {
     public static final double PINBALL_TURNED = 1;
     public static final double PINBALL_REST = 0;
 
-    public ShooterSystemV1(HardwareMap hardwareMap, LinearOpMode mode) {
+    public ShooterSystemV1(HardwareMap hardwareMap, final LinearOpMode mode) {
         aimServo = hardwareMap.servo.get("aimServo");
         wheelMotor = new WheelMotor("wheelMotor", hardwareMap, mode);
         elevatorServo = hardwareMap.crservo.get("elevatorServo");
@@ -85,12 +83,12 @@ public class ShooterSystemV1 {
         pinballServo.setPosition(pinballAngle);
     }
 
-    public void raiseShooter(double angle) {
-        aimServo.setPosition(aimServo.getPosition() - angle);
+    public void raiseShooter() {
+        aimServo.setPosition(aimServo.getPosition() - ANGLE_INCREMENT);
     }
 
-    public void lowerShooter(double angle) {
-        aimServo.setPosition(aimServo.getPosition() + angle);
+    public void lowerShooter() {
+        aimServo.setPosition(aimServo.getPosition() + ANGLE_INCREMENT);
     }
 
     public void setShooter(double angle) { aimServo.setPosition(angle); }
@@ -116,7 +114,7 @@ public class ShooterSystemV1 {
     public void update() {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
-            elevatorServo.setPower(0);
+            elevatorServo.setPower(-0.01);
         } else if (elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
             elevatorPosition = BOTTOM;
             elevatorServo.setPower(0);
@@ -126,7 +124,7 @@ public class ShooterSystemV1 {
         if (!elevatorTopSwitch.isActivated() && !elevatorBottomSwitch.isActivated())
             elevatorPosition = MIDDLE;
 
-//        wheelMotor.updateShooterRPM();
+        wheelMotor.updateShooterRPM();
     }
 
     public double calculateRingVelocity(double xDistance, double yDistance) {

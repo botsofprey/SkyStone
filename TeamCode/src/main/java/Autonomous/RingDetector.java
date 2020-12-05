@@ -7,11 +7,13 @@ import SensorHandlers.LIDARSensor;
 public class RingDetector extends Thread {
 
     private static final double BOTTOM_RING_TOLERANCE = 8;
-    private static final double TOP_RING_TOLERANCE = 20;
+    private static final double TOP_RING_TOLERANCE = 10;
 
     private volatile boolean topDetected, bottomDetected;
     private volatile boolean shouldRun;
     private final LIDARSensor top, bottom;
+
+    public double minTopDist, minBottomDist;
 
     public RingDetector(final LIDARSensor top, final LIDARSensor bottom) {
         this.top = top;
@@ -25,7 +27,8 @@ public class RingDetector extends Thread {
             public void run() {
                 while(shouldRun) {
                     detectNumRings();
-                    Log.d("Distance:", "" + top.getDistance() + ", " + bottom.getDistance());
+                    Log.d("Min Bottom Distance", "" + minBottomDist);
+                    Log.d("Min Top Distance", "" + minTopDist);
                 }
             }
         }).start();
@@ -39,6 +42,8 @@ public class RingDetector extends Thread {
     }
 
     public void detectNumRings() {
+        if (top.getDistance() < minTopDist) minTopDist = top.getDistance();
+        if (bottom.getDistance() < minBottomDist) minBottomDist = bottom.getDistance();
         if (top.getDistance() < TOP_RING_TOLERANCE) topDetected = true;
         if (bottom.getDistance() < BOTTOM_RING_TOLERANCE) bottomDetected = true;
     }

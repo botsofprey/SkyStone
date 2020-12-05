@@ -12,66 +12,60 @@ public class WheelMotor {
 
     public DcMotor motor;
     private LinearOpMode mode;
-    private double rpm;
+    public double curRPM;
     private double targetRPM;
     private long prevTicks;
     private long prevTime;
 
-    private static final double MAX_RPM = 6000;
+    private static final int MAX_RPM = 6000;
     private static final double MINIMUM_TIME_DIFFERENCE = 100000000;// 1/10 of a second
     private static final long NANOS_PER_MINUTE = 60000000000L;
     private static final double TICKS_PER_ROTATION = 28;
-    private static final double ADJUSTMENT_RATE = 2;
+    private static final double ADJUSTMENT_RATE = 5;
 
     private PIDController rpmController;
 
     public WheelMotor(String name, HardwareMap hardwareMap, final LinearOpMode mode) {
         motor = hardwareMap.dcMotor.get(name);
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         targetRPM = 0;
-
-//        rpmController = new PIDController(0.1, 0.1, 0);
-//        rpmController.setSp(0);
+        prevTime = System.nanoTime();
+        prevTicks = motor.getCurrentPosition();
 
         this.mode = mode;
     }
 
     public void setRPM(int RPM) {
         targetRPM = RPM;
-//        mode.telemetry.addData("Motor Power Init", "" + targetPower);
-//        mode.telemetry.update();
         motor.setPower(targetRPM / MAX_RPM);
-
-//        rpmController.setSp(RPM);
     }
 
     public void updateShooterRPM() {
         int currentTicks = motor.getCurrentPosition();
         long currentTime = System.nanoTime();
-        if (prevTicks == 0) {
-            prevTicks = currentTicks;
-            prevTime = currentTime;
-        }
+
         long tickDiff = currentTicks - prevTicks;
         long timeDiff = currentTime - prevTime;
         if (timeDiff > MINIMUM_TIME_DIFFERENCE) {
-            rpm = (tickDiff / (double) timeDiff) * (NANOS_PER_MINUTE / TICKS_PER_ROTATION);
+            curRPM = (tickDiff / (double) timeDiff) * (NANOS_PER_MINUTE / TICKS_PER_ROTATION);
             prevTicks = currentTicks;
             prevTime = currentTime;
-            mode.telemetry.addData("RPM", rpm);
-            Log.d("RPM", "" + rpm);
+            Log.d("RPM", "" + curRPM);
             adjustRPM();
         }
     }
 
     private void adjustRPM() {
-        double rpmDif = targetRPM - rpm;
+        double rpmDif = targetRPM - curRPM;
         double powerDif = rpmDif / (MAX_RPM * ADJUSTMENT_RATE);
         double newPower = motor.getPower() + powerDif;
 
-        if (targetRPM == 0)
-            motor.setPower(0);
-        else
+        if (targetRPM == 0) newPower = 0;
+
+//        if (targetRPM == 0)
+//            motor.setPower(0);
+//        else
             motor.setPower(newPower);
 
 //        double curRPM = (dTicks / (double) dt) * (NANOS_PER_MINUTE / TICKS_PER_ROTATION);
