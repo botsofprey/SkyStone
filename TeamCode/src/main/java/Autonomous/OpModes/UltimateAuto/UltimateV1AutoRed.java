@@ -99,18 +99,13 @@ public class UltimateV1AutoRed extends LinearOpMode {
 
          robot.driveToLocationOnInitHeading(RING_DETECTION_POINT);
 
-        int numRings = robot.detectNumRings();
-        Location ringZone = robot.getZone(numRings);
-        telemetry.addData("Rings Found", numRings);
-        telemetry.update();
+         int numRings = robot.detectNumRings();
+         telemetry.addData("Rings Found", numRings);
+         telemetry.update();
 //        if (numRings == 0)
 //            robot.driveToLocationOnInitHeading(ringZone);
-        if (numRings == 1)
-            robot.driveToLocationOnInitHeading(new Location(48, 0, 180));
 
-        robot.driveToLocationOnInitHeading(ringZone);
-        robot.dropWobbleGoal();
-        robot.getWobbleGrabber().raiseToVertical();
+        robot.driveToRingZone(numRings);
 
         // move behind shot line, rotate towards goal, and shoot
         robot.moveToShootLocation();
@@ -125,6 +120,8 @@ public class UltimateV1AutoRed extends LinearOpMode {
         shouldRun = false;
         robot.park();
         robot.stop();
+        robot.getShooter().stayAtTop = false;
+        robot.getShooter().elevatorServo.setPower(0);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive());
@@ -134,5 +131,11 @@ public class UltimateV1AutoRed extends LinearOpMode {
         long curTimeMillis = System.currentTimeMillis() - startTime;
         double curTimeSeconds = curTimeMillis / 1000.0;
         return opModeIsActive() && curTimeSeconds < 28;
+    }
+
+    public boolean isInRange(double first, double second, double tolerance) {
+        double difference = first - second;
+        difference = Math.abs(difference);
+        return difference <= tolerance;
     }
 }

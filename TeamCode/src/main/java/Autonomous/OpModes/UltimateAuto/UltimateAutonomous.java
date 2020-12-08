@@ -128,9 +128,7 @@ public class UltimateAutonomous {
     // think we're going to the other side of the field
     public void moveToShootLocation() {
 //        driveToLocation(new Location(robot.getRobotLocation().getX(), SHOOTING_LINE_POINT.getY(), UltimateNavigation.SOUTH));
-        driveToLocationOnInitHeading(SHOOTING_LINE_POINT);
-        sleep(500);
-        turnToZero();
+        driveToLocation(SHOOTING_LINE_POINT);
         sleep(500);
     }
 
@@ -213,6 +211,17 @@ public class UltimateAutonomous {
         turnToInitHeading();
     }
 
+    public void dropWobbleGoalLargeTurn() {
+        turnToZero();
+        wobbleGrabber.lowerArm();
+        waitForArm();
+        wobbleGrabber.releaseWobbleGoal();
+        sleep(200);
+        wobbleGrabber.raiseToVertical();
+        waitForArm();
+//        robot.turnToHeading(0, mode);
+    }
+
     public void pickupWobbleGoal() {
         wobbleGrabber.lowerArm();
         waitForArm();
@@ -226,8 +235,7 @@ public class UltimateAutonomous {
         shooter.setShooter(ShooterSystemV1.HIGHEST_POSITION);
         shooter.turnOnShooterWheel();
 //        shooter.keepElevatorAtTop();
-        shooter.update();
-        sleep(1500);
+        shooter.warmUpWheel(mode);
         for  (int i = 0; i <= 3; i++) {
 //            shooter.keepElevatorAtTop();
             shooter.shoot(); // Index ring into shooter
@@ -252,6 +260,37 @@ public class UltimateAutonomous {
 
         intake.turnOff();
         turnToInitHeading();
+    }
+
+    private void driveToZoneOne() {
+        driveToLocationOnInitHeading(RED_ZONE_ONE);
+        dropWobbleGoal();
+        sleep(500);
+        turnToZero();
+    }
+
+    private void driveToZoneTwo() {
+        driveToLocationOnInitHeading(RED_ZONE_TWO);
+        dropWobbleGoalLargeTurn();
+    }
+
+    private void driveToZoneThree() {
+        driveToLocationOnInitHeading(RED_ZONE_THREE);
+        dropWobbleGoal();
+        sleep(500);
+        turnToZero();
+    }
+
+    public void driveToRingZone(int numRings) {
+        if (numRings == 0) {
+            driveToZoneOne();
+        }
+        else if (numRings == 1) {
+            driveToZoneTwo();
+        }
+        else {
+            driveToZoneThree();
+        }
     }
 
     // converts red to blue. If it is red, nothing happens

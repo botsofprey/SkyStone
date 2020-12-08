@@ -1,6 +1,9 @@
 package Actions.Ultimate;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -28,14 +31,14 @@ public class ShooterSystemV1 extends Thread {
     private static final int SHOOTER_ON_RPM = 4800;
 
     // good
-    private CRServo elevatorServo;
-    public static final int TOP = 0;
-    public static final int BOTTOM = 1;
-    public static final int MIDDLE = 2;
+    public CRServo elevatorServo;
+    public static final int TOP = 2;
+    public static final int MIDDLE = 1;
+    public static final int BOTTOM = 0;
     public int elevatorPosition;
     public boolean stayAtTop;
-    private volatile MagneticLimitSwitch elevatorTopSwitch;
-    private volatile MagneticLimitSwitch elevatorBottomSwitch;
+    public volatile MagneticLimitSwitch elevatorTopSwitch;
+    public volatile MagneticLimitSwitch elevatorBottomSwitch;
 
     // good
     public Servo pinballServo;
@@ -71,6 +74,16 @@ public class ShooterSystemV1 extends Thread {
     public void turnOffShooterWheel() {
         wheelSpinning = false;
         wheelMotor.setRPM(0);
+    }
+
+    public void warmUpWheel(LinearOpMode mode){
+        for (int i = 0; wheelMotor.curRPM < wheelMotor.targetRPM && mode.opModeIsActive() && i < 2000; i++){
+            try {
+                sleep(1);
+            } catch (Exception e) {
+                Log.d("Error", e.toString());
+            }
+        }
     }
 
     // moves the pinball servo
@@ -114,8 +127,8 @@ public class ShooterSystemV1 extends Thread {
     public void update() {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
-            elevatorServo.setPower(-0.01);
-        } else if (elevatorBottomSwitch.isActivated() && elevatorPosition != BOTTOM) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
+            elevatorServo.setPower(-0.02);
+        } else if (elevatorBottomSwitch.isActivated() && !stayAtTop) { //watch out for the zero case because then the robot will think its at the bottom when its at the top
             elevatorPosition = BOTTOM;
             elevatorServo.setPower(0);
         } else if (!elevatorTopSwitch.isActivated() && stayAtTop)

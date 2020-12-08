@@ -62,17 +62,17 @@ public class ConfigVariables {
     public static final Location BLUE_FOUNDATION_CENTER = new Location(-24-10-5, 49.5, 90);
 
     public static final Location RED_ZONE_ONE = new Location(50, 8);
-    public static final Location RED_ZONE_TWO = new Location(27, 34);
-    public static final Location RED_ZONE_THREE = new Location(46, 60);
+    public static final Location RED_ZONE_TWO = new Location(50, 32);
+    public static final Location RED_ZONE_THREE = new Location(50, 60);
     public static final Location ZONE_WAYPOINT = new Location(12, 60);
 
-    public static final Location RING_DETECTION_POINT= new Location(52, -20);
+    public static final Location RING_DETECTION_POINT= new Location(52, -20, 180);
     public static final Location RING_CHECKPOINT = new Location (52, -10);
     public static final Location STARTING_RING_PILE = new Location(36, -24);
 
 //    public static final HorizontalLine SHOOT_LINE = new HorizontalLine(new Location(-120, 30), 240);
     public static final Location PARKING_LOCATION = new Location(42, 10);
-    public static final Location SHOOTING_LINE_POINT = new Location(44, 4);
+    public static final Location SHOOTING_LINE_POINT = new Location(44, 4, 0);
     public static final Location SHOOTING_LINE_WAYPOINT = new Location(22, 30);
     public static final Location CENTER = new Location(0,0);
 

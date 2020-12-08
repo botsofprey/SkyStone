@@ -13,7 +13,7 @@ public class WheelMotor {
     public DcMotor motor;
     private LinearOpMode mode;
     public double curRPM;
-    private double targetRPM;
+    public double targetRPM;
     private long prevTicks;
     private long prevTime;
 
