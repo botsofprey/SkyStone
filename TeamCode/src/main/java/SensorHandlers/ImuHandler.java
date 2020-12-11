@@ -41,7 +41,6 @@ public class ImuHandler extends Thread {
     private double previousOrientation;
     private int turnCount;
     private final double ANGLE_THRESHOLD = 45;
-    private HardwareMap map;
 
     public ImuHandler(String name, double robotOrientationOffset, HardwareMap h){
 
@@ -74,14 +73,15 @@ public class ImuHandler extends Thread {
 
     private void safetySleep(long time){
         long start = System.currentTimeMillis();
-        while(System.currentTimeMillis() - start < time && shouldRun);
+        while (System.currentTimeMillis() - start < time && shouldRun);
     }
 
-    private void initIMU(String name, HardwareMap hardwareMap){
+    private void initIMU(String name, HardwareMap hardwareMap) {
         final BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        //parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+//        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
         File file = new File(Environment.getExternalStorageDirectory() + "/imu1/AdafruitIMUCalibration.json");
         String serialized = null;
         try {
@@ -89,10 +89,10 @@ public class ImuHandler extends Thread {
         } catch (IOException e) {
             Log.e("File error!",e.toString());
         }
-        BNO055IMU.CalibrationData dat = BNO055IMU.CalibrationData.deserialize(serialized);
-        parameters.calibrationData = dat;
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+//        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        parameters.calibrationData = BNO055IMU.CalibrationData.deserialize(serialized);
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
 //        parameters.accelerationIntegrationAlgorithm = new BasicAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, name);
         imu.initialize(parameters);
@@ -100,14 +100,6 @@ public class ImuHandler extends Thread {
 //        imu.startAccelerationIntegration(new Position(), new Velocity(), 100);
         Log.d("IMU Status", imu.getSystemStatus().toString());
         Log.d("IMU Calibration", imu.getCalibrationStatus().toString());
-
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                imu.initialize(parameters);
-//            }
-//        });
-//        thread.start();
 
         updateIMU();
     }
@@ -117,13 +109,12 @@ public class ImuHandler extends Thread {
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             velocities = imu.getVelocity();
             accelerations = imu.getAcceleration();
-            if(angles.firstAngle >= -180 && angles.firstAngle <= -180 + ANGLE_THRESHOLD/2.0 && previousOrientation >= 180 - ANGLE_THRESHOLD/2.0) turnCount++;
-            else if(angles.firstAngle >= 180 - ANGLE_THRESHOLD/2.0 && previousOrientation >= -180 && previousOrientation <= -180 + ANGLE_THRESHOLD/2.0) turnCount--;
+            if (angles.firstAngle >= -180 && angles.firstAngle <= -180 + ANGLE_THRESHOLD/2.0 && previousOrientation >= 180 - ANGLE_THRESHOLD/2.0) turnCount++;
+            else if (angles.firstAngle >= 180 - ANGLE_THRESHOLD/2.0 && previousOrientation >= -180 && previousOrientation <= -180 + ANGLE_THRESHOLD/2.0) turnCount--;
             previousOrientation = angles.firstAngle;
         } catch (Exception e){
             stopIMU();
             throw new RuntimeException(e);
-
         }
     }
 
@@ -138,8 +129,7 @@ public class ImuHandler extends Thread {
     public Location getLocation(){
         Position p = imu.getPosition();
         p = p.toUnit(DistanceUnit.INCH);
-        Location l = new Location(p.x,p.y);
-        return l; 
+        return new Location(p.x,p.y);
     }
 
     /*
@@ -180,7 +170,7 @@ public class ImuHandler extends Thread {
     }
 
     public double[] getAccelerations() {
-        double[] accel = {accelerations.xAccel, accelerations.yAccel, accelerations.zAccel};
+        double[] accel = { accelerations.xAccel, accelerations.yAccel, accelerations.zAccel };
         return accel;
     }
 }

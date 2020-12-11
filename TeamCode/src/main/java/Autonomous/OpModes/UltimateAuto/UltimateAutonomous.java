@@ -8,6 +8,7 @@ import Actions.Ultimate.ShooterSystemV1;
 import Actions.Ultimate.WobbleGrabberV1;
 import Autonomous.AutoAlliance;
 import Autonomous.ColorDetector;
+import Autonomous.ConfigVariables;
 import Autonomous.Location;
 import Autonomous.RingDetector;
 import Autonomous.VuforiaHelper;
@@ -207,18 +208,22 @@ public class UltimateAutonomous {
         sleep(200);
         wobbleGrabber.raiseToVertical();
         waitForArm();
+        wobbleGrabber.grabWobbleGoal();
 //        robot.turnToHeading(UltimateNavigation.SOUTH, mode);
         turnToInitHeading();
     }
 
     public void dropWobbleGoalLargeTurn() {
-        turnToZero();
+        //turnToZero();
+        robot.turnToHeading(0, mode);
         wobbleGrabber.lowerArm();
         waitForArm();
         wobbleGrabber.releaseWobbleGoal();
         sleep(200);
         wobbleGrabber.raiseToVertical();
         waitForArm();
+        wobbleGrabber.grabWobbleGoal();
+        robot.turnToHeading(180, mode);
 //        robot.turnToHeading(0, mode);
     }
 
@@ -234,15 +239,13 @@ public class UltimateAutonomous {
     public void shootThreeRings() {
         shooter.setShooter(ShooterSystemV1.HIGHEST_POSITION);
         shooter.turnOnShooterWheel();
+        sleep(500);
 //        shooter.keepElevatorAtTop();
-        shooter.warmUpWheel(mode);
         for  (int i = 0; i <= 3; i++) {
 //            shooter.keepElevatorAtTop();
             shooter.shoot(); // Index ring into shooter
-            shooter.update();
             sleep(500); // Wait for index
             shooter.shoot(); // Retract indexer
-            shooter.update();
             sleep(750); // Wait for retract
         }
         shooter.turnOffShooterWheel();
@@ -265,8 +268,8 @@ public class UltimateAutonomous {
     private void driveToZoneOne() {
         driveToLocationOnInitHeading(RED_ZONE_ONE);
         dropWobbleGoal();
-        sleep(500);
-        turnToZero();
+//        sleep(500);
+//        turnToZero();
     }
 
     private void driveToZoneTwo() {
@@ -277,8 +280,8 @@ public class UltimateAutonomous {
     private void driveToZoneThree() {
         driveToLocationOnInitHeading(RED_ZONE_THREE);
         dropWobbleGoal();
-        sleep(500);
-        turnToZero();
+//        sleep(500);
+//        turnToZero();
     }
 
     public void driveToRingZone(int numRings) {
@@ -302,7 +305,15 @@ public class UltimateAutonomous {
 
     public int detectNumRings() { return ringDetector.getNumRings(); }
 
-    public void stop() { robot.stopNavigation(); }
+    public void stop() {
+        shooter.stop();
+        robot.stopNavigation();
+        topSensor.kill();
+        bottomSensor.kill();
+        ringDetector.kill();
+        mode.telemetry.addData("Robot", "Stopped");
+        mode.telemetry.update();
+    }
     public void sleep(long milliseconds) { mode.sleep(milliseconds); }
     public void park() { robot.driveDistance(PARKING_LOCATION.getY() - robot.getRobotLocation().getY(), UltimateNavigation.NORTH, MAX_SPEED, mode); }
 

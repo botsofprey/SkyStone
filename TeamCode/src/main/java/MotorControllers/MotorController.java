@@ -259,7 +259,7 @@ public class MotorController extends Thread {
 
     public void brake() {
         takenStartValue = false;
-        if(getMotorRunMode() == DcMotor.RunMode.RUN_TO_POSITION)
+        if (getMotorRunMode() == DcMotor.RunMode.RUN_TO_POSITION)
             setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor.setPower(0);
     }

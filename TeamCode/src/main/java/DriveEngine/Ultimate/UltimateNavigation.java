@@ -87,8 +87,6 @@ public class UltimateNavigation extends Thread {
 
     private HardwareMap hardwareMap;
 
-    // TODO fix this class
-
     public UltimateNavigation(HardwareMap hw, Location startLocation, String configFile, boolean ignoreInitialSensorLocation) {
         hardwareMap = hw;
         initializeUsingConfigFile(configFile);

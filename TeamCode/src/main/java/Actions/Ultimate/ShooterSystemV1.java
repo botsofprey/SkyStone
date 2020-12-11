@@ -17,7 +17,7 @@ import SensorHandlers.MagneticLimitSwitch;
  *
  * Used for shooting rings
  */
-public class ShooterSystemV1 extends Thread {
+public class ShooterSystemV1 {
 
     public Servo aimServo;
     public static final double HIGHEST_POSITION = 0;
@@ -46,6 +46,8 @@ public class ShooterSystemV1 extends Thread {
     public static final double PINBALL_TURNED = 1;
     public static final double PINBALL_REST = 0;
 
+    private volatile boolean shouldRun;
+
     public ShooterSystemV1(HardwareMap hardwareMap, final LinearOpMode mode) {
         aimServo = hardwareMap.servo.get("aimServo");
         wheelMotor = new WheelMotor("wheelMotor", hardwareMap, mode);
@@ -59,6 +61,15 @@ public class ShooterSystemV1 extends Thread {
         elevatorPosition = BOTTOM;
         pinballAngle = PINBALL_REST;
         stayAtTop = false;
+
+        shouldRun = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (shouldRun && mode.opModeIsActive())
+                    update();
+            }
+        }).start();
     }
 
     public void toggleWheelPower() {
@@ -74,16 +85,6 @@ public class ShooterSystemV1 extends Thread {
     public void turnOffShooterWheel() {
         wheelSpinning = false;
         wheelMotor.setRPM(0);
-    }
-
-    public void warmUpWheel(LinearOpMode mode){
-        for (int i = 0; wheelMotor.curRPM < wheelMotor.targetRPM && mode.opModeIsActive() && i < 2000; i++){
-            try {
-                sleep(1);
-            } catch (Exception e) {
-                Log.d("Error", e.toString());
-            }
-        }
     }
 
     // moves the pinball servo
@@ -124,7 +125,7 @@ public class ShooterSystemV1 extends Thread {
 
     public void stopElevator() { elevatorServo.setPower(0); }
 
-    public void update() {
+    private void update() {
         if (elevatorTopSwitch.isActivated() && elevatorPosition != TOP) {
             elevatorPosition = TOP;
             elevatorServo.setPower(-0.02);
@@ -147,6 +148,8 @@ public class ShooterSystemV1 extends Thread {
         double temp1 = Math.sqrt(-4.9 * xDistance * temp0);
         return Math.cos(ConfigVariables.SHOOTER_ANGLE) / temp1;
     }
+
+    public void stop() { shouldRun = false; }
 
     // TODO
 //    public void shootWithAdjustedAngle(Location robotLocation) {

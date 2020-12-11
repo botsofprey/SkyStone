@@ -53,7 +53,7 @@ import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
 //@Disabled
 public class UltimateV1AutoRed extends LinearOpMode {
 
-    volatile boolean shouldRun = true;
+//    volatile boolean shouldRun = true;
 
     @Override
     public void runOpMode() {
@@ -73,42 +73,33 @@ public class UltimateV1AutoRed extends LinearOpMode {
         robot.getShooter().keepElevatorAtTop();
         robot.getShooter().shoot();
 
-        final long startTime = System.currentTimeMillis();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (shouldRun && opModeIsActive()) {
+//                    if (!shouldNotPark()) {
+//                        robot.park();
+//                        shouldRun = false;
+//                    }
+//                }
+//                robot.stop();
+//            }
+//        }).start();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (shouldRun && opModeIsActive()) {
-                    try {
-                        robot.getShooter().update();
+        robot.getWobbleGrabber().grabWobbleGoal();
 
-                        if (!shouldNotPark(startTime)) {
-                            robot.park();
-                            robot.stop();
-                            shouldRun = true;
-                        }
-                    }
-                    catch(Exception e){
-                        Log.d("Thread Exception Found:", e.toString());
-                    }
-                }
-            }
-        }).start();
+        robot.driveToLocationOnInitHeading(RING_DETECTION_POINT);
 
-         robot.getWobbleGrabber().grabWobbleGoal();
-
-         robot.driveToLocationOnInitHeading(RING_DETECTION_POINT);
-
-         int numRings = robot.detectNumRings();
-         telemetry.addData("Rings Found", numRings);
-         telemetry.update();
-//        if (numRings == 0)
-//            robot.driveToLocationOnInitHeading(ringZone);
+        int numRings = robot.detectNumRings();
+        telemetry.addData("Rings Found", numRings);
+        telemetry.update();
 
         robot.driveToRingZone(numRings);
 
         // move behind shot line, rotate towards goal, and shoot
         robot.moveToShootLocation();
+
+        robot.turnToZero();
 //        robot.getShooter().raiseElevator();
         robot.getShooter().keepElevatorAtTop();
 //        robot.shootPowerShots();
@@ -117,25 +108,18 @@ public class UltimateV1AutoRed extends LinearOpMode {
 //            robot.grabStartingPileRings();
 
         // park on the line and stop
-        shouldRun = false;
         robot.park();
-        robot.stop();
         robot.getShooter().stayAtTop = false;
         robot.getShooter().elevatorServo.setPower(0);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive());
-    }
-    
-    public boolean shouldNotPark(long startTime) {
-        long curTimeMillis = System.currentTimeMillis() - startTime;
-        double curTimeSeconds = curTimeMillis / 1000.0;
-        return opModeIsActive() && curTimeSeconds < 28;
+        robot.stop();
     }
 
-    public boolean isInRange(double first, double second, double tolerance) {
-        double difference = first - second;
-        difference = Math.abs(difference);
-        return difference <= tolerance;
-    }
+//    public boolean isInRange(double first, double second, double tolerance) {
+//        double difference = first - second;
+//        difference = Math.abs(difference);
+//        return difference <= tolerance;
+//    }
 }
