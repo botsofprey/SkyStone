@@ -32,6 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package Autonomous.OpModes.UltimateAuto;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -41,8 +42,12 @@ import Autonomous.AutoAlliance;
 import Autonomous.Location;
 import DriveEngine.Ultimate.UltimateNavigation;
 
-import static Autonomous.ConfigVariables.RING_DETECTION_POINT;
+import Autonomous.ConfigVariables;
+
+import static Autonomous.ConfigVariables.RED_WOBBLE_GOAL_LEFT_CHECKPOINT;
 import static Autonomous.ConfigVariables.STARTING_ROBOT_LOCATION_RIGHT;
+import static Autonomous.ConfigVariables.WOBBLE_GOAL_PLACEMENT_OFFSET;
+
 /*
     Author: Ethan Fisher
     Date: 10/29/2020
@@ -73,44 +78,47 @@ public class UltimateV1AutoRed extends LinearOpMode {
         robot.getShooter().keepElevatorAtTop();
         robot.getShooter().shoot();
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (shouldRun && opModeIsActive()) {
-//                    if (!shouldNotPark()) {
-//                        robot.park();
-//                        shouldRun = false;
-//                    }
-//                }
-//                robot.stop();
-//            }
-//        }).start();
-
         robot.getWobbleGrabber().grabWobbleGoal();
 
-        robot.driveToLocationOnInitHeading(RING_DETECTION_POINT);
+//        robot.driveToLocationOnInitHeading(RING_DETECTION_POINT);
+        robot.driveToLocationOnInitHeading(ConfigVariables.RED_ZONE_ONE);
 
         int numRings = robot.detectNumRings();
+        Location ringZone = robot.getZone(numRings);
         telemetry.addData("Rings Found", numRings);
         telemetry.update();
 
-        robot.driveToRingZone(numRings);
+        if (numRings != 0)
+            robot.driveToLocationOnInitHeading(ringZone);
+        if (numRings == 1)
+            robot.turnToHeading(0);
+        else
+            robot.turnToHeading(135);
+        robot.dropWobbleGoal();
+
+        robot.driveToLeftWobbleGoalAndGrab();
+        robot.driveToLocationOnHeading(RED_WOBBLE_GOAL_LEFT_CHECKPOINT, 0);
+
+        robot.driveToLocationOnHeading(ringZone.addXY(WOBBLE_GOAL_PLACEMENT_OFFSET.getX(),
+                WOBBLE_GOAL_PLACEMENT_OFFSET.getY()), 0);
+
+        if (numRings == 1)
+            robot.turnToHeading(0);
+        else
+            robot.turnToHeading(135);
+        robot.dropWobbleGoal();
 
         // move behind shot line, rotate towards goal, and shoot
         robot.moveToShootLocation();
 
         robot.turnToZero();
-//        robot.getShooter().raiseElevator();
         robot.getShooter().keepElevatorAtTop();
-//        robot.shootPowerShots();
         robot.shootThreeRings();
-//        if (numRings != 0)
-//            robot.grabStartingPileRings();
 
         // park on the line and stop
         robot.park();
-        robot.getShooter().stayAtTop = false;
-        robot.getShooter().elevatorServo.setPower(0);
+//        robot.getShooter().stayAtTop = false;
+//        robot.getShooter().elevatorServo.setPower(0);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive());
